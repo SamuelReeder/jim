@@ -1,5 +1,5 @@
-import {Text, TextInput, View, Button} from 'react-native';
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import React from 'react';
+import { Center, Text, Input } from 'native-base';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/navigation';
 
@@ -14,11 +14,10 @@ type Props = {
 
 export default function LogInScreen({navigation}: Props) {
     return (
-        <View>
+        <Center flex={1} p="5">
             <Text>Log In</Text>
-            <TextInput placeholder="Email" />
-            <TextInput placeholder="Password" />
-        </View>
+            
+        </Center>
     );
 }
 

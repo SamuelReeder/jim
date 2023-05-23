@@ -1,4 +1,4 @@
-import { Text, TextInput, View, Button } from 'react-native';
+import { Center, Text, Button, useColorMode, HStack, Switch } from 'native-base';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/navigation';
 
@@ -12,24 +12,42 @@ type Props = {
     navigation: LandingScreenNavigationProp;
 };
 
+// Color Switch Component
+function ToggleDarkMode() {
+    const { colorMode, toggleColorMode } = useColorMode();
+    return (
+      <HStack space={2} alignItems="center">
+        <Text>Dark</Text>
+        <Switch
+          isChecked={colorMode === "light"}
+          onToggle={toggleColorMode}
+          aria-label={
+            colorMode === "light" ? "switch to dark mode" : "switch to light mode"
+          }
+        />
+        <Text>Light</Text>
+      </HStack>
+    );
+    }
+
 export default function LandingScreen({ navigation }: Props) {
     return (
-        <View>
-            <Text>Welcome</Text>
+        <Center flex={1} p="5">
+            <Text>Hi</Text>
             <Button
-                title="Sign Up"
                 onPress={() =>
                     navigation.navigate('SignUp')
                 }
-            />
+                w="100%"
+            >Sign Up</Button>
             <Button
-                title="Log In"
                 onPress={() =>
                     navigation.navigate('LogIn')
                 }
-            />
-        </View>
-    );
+                w="100%"
+            >Log In</Button>
+        </Center>
+    );  
 }
 
 

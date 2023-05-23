@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "944395723231",
+    "project_id": "gym-sm",
+    "storage_bucket": "gym-sm.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:944395723231:android:9403b22414a07f85e8646a",
+        "android_client_info": {
+          "package_name": "com.sreeder.jim"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "944395723231-58vsene7rl1p5oqu5l2ng67jf7tr63nq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sreeder.jim",
+            "certificate_hash": "ba6ec0979fb58cc66b12d4b11d0676dff47ed4b5"
+          }
+        },
+        {
+          "client_id": "944395723231-7200d751st9c104vnm1lba4eupbbhvbv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sreeder.jim",
+            "certificate_hash": "3d7494f3988423aac7e444d2b9d5be3559243438"
+          }
+        },
+        {
+          "client_id": "944395723231-vlsnl3sebdddeomjt2joql2c3c19qjte.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDfErbFnHr7hYDb5mOh9riCyba18oK2Wls"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "944395723231-n26bf0cnoqdsbdk9vgimmib4s0v8u1kq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

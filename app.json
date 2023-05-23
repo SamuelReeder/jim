@@ -21,13 +21,18 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.sreeder.jim",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": [
-      "@react-native-firebase/app"
-    ]
+    "extra": {
+      "eas": {
+        "projectId": "0fd70366-ce9b-416b-b82a-40d864d9e86b"
+      }
+    },
+    "plugins": ["@react-native-google-signin/google-signin"]
   }
 }

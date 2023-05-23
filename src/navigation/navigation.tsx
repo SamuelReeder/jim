@@ -13,7 +13,11 @@ const Stack = createStackNavigator<RootStackParamList>();
 
 const RootStack = () => {
     return (
-        <Stack.Navigator>
+        <Stack.Navigator screenOptions={{
+            headerShown: false, 
+            headerStyle: { elevation: 0 },
+            // cardStyle: { backgroundColor: '#000000' }
+        }}>
             <Stack.Screen name="Landing" component={LandingScreen} />
             <Stack.Screen
                 name="SignUp"
