@@ -35,9 +35,9 @@ export default function LandingScreen({ navigation }: Props) {
         <Center flex={1} p="5">
             <Text>Hi</Text>
             <Button
-                onPress={() =>
-                    navigation.navigate('SignUp')
-                }
+                // onPress={() =>
+                //     navigation.navigate('SignUp')
+                // }
                 w="100%"
             >Sign Up</Button>
             <Button

@@ -2,16 +2,16 @@ import { Center, Text, Input } from 'native-base';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/navigation';
 
-type SignUpScreenNavigationProp = StackNavigationProp<
+type UserDetailsScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
-  'SignUp'
+  'UserDetails'
 >;
 
 type Props = {
-  navigation: SignUpScreenNavigationProp;
+  navigation: UserDetailsScreenNavigationProp;
 };
 
-export default function SignUpScreen({navigation}: Props) {
+export default function UserDetailsScreen({navigation}: Props) {
     return (
         <Center flex={1} p="5">
             <Text>Sign Up</Text>

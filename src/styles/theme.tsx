@@ -7,6 +7,13 @@ const theme = extendTheme({
                 rounded: 'full',
                 margin: 0.5,
             },
+            variants: {
+                landing: {
+                    rounded: 'full',
+                    margin: 0.5,
+                }
+            }
+                    
         },
         Input: {
             baseStyle: {
@@ -16,7 +23,7 @@ const theme = extendTheme({
     },
     config: {
         useSystemColorMode: false,
-        initialColorMode: 'dark',
+        initialColorMode: 'light',
     },
 });
 
