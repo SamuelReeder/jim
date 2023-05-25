@@ -17,9 +17,15 @@ const theme = extendTheme({
         },
         Input: {
             baseStyle: {
+                // rounded: 'full',
                 margin: 0.5,
             },
         },  
+        // Box: {
+        //     baseStyle: {
+        //         backgroundColor: 'white',
+        //     }
+        // },
     },
     config: {
         useSystemColorMode: false,
