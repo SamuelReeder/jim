@@ -5,6 +5,8 @@ import { RootStackParamList } from '../navigation/auth_navigation';
 import styles from '../styles/styles';
 import { useAuth } from '../navigation/auth_provider';
 import PageContainer from '../components/page_container';
+import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
+
 
 type LogInScreenNavigationProp = StackNavigationProp<
     RootStackParamList,
@@ -16,7 +18,7 @@ type Props = {
 };
 
 export default function LogInScreen({ navigation }: Props) {
-    const {googleLogin} = useAuth();
+    const { user, setUser, account, setAccount, googleLogin } = useAuth();
 
     return (
         <PageContainer>
@@ -31,7 +33,15 @@ export default function LogInScreen({ navigation }: Props) {
                         p="5"
                         marginY="5"
                         style={styles.landing_button}
-                        onPress={() => googleLogin()}>
+                        onPress={() => googleLogin().then((docSnapshot) => {
+                            if (docSnapshot == null) {
+                                console.log('User does not exist')
+                                navigation.navigate('CreateUsername');
+                            } else {
+                                setAccount(docSnapshot);
+                                console.log("account", account)
+                            }
+                        })}>
                         <HStack width="100%" justifyContent="space-between" alignItems="center" px="3">
                             <Image source={require('../../assets/google.png')}
                                 alt="google"
@@ -49,7 +59,7 @@ export default function LogInScreen({ navigation }: Props) {
                     </Button>
                 </Box>
             </VStack>
-        </PageContainer>
+        </PageContainer >
     );
 }
 

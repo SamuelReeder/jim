@@ -11,7 +11,7 @@ import AppStack from './app_navigation';
 
 
 const Routes = () => {
-  const {user, setUser} = useAuth();
+  const {user, setUser, account, setAccount} = useAuth();
   const [initializing, setInitializing] = useState(true);
 
   const onAuthStateChanged = (user: FirebaseAuthTypes.User | null) => {
@@ -29,7 +29,7 @@ const Routes = () => {
 
   return (
     <NavigationContainer>
-      {user ? <AppStack/> : <RootStack/>}
+      {user && account ? <AppStack/> : <RootStack/>}
     </NavigationContainer>
   );
 };

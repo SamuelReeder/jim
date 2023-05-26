@@ -5,7 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AntDesign } from '@expo/vector-icons';
 // const Stack = createStackNavigator();
 import LandingScreen from '../screens/landing';
-import UserDetailsScreen from '../screens/user_details';
+import UserDetailsScreen from '../screens/create_username';
 import ProfileScreen from '../screens/profile';
 
 type AppTabsParamList = {
@@ -33,15 +33,25 @@ const AppStack = () => {
             screenOptions={{
                 headerShown: false,
                 headerStyle: { elevation: 0 },
-            }}>
+                tabBarShowLabel: false,
+                tabBarStyle: {
+                    borderTopWidth: 0, // remove border (set elevation to 0)
+                    paddingBottom: 10, // add bottom padding
+                    paddingTop: 10,
+                    height: 50, // set the height of the tab bar
+                  },
+                  tabBarActiveTintColor: '#e91e63',
+            }}
+            backBehavior="order"
+            id="app-nav">
             <Tab.Screen
                 name="Profile"
                 component={LandingScreen}
                 options={({ route }) => ({
-                    tabBarLabel: 'Profile',
+                    tabBarLabel: 'Feed',
                     // tabBarVisible: route.state && route.state.index === 0,
-                    tabBarIcon: () => (
-                        <AntDesign name="profile" size={24} color="black" />
+                    tabBarIcon: ({color, size}) => (
+                        <AntDesign name="home" size={size} color={color}/>
                     ),
                 })}
             />
@@ -67,9 +77,9 @@ const AppStack = () => {
                 name="UserDetails"
                 component={UserDetailsScreen}
                 options={{
-                    // tabBarLabel: 'Home',
+                    tabBarLabel: 'Search',
                     tabBarIcon: ({ color, size }) => (
-                        <AntDesign name="profile" size={24} color="black" />
+                        <AntDesign name="search1" size={size} color={color} />
                     ),
                 }}
             />
@@ -77,9 +87,9 @@ const AppStack = () => {
                 name="Search"
                 component={ProfileScreen}
                 options={{
-                    // tabBarLabel: 'Home',
+                    tabBarLabel: 'Profile',
                     tabBarIcon: ({ color, size }) => (
-                        <AntDesign name="profile" size={24} color="black" />
+                        <AntDesign name="profile" size={size} color={color} />
                     ),
                 }}
             />
