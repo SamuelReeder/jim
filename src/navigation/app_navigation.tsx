@@ -7,6 +7,8 @@ import { AntDesign } from '@expo/vector-icons';
 import LandingScreen from '../screens/landing';
 import UserDetailsScreen from '../screens/create_username';
 import ProfileScreen from '../screens/profile';
+import { Image } from 'native-base';
+import { useAuth } from './auth_provider';
 
 type AppTabsParamList = {
     Profile: undefined,
@@ -17,6 +19,8 @@ type AppTabsParamList = {
 const Tab = createBottomTabNavigator<AppTabsParamList>();
 
 const AppStack = () => {
+
+    const { account } = useAuth();
     //   const getTabBarVisibility = (route) => {
     //     const routeName = route.state
     //       ? route.state.routes[route.state.index].name
@@ -39,8 +43,8 @@ const AppStack = () => {
                     paddingBottom: 10, // add bottom padding
                     paddingTop: 10,
                     height: 50, // set the height of the tab bar
-                  },
-                  tabBarActiveTintColor: '#e91e63',
+                },
+                tabBarActiveTintColor: '#e91e63',
             }}
             backBehavior="order"
             id="app-nav">
@@ -50,8 +54,8 @@ const AppStack = () => {
                 options={({ route }) => ({
                     tabBarLabel: 'Feed',
                     // tabBarVisible: route.state && route.state.index === 0,
-                    tabBarIcon: ({color, size}) => (
-                        <AntDesign name="home" size={size} color={color}/>
+                    tabBarIcon: ({ color, size }) => (
+                        <AntDesign name="home" size={size} color={color} />
                     ),
                 })}
             />
@@ -89,7 +93,15 @@ const AppStack = () => {
                 options={{
                     tabBarLabel: 'Profile',
                     tabBarIcon: ({ color, size }) => (
-                        <AntDesign name="profile" size={size} color={color} />
+                        <Image
+                            source={{ uri: account?.photoURL }}
+                            style={{
+                                width: size,
+                                height: size,
+                                // tintColor: color,
+                            }}
+                            alt="Profile Picture"
+                        />
                     ),
                 }}
             />
