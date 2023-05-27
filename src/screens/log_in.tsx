@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import {useEffect}from 'react';
 import { Center, Text, Input, Button, Box, Image, HStack, VStack, Spacer } from 'native-base';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/auth_navigation';
 import styles from '../styles/styles';
 import { useAuth } from '../navigation/auth_provider';
 import PageContainer from '../components/page_container';
-import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
 
 type LogInScreenNavigationProp = StackNavigationProp<
@@ -20,6 +21,15 @@ type Props = {
 export default function LogInScreen({ navigation }: Props) {
     const { user, setUser, account, setAccount, googleLogin } = useAuth();
 
+    
+    useEffect(() => {
+        // If user is logged in, account data is loaded, but account does not exist
+        if (user && !account) {
+          navigation.navigate('CreateUsername');
+        }
+      }, [user]); // Run this code when user, account, or accountLoading changes
+
+      
     return (
         <PageContainer>
             <VStack space={3} alignItems="center" justifyContent="space-around" flex={1} width="100%">
@@ -33,15 +43,40 @@ export default function LogInScreen({ navigation }: Props) {
                         p="5"
                         marginY="5"
                         style={styles.landing_button}
-                        onPress={() => googleLogin().then((docSnapshot) => {
-                            if (docSnapshot == null) {
-                                console.log('User does not exist')
-                                navigation.navigate('CreateUsername');
-                            } else {
-                                setAccount(docSnapshot);
-                                console.log("account", account)
-                            }
-                        })}>
+                        // onPress={() => googleLogin().then((docSnapshot) => {
+                        //     if (docSnapshot == null) {
+                        //         console.log('User does not exist')
+                        //         navigation.navigate('CreateUsername');
+                        //     } else {
+                        //         setAccount(docSnapshot);
+                        //         // console.log("account", account)
+                        //     }
+                        // })}
+                        onPress={() => {
+                            googleLogin()
+                            // .then(() => {
+                                // const user = auth().currentUser;
+                                // const userDocRef = firestore().collection('users').doc(user?.uid);
+                                // console.log("1 read")
+
+                                // userDocRef.get().then((docSnapshot) => {
+                                //     if (docSnapshot.exists) {
+                                //         // If the document exists, navigate to the app
+                                //         setAccount(docSnapshot.data());
+                                //     } else {
+                                //         // If the document doesn't exist, navigate to CreateUsername
+                                //         navigation.navigate('CreateUsername');
+                                //     }
+                                // });
+                            //     console.log('user', user);
+                            //     console.log('account', account);
+                            //     if (user && !account) {
+                            //         navigation.navigate('CreateUsername');
+                            //     }
+                            // });
+                        }
+                        }
+                    >
                         <HStack width="100%" justifyContent="space-between" alignItems="center" px="3">
                             <Image source={require('../../assets/google.png')}
                                 alt="google"

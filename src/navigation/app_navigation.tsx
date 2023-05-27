@@ -6,6 +6,7 @@ import { AntDesign } from '@expo/vector-icons';
 // const Stack = createStackNavigator();
 import LandingScreen from '../screens/landing';
 import UserDetailsScreen from '../screens/create_username';
+import SearchScreen from '../screens/search';
 import ProfileScreen from '../screens/profile';
 import { Image } from 'native-base';
 import { useAuth } from './auth_provider';
@@ -49,7 +50,7 @@ const AppStack = () => {
             backBehavior="order"
             id="app-nav">
             <Tab.Screen
-                name="Profile"
+                name="UserDetails"
                 component={LandingScreen}
                 options={({ route }) => ({
                     tabBarLabel: 'Feed',
@@ -78,8 +79,8 @@ const AppStack = () => {
         })}
       /> */}
             <Tab.Screen
-                name="UserDetails"
-                component={UserDetailsScreen}
+                name="Search"
+                component={SearchScreen}
                 options={{
                     tabBarLabel: 'Search',
                     tabBarIcon: ({ color, size }) => (
@@ -88,7 +89,7 @@ const AppStack = () => {
                 }}
             />
             <Tab.Screen
-                name="Search"
+                name="Profile"
                 component={ProfileScreen}
                 options={{
                     tabBarLabel: 'Profile',
@@ -101,6 +102,7 @@ const AppStack = () => {
                                 // tintColor: color,
                             }}
                             alt="Profile Picture"
+                            rounded='full'
                         />
                     ),
                 }}

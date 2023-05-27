@@ -31,7 +31,7 @@ export default function UserDetailsScreen({ navigation }: Props) {
       .doc(user?.uid)
       .set({
         username: username,
-        uid: user?.uid,
+        // uid: user?.uid,
         displayName: user?.displayName,
         email: user?.email,
         metadata: user?.metadata,
@@ -42,6 +42,7 @@ export default function UserDetailsScreen({ navigation }: Props) {
       .then(() => {
         console.log('User added!');
         firestore().collection('users').doc(user?.uid).get().then((docSnapshot) => {
+          console.log("2 read")
           if (docSnapshot.exists) {
 
             setAccount(docSnapshot.data());
@@ -61,13 +62,8 @@ export default function UserDetailsScreen({ navigation }: Props) {
       <Box p="6" flex={1} justifyContent="space-between">
         <Heading marginTop={6} marginX={6} size="lg">Welcome {user?.displayName}, please create a username.</Heading>
         <Input marginX={6} variant="underlined" style={styles.landing_input} py={3} placeholder="Username"
-          // value='Username'
           onChangeText={(value) =>
             setUsername(value)
-            // setUser({
-            //   ...user,
-            //   username: value
-            // });
           } />
         <Button
           p="5"

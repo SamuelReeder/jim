@@ -9,7 +9,7 @@ export const AuthContext = createContext<{
     setUser: React.Dispatch<React.SetStateAction<FirebaseAuthTypes.User | null>>;
     account: any;
     setAccount: React.Dispatch<React.SetStateAction<any>>;
-    googleLogin: () => Promise<void |FirebaseFirestoreTypes.DocumentData>;
+    googleLogin: () => Promise<void>;
     logout: () => Promise<void>;
 } | undefined>(undefined);
 
@@ -49,23 +49,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                         const googleCredential = auth.GoogleAuthProvider.credential(idToken);
 
                         // Sign-in the user with the credential
-                        const user_log_in = await auth().signInWithCredential(googleCredential);
-                        // user_log_in.then((temp_user) => {
-                        //     console.log(temp_user);
-                        // }).catch((error) => {
-                        //     console.log(error);
-                        // });
+                        const user_log_in = auth().signInWithCredential(googleCredential);
+                        user_log_in.then((temp_user) => {
+                            console.log(temp_user);
+                        }).catch((error) => {
+                            console.log(error);
+                        });
 
-                        // fetch firestore document for this user
-                        console.log(user_log_in.user.uid)
-                        const docRef = await firestore().collection('users').doc(user_log_in.user.uid).get();
-
-                        if (docRef.exists) {
-                            return docRef.data();
-                          } else {
-                            console.log('No such document!');
-                            // return null;
-                          }
                     } catch (error) {
                         console.log(error);
                     }

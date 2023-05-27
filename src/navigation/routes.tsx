@@ -1,10 +1,8 @@
-import React, {useContext, useState, useEffect} from 'react';
+import React, { useState, useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import { useAuth } from './auth_provider';
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import { RootStack } from './auth_navigation';
-import LandingScreen from '../screens/landing';
-// import AppStack from './AppStack';
 import firestore from '@react-native-firebase/firestore';
 
 import { PageLoader } from '../components/page_loader';
@@ -19,18 +17,15 @@ const Routes = () => {
 
   const onAuthStateChanged = async (user: FirebaseAuthTypes.User | null) => {
     if (user) {
+      console.log("read 3")
       const userDocRef = firestore().collection('users').doc(user.uid);
       const docSnapshot = await userDocRef.get();
 
       if (docSnapshot.exists) {
           setAccount(docSnapshot.data() || null);
           
-      } else {
-          setAccount(null);
-      }
-  } else {
-      setAccount(null);
-  }
+      } 
+    }
     setUser(user);
     if (initializing) setInitializing(false);
     setAccountLoading(false);
@@ -41,29 +36,30 @@ const Routes = () => {
     return subscriber; // unsubscribe on unmount
   }, []);
 
-  useEffect(() => {
-    const fetchAccount = async () => {
-        if (user) {
-            const userDocRef = firestore().collection('users').doc(user.uid);
-            const docSnapshot = await userDocRef.get();
+//   useEffect(() => {
+//     const fetchAccount = async () => {
+//         if (user) {
+//             const userDocRef = firestore().collection('users').doc(user.uid);
+//             const docSnapshot = await userDocRef.get();
 
-            if (docSnapshot.exists) {
-                setAccount(docSnapshot.data() || null);
+//             if (docSnapshot.exists) {
+//                 setAccount(docSnapshot.data() || null);
                 
-            } else {
-                setAccount(null);
-            }
-        } else {
-            setAccount(null);
-        }
+//             } else {
+//                 setAccount(null);
+//             }npx expo
+//         } else {
+//             setAccount(null);
+//         }
         
-    };
+//     };
 
-    fetchAccount();
-    setAccountLoading(false);
-}, [user]);
+//     fetchAccount();
+//     setAccountLoading(false);
+// }, [user]);
 
   if (initializing || accountLoading) return <PageLoader/>;
+  // if (initializing) return <PageLoader/>;
 //   if (initializing) return <Spinner size="lg" />;
 
   return (
