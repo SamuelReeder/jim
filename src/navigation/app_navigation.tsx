@@ -1,15 +1,10 @@
 import React from 'react';
-// import {View, TouchableOpacity, Text} from 'react-native';
-// import {createStackNavigator} from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AntDesign } from '@expo/vector-icons';
-// const Stack = createStackNavigator();
-import LandingScreen from '../screens/landing';
-import UserDetailsScreen from '../screens/create_username';
-import SearchScreen from '../screens/search';
-import ProfileScreen from '../screens/profile';
 import { Image } from 'native-base';
 import { useAuth } from './auth_provider';
+import { ProfileStack, HomeStack } from './app_stacks';
+import { LandingScreen, SearchScreen } from '../screens';
 
 type AppTabsParamList = {
     Profile: undefined,
@@ -60,24 +55,6 @@ const AppStack = () => {
                     ),
                 })}
             />
-            {/* <Tab.Screen
-        name="Messages"
-        component={MessageStack}
-        options={({route}) => ({
-          tabBarVisible: getTabBarVisibility(route),
-          // Or Hide tabbar when push!
-          // https://github.com/react-navigation/react-navigation/issues/7677
-          // tabBarVisible: route.state && route.state.index === 0,
-          // tabBarLabel: 'Home',
-          tabBarIcon: ({color, size}) => (
-            <Ionicons
-              name="chatbox-ellipses-outline"
-              color={color}
-              size={size}
-            />
-          ),
-        })}
-      /> */}
             <Tab.Screen
                 name="Search"
                 component={SearchScreen}
@@ -90,7 +67,7 @@ const AppStack = () => {
             />
             <Tab.Screen
                 name="Profile"
-                component={ProfileScreen}
+                component={ProfileStack}
                 options={{
                     tabBarLabel: 'Profile',
                     tabBarIcon: ({ color, size }) => (

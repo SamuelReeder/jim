@@ -1,11 +1,10 @@
 import 'react-native-gesture-handler';
 import { createStackNavigator } from '@react-navigation/stack';
-import LandingScreen from '../screens/landing';
 import CreateUsernameScreen from '../screens/create_username';
-import LogInScreen from '../screens/log_in';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
 import { PageLoader } from '../components/page_loader';
+import { LandingScreen, LogInScreen } from '../screens';
 
 
 type RootStackParamList = {

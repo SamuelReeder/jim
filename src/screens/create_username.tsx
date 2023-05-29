@@ -2,7 +2,6 @@ import { Text, Input, Box, Heading, KeyboardAvoidingView, Button } from 'native-
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/auth_navigation';
 import { useAuth } from '../navigation/auth_provider';
-import PageContainer from '../components/page_container';
 import styles from '../styles/styles';
 import { Platform } from "react-native";
 import { useState } from 'react';

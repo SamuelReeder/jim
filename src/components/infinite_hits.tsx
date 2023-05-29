@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 import { useInfiniteHits } from 'react-instantsearch-hooks';
 import {View, FlatList} from 'native-base';
 
-export function InfiniteHits({ hitComponent: Hit, ...props }) {
+const InfiniteHits = ({ hitComponent: Hit, ...props }) => {
   const { hits, isLastPage, showMore } = useInfiniteHits(props);
 
   return (
@@ -34,3 +34,5 @@ const styles = StyleSheet.create({
     padding: 18,
   },
 });
+
+export default InfiniteHits;

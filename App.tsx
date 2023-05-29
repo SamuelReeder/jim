@@ -4,7 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import { NativeBaseProvider } from "native-base";
 import theme from './src/styles/theme';
 import 'expo-dev-client';
-import Providers from './src/navigation/index';
+import Providers from './src/navigation/providers';
 import {Box } from 'native-base';
 
 

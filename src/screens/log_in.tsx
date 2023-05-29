@@ -4,9 +4,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/auth_navigation';
 import styles from '../styles/styles';
 import { useAuth } from '../navigation/auth_provider';
-import PageContainer from '../components/page_container';
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
+import { PageContainer } from '../components';
 
 
 type LogInScreenNavigationProp = StackNavigationProp<
@@ -43,15 +41,6 @@ export default function LogInScreen({ navigation }: Props) {
                         p="5"
                         marginY="5"
                         style={styles.landing_button}
-                        // onPress={() => googleLogin().then((docSnapshot) => {
-                        //     if (docSnapshot == null) {
-                        //         console.log('User does not exist')
-                        //         navigation.navigate('CreateUsername');
-                        //     } else {
-                        //         setAccount(docSnapshot);
-                        //         // console.log("account", account)
-                        //     }
-                        // })}
                         onPress={() => {
                             googleLogin()
                             // .then(() => {

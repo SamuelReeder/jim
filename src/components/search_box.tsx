@@ -3,7 +3,7 @@ import { View, Input } from 'native-base';
 import { useSearchBox } from 'react-instantsearch-hooks';
 import { StyleSheet } from 'react-native';
 
-export function SearchBox(props) {
+const SearchBox = (props) => {
   const { query, refine } = useSearchBox(props);
   const [inputValue, setInputValue] = useState(query);
   const inputRef = useRef(null);
@@ -53,3 +53,5 @@ const styles = StyleSheet.create({
   //   borderColor: '#ddd',
   // },
 });
+
+export default SearchBox;
