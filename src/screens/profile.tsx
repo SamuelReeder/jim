@@ -1,30 +1,29 @@
-import { FlatList, Image, Box, Text, VStack, Divider } from "native-base";
+import { FlatList, Image, Box, Text, VStack, Divider, Button } from "native-base";
 import { useAuth } from "../navigation/auth_provider"
 import { Dimensions, SafeAreaView } from "react-native";
 import { useRef, useState, useEffect } from "react";
+import firestore from "@react-native-firebase/firestore";
+import { Post } from "../components";
 
 const windowWidth = Dimensions.get('window').width;
 
-const fetchMorePosts = async (offset, limit) => {
-    // Implement your logic to fetch more posts here.
-    // This function should return a Promise that resolves to an array of posts.
-};
+
 
 const testingData = () => {
-    let data = [];
+    let data: Post[] = [];
     for (let i = 0; i < 1000; i++) {
-        data.push({ id: i.toString(), img: require('../../assets/logo-no-background.png') });
+        data.push({ id: i.toString(), img: 'https://preview.redd.it/sydney-sweeney-v0-ltfv5m7n53ja1.jpg?width=640&crop=smart&auto=webp&s=9f741d3d5e826bbf394b15ccac18854f2bd383db' });
     }
     return data;
 }
 
-const ProfileHeader = () => {
+const ProfileHeader = ({navigation}) => {
     const { account } = useAuth();
     return (
         <VStack alignItems="center" space={4} mt={5}>
             <Image
                 alt="Profile Image"
-                source={{ uri: account?.photoURL }} // Change to your profile image url
+                source={{ uri: account?.photoURL }}
                 size="lg"
                 rounded="full"
             />
@@ -36,44 +35,80 @@ const ProfileHeader = () => {
             <Text fontSize="md" color="gray.500">
                 {account?.username}
             </Text>
-
+            <Button onPress={() =>  navigation.navigate('CreatePost')}>
+                Add post
+            </Button>
             <Divider my={5} />
         </VStack>
     );
 };
 
-const ProfileScreen = () => {
+const ProfileScreen = ({navigation}) => {
     const { user } = useAuth();
-    const [posts, setPosts] = useState(testingData());
+    const [posts, setPosts] = useState<Post[]>();
     const [loading, setLoading] = useState(false);
+
+    const fetchUserPosts = async () => {
+        const userId = user?.uid;
+        const postsCollectionRef = firestore().collection('posts');
+      
+        console.log(userId);
+        const querySnapshot = await postsCollectionRef
+          .where('userId', '==', userId)
+          .orderBy('timestamp', 'desc')
+          .get();
+
+        console.log(querySnapshot.empty);
+      
+        let temp: Post[] = [];
+        querySnapshot.forEach((documentSnapshot) => {
+            console.log(documentSnapshot.data());
+            temp.push({
+            // ...documentSnapshot.data(),
+            // key: documentSnapshot.id,  // or .key
+            id: documentSnapshot.id,
+            img: documentSnapshot.data().imageUrl,
+          });
+        });
+      
+        return temp;
+      }
+    
     // const postsRef = useRef<FlatList<any>>(null);
 
     // const scrollToTop = () => {
     //     postsRef.current?.scrollToOffset({ animated: true, offset: 0 });
     //   };
-    const loadMorePosts = async () => {
-        if (!loading) {
-            setLoading(true);
+    // const loadMorePosts = async () => {
+    //     if (!loading) {
+    //         setLoading(true);
 
-            const morePosts = await fetchMorePosts(posts.length, 10);
-            // setPosts(prevPosts => [...prevPosts, ...morePosts]);
+    //         const morePosts = await fetchMorePosts(posts.length, 10);
+    //         // setPosts(prevPosts => [...prevPosts, ...morePosts]);
 
-            setLoading(false);
-        }
-    };
+    //         setLoading(false);
+    //     }
+    // };
 
-    // useEffect(() => {
-    //     loadMorePosts();
-    // }, []);
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', async () => {
+            if (user) {
+              const userPosts = await fetchUserPosts();
+              setPosts(userPosts);
+            }
+          });
+      
+          return unsubscribe;
+    }, [navigation, user]);
 
     return (
         <Box safeArea flex={1}>
             <FlatList
                 data={posts}
-                ListHeaderComponent={ProfileHeader}
+                ListHeaderComponent={<ProfileHeader navigation={navigation}/>}
                 renderItem={({ item }) =>
                     <Image
-                        source={item.img}
+                        source={{ uri: item.img}}
                         alt={item.id}
                         style={{ width: windowWidth / 3, height: windowWidth / 3 }}
                     />}

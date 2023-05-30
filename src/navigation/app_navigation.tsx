@@ -7,7 +7,7 @@ import { ProfileStack, HomeStack } from './app_stacks';
 import { LandingScreen, SearchScreen } from '../screens';
 
 type AppTabsParamList = {
-    Profile: undefined,
+    ProfileStack: undefined,
     Search: undefined;
     UserDetails: undefined;
 };
@@ -66,7 +66,7 @@ const AppStack = () => {
                 }}
             />
             <Tab.Screen
-                name="Profile"
+                name="ProfileStack"
                 component={ProfileStack}
                 options={{
                     tabBarLabel: 'Profile',

@@ -1,10 +1,13 @@
 import { createStackNavigator } from '@react-navigation/stack';
-import EditProfileScreen from '../../screens/edit_profile';
-import ProfileScreen from '../../screens/profile';
+import { Post } from '../../components';
+import { ProfileScreen, AddPostScreen as CreatePostScreen, EditProfileScreen } from '../../screens';
+import PostScreen from '../../screens/post';
 
 type ProfileStackParamList = {
     Profile: undefined;
     EditProfile: undefined;
+    CreatePost: undefined;
+    Post: { post: Post };
 };
 
 const Stack = createStackNavigator<ProfileStackParamList>();
@@ -32,6 +35,35 @@ const ProfileStack = ({ navigation }: { navigation: ProfileStackParamList }) => 
                 },
             }}
         />
+        <Stack.Screen
+            name="CreatePost"
+            component={CreatePostScreen}
+            options={{
+                headerTitle: 'Create Post',
+                headerBackTitleVisible: false,
+                headerTitleAlign: 'center',
+                headerStyle: {
+                    backgroundColor: '#fff',
+                    shadowColor: '#fff',
+                    elevation: 0,
+                },
+            }}
+        />
+        <Stack.Screen
+            name="Post"
+            component={PostScreen}
+            options={{
+                headerTitle: 'Create Post',
+                headerBackTitleVisible: false,
+                headerTitleAlign: 'center',
+                headerStyle: {
+                    backgroundColor: '#fff',
+                    shadowColor: '#fff',
+                    elevation: 0,
+                },
+            }}
+        />
+        
     </Stack.Navigator>
 );
 

@@ -5,7 +5,7 @@ import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import { RootStack } from './auth_navigation';
 import firestore from '@react-native-firebase/firestore';
 
-import { PageLoader } from '../components/page_loader';
+import { PageLoader } from '../components';
 import AppStack from './app_navigation';
 
 

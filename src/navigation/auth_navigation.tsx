@@ -3,7 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import CreateUsernameScreen from '../screens/create_username';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
-import { PageLoader } from '../components/page_loader';
+import { PageLoader } from '../components';
 import { LandingScreen, LogInScreen } from '../screens';
 
 

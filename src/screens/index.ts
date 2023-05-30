@@ -6,5 +6,5 @@ export { default as ProfileScreen } from './profile';
 export { default as EditProfileScreen } from './edit_profile';
 export { default as LandingScreen } from './landing';
 export { default as UserProfileScreen } from './user_profile';
-export { default as AddPostScreen } from './add_post';
+export { default as AddPostScreen } from './create_post';
 export { default as ExploreScreen } from './explore';
