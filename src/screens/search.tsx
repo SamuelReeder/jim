@@ -34,8 +34,29 @@ const SearchScreen = ({navigation}) => {
         '001156482e743b117f9cd3c4eb6de6f8'
     );
 
+    const Hit = ({ hit }: { hit: HitInterface }) => (
+        <Pressable onPress={() => {
+            navigation.navigate('UserProfile', { userId: hit.objectID });
+        }}>
+            <HStack space={4} alignItems='center' justifyContent='space-between' py={2}>
+                <VStack space={1}>
+                    <Text bold>{hit.displayName}</Text>
+                    <Text fontSize='xs'>{hit.username}</Text>
+                </VStack>
+                <Box>
+                    <Image
+                        alt='user image'
+                        source={{ uri: hit.photoURL }}
+                        size='xs'
+                        rounded='full'
+                    />
+                </Box>
+            </HStack>
+        </Pressable>
+    );
+
     return (
-        <Box variant="pageContainer" paddingX="3">
+        <Box variant="searchContainer" paddingX="3">
             {/* <ScrollView> */}
             <InstantSearch searchClient={searchClient} indexName="users_index">
                 <SearchBox />
@@ -46,25 +67,5 @@ const SearchScreen = ({navigation}) => {
     )
 }
 
-const Hit = ({ hit }: { hit: HitInterface }) => (
-    <Pressable onPress={() => {
-        console.log('hit: ', hit);
-    }}>
-        <HStack space={4} alignItems='center' justifyContent='space-between' py={2}>
-            <VStack space={1}>
-                <Text bold>{hit.displayName}</Text>
-                <Text fontSize='xs'>{hit.username}</Text>
-            </VStack>
-            <Box>
-                <Image
-                    alt='user image'
-                    source={{ uri: hit.photoURL }}
-                    size='xs'
-                    rounded='full'
-                />
-            </Box>
-        </HStack>
-    </Pressable>
-);
 
 export default SearchScreen;

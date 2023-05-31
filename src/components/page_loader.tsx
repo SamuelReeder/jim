@@ -1,10 +1,11 @@
 import { Box, Spinner } from 'native-base';
+import PageContainer from './page_container';
 
 const PageLoader = () => {
     return (
-        <Box flex={1} justifyContent="center" alignItems="center">
+        <PageContainer>
             <Spinner size="lg" />
-        </Box>
+        </PageContainer>
     );
 };
 

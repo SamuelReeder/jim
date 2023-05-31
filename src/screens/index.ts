@@ -8,3 +8,4 @@ export { default as LandingScreen } from './landing';
 export { default as UserProfileScreen } from './user_profile';
 export { default as AddPostScreen } from './create_post';
 export { default as ExploreScreen } from './explore';
+export { default as PostScreen } from './post';

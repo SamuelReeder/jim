@@ -17,20 +17,20 @@ const theme = extendTheme({
         },
         Input: {
             baseStyle: {
-                // rounded: 'full',
                 margin: 0.5,
             },
         },
         Box: {
-            // baseStyle: {
-            //     backgroundColor: 'white',
-            // }
             variants: {
                 pageContainer: {
-                    // These styles will be applied when this variant is used
                     flex: 1,
                     justifyContent: 'center',
                     alignItems: 'center',
+                    bg: 'white',
+                    safeArea: true,
+                },
+                searchContainer: {
+                    flex: 1,
                     bg: 'white',
                     safeArea: true,
                 },
