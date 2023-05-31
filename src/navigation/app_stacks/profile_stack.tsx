@@ -18,7 +18,14 @@ const ProfileStack = ({ navigation }: { navigation: ProfileStackParamList }) => 
             name="Profile"
             component={ProfileScreen}
             options={{
-                headerShown: false,
+                headerTitle: 'Profile',
+                headerBackTitleVisible: false,
+                headerTitleAlign: 'center',
+                headerStyle: {
+                    backgroundColor: '#fff',
+                    shadowColor: '#fff',
+                    elevation: 0,
+                },
             }}
         />
         <Stack.Screen
@@ -53,7 +60,7 @@ const ProfileStack = ({ navigation }: { navigation: ProfileStackParamList }) => 
             name="Post"
             component={PostScreen}
             options={{
-                headerTitle: 'Create Post',
+                headerTitle: 'Post',
                 headerBackTitleVisible: false,
                 headerTitleAlign: 'center',
                 headerStyle: {

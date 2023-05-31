@@ -1,4 +1,4 @@
-import { Box, Text, HStack, Image, VStack } from 'native-base';
+import { Box, Text, HStack, Image, VStack, Pressable } from 'native-base';
 import { useState } from 'react';
 import algoliasearch from 'algoliasearch/lite';
 import { InstantSearch } from 'react-instantsearch-hooks';
@@ -26,7 +26,7 @@ interface HitInterface {
     lastmodified: LastModified
 }
 
-const SearchScreen = () => {
+const SearchScreen = ({navigation}) => {
     const [loading, setLoading] = useState<boolean>(true);
 
     const searchClient = algoliasearch(
@@ -35,7 +35,7 @@ const SearchScreen = () => {
     );
 
     return (
-        <Box safeArea flex={1} paddingX="3">
+        <Box variant="pageContainer" paddingX="3">
             {/* <ScrollView> */}
             <InstantSearch searchClient={searchClient} indexName="users_index">
                 <SearchBox />
@@ -46,21 +46,25 @@ const SearchScreen = () => {
     )
 }
 
-const Hit = ({ hit }: {hit: HitInterface}) => (
-    <HStack space={4} alignItems='center' justifyContent='space-between' py={2}>
-    <VStack space={1}>
-        <Text bold>{hit.displayName}</Text>
-        <Text fontSize='xs'>{hit.username}</Text>    
-    </VStack>
-    <Box>
-      <Image 
-        alt='user image'
-        source={{ uri: hit.photoURL }} 
-        size='xs'
-        rounded='full'
-      />
-    </Box>
-  </HStack>
+const Hit = ({ hit }: { hit: HitInterface }) => (
+    <Pressable onPress={() => {
+        console.log('hit: ', hit);
+    }}>
+        <HStack space={4} alignItems='center' justifyContent='space-between' py={2}>
+            <VStack space={1}>
+                <Text bold>{hit.displayName}</Text>
+                <Text fontSize='xs'>{hit.username}</Text>
+            </VStack>
+            <Box>
+                <Image
+                    alt='user image'
+                    source={{ uri: hit.photoURL }}
+                    size='xs'
+                    rounded='full'
+                />
+            </Box>
+        </HStack>
+    </Pressable>
 );
 
 export default SearchScreen;

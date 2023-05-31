@@ -32,7 +32,7 @@ const AppStack = () => {
         <Tab.Navigator
             screenOptions={{
                 headerShown: false,
-                headerStyle: { elevation: 0 },
+                // headerStyle: { elevation: 0 },
                 tabBarShowLabel: false,
                 tabBarStyle: {
                     borderTopWidth: 0, // remove border (set elevation to 0)
@@ -70,6 +70,14 @@ const AppStack = () => {
                 component={ProfileStack}
                 options={{
                     tabBarLabel: 'Profile',
+                    // headerShown: true,
+                    // headerStyle: {
+                    //     // borderBottomWidth: 1, // remove border (set elevation to 0)
+                    //     // paddingBottom: 10, // add bottom padding
+                    //     // paddingTop: 10,
+                    //     // height: 50, // set the height of the tab bar
+                    //     elevation: 8,
+                    // },
                     tabBarIcon: ({ color, size }) => (
                         <Image
                             source={{ uri: account?.photoURL }}

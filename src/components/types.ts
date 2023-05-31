@@ -1,4 +1,11 @@
+
+
 export type Post = {
-    id: string;
-    img: string;
+    id: string,
+    userId: string,
+    imageUrl: string,
+    comments: [],
+    likes: number,
+    timestamp: string,
+    pinned: boolean,
 }

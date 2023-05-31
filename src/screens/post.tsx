@@ -1,27 +1,34 @@
 import React, { FC } from 'react';
-import { Box, ScrollView, Text, Image, VStack } from "native-base";
+import { Box, ScrollView, Text, Image, VStack, Button } from "native-base";
 import { Post } from "../components";
-import { NavigationProp } from '@react-navigation/native';
+import { NavigationProp, RouteProp } from '@react-navigation/native';
+import { Dimensions } from "react-native";
 
+const screenWidth = Dimensions.get('window').width;
 
-interface PostPageProps {
-    post: Post;
+type PostPageProps = {
+    route: any;
     navigation: NavigationProp<any>;
   }
 
-const PostScreen: FC<PostPageProps> = ({post, navigation}) => {
-    const { id, img } = post;
+const PostScreen = ({route, navigation}: PostPageProps ) => {
+    const {post } = route.params.post;
+    console.log(route.params);
 
     return (
-        <Box safeArea flex={1} alignItems="center" justifyContent="center">
+        <Box variant="pageContainer">
             <ScrollView>
         <VStack space={4} alignItems="center">
           {/* <Text bold>{user.displayName}</Text> */}
+          <Box width="100%">
           <Image
             alt="Post Image"
-            source={{ uri: img }}
-            size="xl"
+            source={{ uri: route.params.post.imageUrl }}
+            resizeMode="contain"
+            style={{ width: screenWidth, height: screenWidth }} // Set height to screenWidth as well to maintain aspect ratio. Adjust as needed.
+            // size="xl"
           />
+          </Box>
           {/* <Text>{caption}</Text> */}
           <Text bold>Comments</Text>
           {/* {comments.map((comment, index) => (
@@ -30,6 +37,7 @@ const PostScreen: FC<PostPageProps> = ({post, navigation}) => {
               <Text>{comment.text}</Text>
             </Box>
           ))} */}
+          <Button onPress={() => navigation.goBack()}>Go back</Button>
           
         </VStack>
       </ScrollView>
