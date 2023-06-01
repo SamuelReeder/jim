@@ -1,6 +1,9 @@
 import { VStack, Image, Text, Button, Divider } from "native-base";
+import { sendFriendRequest } from "../api";
+import { useAuth } from '../navigation/auth_provider';
 
 const ProfileHeader = ({profile}) => {
+    const { user } = useAuth();
     return (
         <VStack
             position="relative"
@@ -28,6 +31,12 @@ const ProfileHeader = ({profile}) => {
             <Text fontSize="md" color="gray.500">
                 {profile.username}
             </Text>
+            <Button onPress={() => {
+                if (!user?.uid) {
+                    return;
+                }
+                sendFriendRequest(user?.uid, profile.uid);
+            }}>Add friend</Button>
             <Divider my={5} />
         </VStack>
     );

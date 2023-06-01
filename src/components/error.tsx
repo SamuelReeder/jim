@@ -1,6 +1,7 @@
 import { Box, Button, Text } from "native-base";
 
-const ErrorMessage = ({handler}) => {
+// TODO: make sure this is correct type
+const ErrorMessage = ({handler}: {handler}) => {
     return (
         <Box variant="pageContainer">
             <Text>Error</Text>

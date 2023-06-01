@@ -30,12 +30,16 @@ export default function UserDetailsScreen({ navigation }: Props) {
       .doc(user?.uid)
       .set({
         username: username,
-        // uid: user?.uid,
         displayName: user?.displayName,
         email: user?.email,
         metadata: user?.metadata,
         phoneNumber: user?.phoneNumber,
         photoURL: user?.photoURL,
+        streaks: {
+          daily: 0,
+          weekly: 0,
+          monthly: 0,
+        }
 
       })
       .then(() => {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AntDesign } from '@expo/vector-icons';
-import { Image } from 'native-base';
+import { Image, Button, Icon } from 'native-base';
 import { useAuth } from './auth_provider';
 import * as Screens from '../screens';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -67,7 +67,7 @@ const TabNavigator = () => {
             <Tab.Screen
                 name="Profile"
                 component={Screens.ProfileScreen}
-                options={{
+                options={({ navigation }) => ({
                     tabBarLabel: 'Profile',
                     tabBarIcon: ({ color, size }) => (
                         <Image
@@ -80,7 +80,16 @@ const TabNavigator = () => {
                             rounded='full'
                         />
                     ),
-                }}
+                    headerRight: () => (
+                        <Button
+                            onPress={() => navigation.navigate('FriendRequests')
+                            // finish functionality
+                            }>
+                                
+                            <AntDesign name="search1" size={24} color="black" />
+                        </Button>
+                    ),
+                })}
             />
         </Tab.Navigator>
     );

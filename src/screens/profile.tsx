@@ -171,11 +171,5 @@ const ProfileScreen = ({ navigation }) => {
     );
 }
 
-// const Post = ({photo, index}: {photo: any, index: number}) => (
-//     <Image
-//                     source={item.img}
-//                     alt={item.id}
-//                     style={{ width: windowWidth / 3, height: windowWidth / 3 }}
-//                 />
 
 export default ProfileScreen;
