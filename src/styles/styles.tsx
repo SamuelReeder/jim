@@ -26,6 +26,14 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
 
+    separator: {
+        borderBottomWidth: 1,
+        borderColor: '#ddd',
+    },
+    item: {
+        padding: 18,
+    },
+
 
 });
 

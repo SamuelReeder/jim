@@ -4,6 +4,8 @@ import { Dimensions, SafeAreaView } from "react-native";
 import { useRef, useState, useEffect } from "react";
 import firestore from "@react-native-firebase/firestore";
 import { Post } from "../components";
+import { ResizeMode, Video } from 'expo-av';
+
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -151,15 +153,27 @@ const ProfileScreen = ({ navigation }) => {
                 renderItem={({ item }) =>
                     <View style={{ width: windowWidth / 3, height: windowWidth / 3 }}>
                         <Box flex={1} margin="0.5">
-                            <Pressable onPress={() => navigation.navigate('Post', { post: item})}>
-                                <Image
-                                    source={{ uri: item.imageUrl }}
-                                    alt={item.id}
-                                    style={{ borderRadius: 10 }}
-                                    resizeMode="cover"
-                                    height="100%"
-                                    width="100%"
-                                />
+                            <Pressable onPress={() => navigation.navigate('Post', { post: item })}>
+                                {item.media[0].type === 'image' ? (
+                                    <Image
+                                        source={{ uri: item.media[0].url }}
+                                        alt={item.id}
+                                        style={{ borderRadius: 10 }}
+                                        resizeMode="cover"
+                                        height="100%"
+                                        width="100%"
+                                    />
+                                ) : (
+                                    <Video
+                                        source={{ uri: item.media[0].url }}
+                                        style={{ borderRadius: 10, height: '100%', width: '100%' }}
+                                        resizeMode={ResizeMode.COVER}
+                                        isLooping
+                                        isMuted
+                                        shouldPlay
+                                    />
+                                    // <Box>Video</Box>
+                                )}
                             </Pressable>
                         </Box>
                     </View>

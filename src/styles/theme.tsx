@@ -29,6 +29,12 @@ const theme = extendTheme({
                     bg: 'white',
                     safeArea: true,
                 },
+                pageContainerNoWhite: {
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    safeArea: true,
+                },
                 searchContainer: {
                     flex: 1,
                     bg: 'white',

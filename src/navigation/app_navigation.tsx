@@ -1,6 +1,6 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { Image, Button, Icon } from 'native-base';
 import { useAuth } from './auth_provider';
 import * as Screens from '../screens';
@@ -11,6 +11,7 @@ import { Post } from '../components';
 type AppTabsParamList = {
     Profile: undefined,
     Search: undefined;
+    Statistics: undefined;
     UserDetails: undefined;
 };
 
@@ -19,6 +20,8 @@ type AppStackParamList = {
     UserProfile: undefined;
     Post: { post: Post };
     EditProfile: undefined;
+    Friends: undefined;
+    CreatePost: undefined;
 };
 
 const Tab = createBottomTabNavigator<AppTabsParamList>();
@@ -65,9 +68,20 @@ const TabNavigator = () => {
                 }}
             />
             <Tab.Screen
+                name="Statistics"
+                component={Screens.StatisticsScreen}
+                options={{
+                    tabBarLabel: 'Statistics',
+                    tabBarIcon: ({ color, size }) => (
+                        <Ionicons name="stats-chart-outline" size={size} color={color} />
+                    ),
+                }}
+            />
+            <Tab.Screen
                 name="Profile"
                 component={Screens.ProfileScreen}
                 options={({ navigation }) => ({
+                    headerShown: true,
                     tabBarLabel: 'Profile',
                     tabBarIcon: ({ color, size }) => (
                         <Image
@@ -82,7 +96,7 @@ const TabNavigator = () => {
                     ),
                     headerRight: () => (
                         <Button
-                            onPress={() => navigation.navigate('FriendRequests')
+                            onPress={() => navigation.navigate('Friends')
                             // finish functionality
                             }>
                                 
@@ -102,6 +116,8 @@ const AppStack = () => {
             <Stack.Screen name="Post" component={Screens.PostScreen} />
             <Stack.Screen name="UserProfile" component={Screens.UserProfileScreen} />
             <Stack.Screen name="EditProfile" component={Screens.EditProfileScreen} />
+            <Stack.Screen name="Friends" component={Screens.FriendsStack} />
+            <Stack.Screen name="CreatePost" component={Screens.CreatePostScreen} />
         </Stack.Navigator>
     );
 };

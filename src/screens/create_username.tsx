@@ -6,6 +6,7 @@ import styles from '../styles/styles';
 import { Platform } from "react-native";
 import { useState } from 'react';
 import firestore from '@react-native-firebase/firestore';
+import { createFirestoreUser, fetchUser } from '../api';
 
 
 type UserDetailsScreenNavigationProp = StackNavigationProp<
@@ -22,43 +23,18 @@ export default function UserDetailsScreen({ navigation }: Props) {
   const [username, setUsername] = useState<string>("");
 
   const createUser = () => {
-    console.log('here')
-    console.log(user);
-    console.log(username);
-    firestore()
-      .collection('users')
-      .doc(user?.uid)
-      .set({
-        username: username,
-        displayName: user?.displayName,
-        email: user?.email,
-        metadata: user?.metadata,
-        phoneNumber: user?.phoneNumber,
-        photoURL: user?.photoURL,
-        streaks: {
-          daily: 0,
-          weekly: 0,
-          monthly: 0,
-        }
-
+    if (username.trim() == "" || username == null) {
+      alert("Please enter a username");
+      return;
+    } else if (user == null) {
+      return;
+    } else {
+      createFirestoreUser(username, user).then(async () => {
+        const temp = await fetchUser(user?.uid);
+        setAccount(temp);
       })
-      .then(() => {
-        console.log('User added!');
-        firestore().collection('users').doc(user?.uid).get().then((docSnapshot) => {
-          console.log("2 read")
-          if (docSnapshot.exists) {
-
-            setAccount(docSnapshot.data());
-          } else {
-            console.log("User not found");
-          }
-          // navigation.navigate('App');
-        }).catch((error) => {
-          console.log(error);
-        });
-      }).catch((error) => {
-        console.log(error);
-      });
+    }
+    
   }
   return (
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} flex={1}>
