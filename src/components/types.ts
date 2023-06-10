@@ -16,7 +16,7 @@ export type Post = {
     likes: number;
     timestamp: FirebaseFirestoreTypes.FieldValue;
     pinned: boolean;
-    tags?: string[];
+    tags: string[];
     media: Media[];
 };
 

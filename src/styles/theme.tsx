@@ -1,6 +1,7 @@
 import { extendTheme } from 'native-base';
 import * as Font from 'expo-font';
 import { Poppins_400Regular, Poppins_700Bold, useFonts } from '@expo-google-fonts/poppins';
+import { tags } from 'react-native-svg/lib/typescript/xml';
 
 const theme = extendTheme({
     components: {
@@ -29,6 +30,11 @@ const theme = extendTheme({
                 landing: {
                     rounded: 'full',
                     margin: 0.5,
+                },
+                tag: {
+                    rounded: 'full',
+                    margin: 0.5,
+                    bg: 'red.200',
                 }
             }
 

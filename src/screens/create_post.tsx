@@ -98,6 +98,7 @@ const CreatePostScreen = ({ navigation }) => {
             likes: 0,
             timestamp: firestore.FieldValue.serverTimestamp(),
             pinned: false,
+            tags: ["misc"],
             media: [{
                 type: image[0].type, // Assuming the `image` object has a `type` property
                 url: imageUrl,

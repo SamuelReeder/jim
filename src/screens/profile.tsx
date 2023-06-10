@@ -5,46 +5,15 @@ import { useRef, useState, useEffect } from "react";
 import firestore from "@react-native-firebase/firestore";
 import { Post } from "../components";
 import { ResizeMode, Video } from 'expo-av';
+import { AntDesign } from '@expo/vector-icons';
+// import { LinearGradient } from 'expo-linear-gradient';
 
 
 const windowWidth = Dimensions.get('window').width;
 
-const ProfileHeader = ({ navigation }) => {
+const ProfileHeader = ({ navigation, tags, selectedTags, setSelectedTags }) => {
     const { account } = useAuth();
     return (
-        // <VStack
-        //     position="relative"
-        //     alignItems="center"
-        //     // backgroundColor="primary.500" // replace with your desired color
-        //     height={300} // define the height
-        //     width="100%"
-        //     justifyContent="flex-end"
-        // >
-        //     <Image
-        //         alt="Profile Image"
-        //         source={{ uri: account?.photoURL }}
-        //         size="lg"
-        //         rounded="full"
-        //         position="absolute"
-        //         top={50} // adjust this value to have the image sit on the border, ensure its half the size of the Image
-        //         alignSelf="center"
-        //         borderWidth={4} // border to separate the image from the background
-        //         borderColor="white" // border color
-        //     />
-
-        //     <Text fontSize="2xl" variant="bold">
-        //         {account?.displayName}
-        //     </Text>
-
-        //     <Text fontSize="md" color="gray.500">
-        //         {/* {account?.username} */}
-        //         Whereas recognition of the inherent dignity
-        //     </Text>
-        //     <Button onPress={() => navigation.navigate('CreatePost')}>
-        //         Add post
-        //     </Button>
-        //     <Divider my={5} />
-        // </VStack>
         <Box variant="headerContainer" px="4">
             <Avatar
                 size="2xl"
@@ -134,14 +103,49 @@ const ProfileHeader = ({ navigation }) => {
                     <Select.Item label="Option 3" value="3" />
                 </Select>
             </HStack>
+            <HStack justifyContent="flex-start" width="100%" mb={3}>
+                {tags.map((tag: string) => (
+                    <Button
+                        key={tag}
+                        variant="tag"
+                        // colorScheme={selectedTags.includes(tag) ? "primary" : "secondary"}
+                        // TODO: CHANGE COLOUR BASED ON SELECTION
+                        color="white"
+                        startIcon={<AntDesign name="tagso" size={24} color="black" />}
+                        onPress={() => {
+                            if (selectedTags.includes(tag)) {
+                                setSelectedTags(selectedTags.filter((t: string) => t !== tag));
+                            } else {
+                                setSelectedTags([...selectedTags, tag]);
+                            }
+                        }}>
+                        {/* <LinearGradient
+                            colors={['rgba(0,0,0,0.6)', 'rgba(0,0,0,0.3)']}
+                            style={{
+                                position: 'absolute',
+                                left: 0,
+                                right: 0,
+                                top: 0,
+                                height: '100%',
+                                borderRadius: 8
+                            }}
+                        /> */}
+                        {tag}</Button>
+                ))}
+            </HStack>
         </Box>
     );
 };
 
 const ProfileScreen = ({ navigation }) => {
+    const tagList = ["misc", "tag2", "tag3"];
     const { user } = useAuth();
     const [posts, setPosts] = useState<Post[]>();
+    const [filteredPosts, setFilteredPosts] = useState<Post[]>();
     const [loading, setLoading] = useState(true);
+    const [selectedTags, setSelectedTags] = useState<string[]>(tagList);
+
+
 
     const fetchUserPosts = async () => {
         const userId = user?.uid;
@@ -190,13 +194,20 @@ const ProfileScreen = ({ navigation }) => {
         return unsubscribe;
     }, [navigation, user]);
 
+    useEffect(() => {
+        const filteredPosts = posts?.filter((post) =>
+            selectedTags.length > 0 ? selectedTags.includes(post?.tags[0]) : true
+        );
+        setFilteredPosts(filteredPosts);
+    }, [selectedTags, posts]);
+
 
     return (
         <Box variant="pageContainer" pt="0">
             <FlatList width="100%"
                 contentContainerStyle={{ paddingHorizontal: 9 }}
-                data={posts}
-                ListHeaderComponent={<ProfileHeader navigation={navigation} />}
+                data={filteredPosts}
+                ListHeaderComponent={<ProfileHeader navigation={navigation} tags={tagList} selectedTags={selectedTags} setSelectedTags={setSelectedTags} />}
                 renderItem={({ item }) =>
                     <View style={{ width: windowWidth / 3 - 6, height: windowWidth / 3 - 6 }}>
                         <Box flex={1} margin="0.5">
@@ -219,7 +230,6 @@ const ProfileScreen = ({ navigation }) => {
                                         isMuted
                                         shouldPlay
                                     />
-                                    // <Box>Video</Box>
                                 )}
                             </Pressable>
                         </Box>
