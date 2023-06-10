@@ -4,6 +4,8 @@ import { useAuth } from './auth_provider';
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import { RootStack } from './auth_navigation';
 import firestore from '@react-native-firebase/firestore';
+import { useFonts } from 'expo-font';
+import { Poppins_400Regular, Poppins_700Bold } from '@expo-google-fonts/poppins';
 
 import { PageLoader } from '../components';
 import AppStack from './app_navigation';
@@ -14,6 +16,10 @@ const Routes = () => {
   const [initializing, setInitializing] = useState(true);
   const [accountLoading, setAccountLoading] = useState(true);  // new state
 
+  let [fontsLoaded] = useFonts({
+    Poppins_400Regular,
+    Poppins_700Bold,
+  });
 
   const onAuthStateChanged = async (user: FirebaseAuthTypes.User | null) => {
     if (user) {
@@ -36,31 +42,7 @@ const Routes = () => {
     return subscriber; // unsubscribe on unmount
   }, []);
 
-//   useEffect(() => {
-//     const fetchAccount = async () => {
-//         if (user) {
-//             const userDocRef = firestore().collection('users').doc(user.uid);
-//             const docSnapshot = await userDocRef.get();
-
-//             if (docSnapshot.exists) {
-//                 setAccount(docSnapshot.data() || null);
-                
-//             } else {
-//                 setAccount(null);
-//             }npx expo
-//         } else {
-//             setAccount(null);
-//         }
-        
-//     };
-
-//     fetchAccount();
-//     setAccountLoading(false);
-// }, [user]);
-
-  if (initializing || accountLoading) return <PageLoader/>;
-  // if (initializing) return <PageLoader/>;
-//   if (initializing) return <Spinner size="lg" />;
+  if (initializing || accountLoading || !fontsLoaded) return <PageLoader/>;
 
   return (
     <NavigationContainer>

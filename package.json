@@ -9,6 +9,8 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@expo-google-fonts/inter": "^0.2.3",
+    "@expo-google-fonts/poppins": "^0.2.3",
     "@react-native-async-storage/async-storage": "1.17.11",
     "@react-native-firebase/app": "^17.5.0",
     "@react-native-firebase/auth": "^17.5.0",
@@ -21,8 +23,10 @@
     "@react-navigation/stack": "^6.3.16",
     "algoliasearch": "^4.17.1",
     "expo": "~48.0.15",
+    "expo-av": "~13.2.1",
     "expo-build-properties": "~0.6.0",
     "expo-dev-client": "~2.2.1",
+    "expo-font": "~11.1.1",
     "expo-image-picker": "~14.1.1",
     "expo-media-library": "~15.2.3",
     "expo-status-bar": "~1.4.4",
@@ -37,8 +41,7 @@
     "react-native-screens": "~3.20.0",
     "react-native-svg": "13.4.0",
     "react-native-vector-icons": "^9.2.0",
-    "uuid": "^9.0.0",
-    "expo-av": "~13.2.1"
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

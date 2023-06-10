@@ -1,11 +1,29 @@
 import { extendTheme } from 'native-base';
+import * as Font from 'expo-font';
+import { Poppins_400Regular, Poppins_700Bold, useFonts } from '@expo-google-fonts/poppins';
 
 const theme = extendTheme({
     components: {
+        fonts: {
+            heading: 'Poppins_400Regular',
+            body: 'Poppins_400Regular',
+            bold: 'Poppins_700Bold',
+        },
+        Text: {
+            baseStyle: {
+                fontFamily: 'Poppins_400Regular',
+            },
+            variants: {
+                bold: {
+                    fontFamily: 'Poppins_700Bold',
+                },
+            },
+        },
         Button: {
             baseStyle: {
                 rounded: 'full',
                 margin: 0.5,
+                fontFamily: 'Poppins_400Regular',
             },
             variants: {
                 landing: {
@@ -40,16 +58,24 @@ const theme = extendTheme({
                     bg: 'white',
                     safeArea: true,
                 },
+                headerContainer: {
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    bg: 'white',
+                },
             },
         },
-        // colors: {
-        //     // add the color you want
-        //     background: {
-        //         50: "#ffffff", // replace with your color code
-        //         100: "#ffffff", // replace with your color code
-        //         // You can continue the scale if necessary
-        //     },
-        // },
+        Heading: {
+            baseStyle: {
+                fontFamily: 'Poppins_400Regular',
+            },
+            variants: {
+                bold: {
+                    fontFamily: 'Poppins_700Bold',
+                },
+            },
+        },
     },
     config: {
         useSystemColorMode: false,

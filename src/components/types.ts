@@ -37,6 +37,8 @@ export type User = {
     displayName: string;
     metadata: any | null;
     photoURL: string;
+    friends: number;
+    followers: number;
     streaks: {
         daily: number;
         weekly: number;

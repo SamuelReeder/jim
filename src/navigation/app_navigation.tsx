@@ -1,11 +1,12 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { AntDesign, Ionicons } from '@expo/vector-icons';
-import { Image, Button, Icon } from 'native-base';
+import { AntDesign, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Image, Button, Icon, HStack } from 'native-base';
 import { useAuth } from './auth_provider';
 import * as Screens from '../screens';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Post } from '../components';
+import { TouchableOpacity } from 'react-native';
 
 
 type AppTabsParamList = {
@@ -41,6 +42,9 @@ const TabNavigator = () => {
                     paddingBottom: 10,
                     paddingTop: 10,
                     height: 50,
+                },
+                headerTitleStyle: {
+                    fontFamily: 'Poppins_400Regular',
                 },
                 tabBarActiveTintColor: '#e91e63',
             }}
@@ -95,13 +99,28 @@ const TabNavigator = () => {
                         />
                     ),
                     headerRight: () => (
-                        <Button
-                            onPress={() => navigation.navigate('Friends')
-                            // finish functionality
-                            }>
-                                
-                            <AntDesign name="search1" size={24} color="black" />
-                        </Button>
+                        <HStack alignItems="flex-end">
+                            <Button
+                                onPress={() => navigation.navigate('CreatePost')}
+                                style={{
+                                    backgroundColor: 'white',
+                                    opacity: 1,
+                                    borderRadius: 10
+                                }}
+                            >
+                                <MaterialCommunityIcons name="plus-box-multiple-outline" size={24} color="black" />
+                            </Button>
+                            <Button
+                                onPress={() => navigation.navigate('Friends')}
+                                style={{
+                                    backgroundColor: 'white',
+                                    opacity: 1,
+                                    borderRadius: 10
+                                }}
+                            >
+                                <AntDesign name="team" size={24} color="black" />
+                            </Button>
+                        </HStack>
                     ),
                 })}
             />
@@ -111,7 +130,15 @@ const TabNavigator = () => {
 
 const AppStack = () => {
     return (
-        <Stack.Navigator>
+        <Stack.Navigator
+            screenOptions={
+                {
+                    headerTitleStyle: {
+                        fontFamily: 'Poppins_400Regular',
+                    },
+                }
+            }
+        >
             <Stack.Screen name="Tabs" component={TabNavigator} options={{ headerShown: false }} />
             <Stack.Screen name="Post" component={Screens.PostScreen} />
             <Stack.Screen name="UserProfile" component={Screens.UserProfileScreen} />
