@@ -22,7 +22,7 @@ type AppStackParamList = {
     Post: { post: Post };
     EditProfile: undefined;
     Friends: undefined;
-    CreatePost: undefined;
+    CreatePostStack: undefined;
 };
 
 const Tab = createBottomTabNavigator<AppTabsParamList>();
@@ -101,7 +101,7 @@ const TabNavigator = () => {
                     headerRight: () => (
                         <HStack alignItems="flex-end">
                             <Button
-                                onPress={() => navigation.navigate('CreatePost')}
+                                onPress={() => navigation.navigate('CreatePostStack')}
                                 style={{
                                     backgroundColor: 'white',
                                     opacity: 1,
@@ -144,7 +144,7 @@ const AppStack = () => {
             <Stack.Screen name="UserProfile" component={Screens.UserProfileScreen} />
             <Stack.Screen name="EditProfile" component={Screens.EditProfileScreen} />
             <Stack.Screen name="Friends" component={Screens.FriendsStack} />
-            <Stack.Screen name="CreatePost" component={Screens.CreatePostScreen} />
+            <Stack.Screen name="CreatePostStack" options={{title: "Post"}} component={Screens.CreatePostScreen} />
         </Stack.Navigator>
     );
 };

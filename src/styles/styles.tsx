@@ -33,6 +33,24 @@ const styles = StyleSheet.create({
     item: {
         padding: 18,
     },
+    circleButton: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'black',
+        width: 70,
+        height: 70,
+        borderRadius: 35,
+        elevation: 3,
+        shadowColor: '#000',
+        shadowOffset: { width: 1, height: 3 },
+        shadowOpacity: 0.3,
+        shadowRadius: 2,
+    },
+    buttonText: {
+        color: 'white',
+        fontSize: 40,
+    },
 
 
 });

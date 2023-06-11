@@ -70,6 +70,20 @@ const theme = extendTheme({
                     alignItems: 'center',
                     bg: 'white',
                 },
+                createPostContainer: {
+                    flex: 1,
+                    alignItems: 'center',
+                    bg: 'white',
+                },
+            },
+        },
+        KeyboardAvoidingView: {
+            variants: {
+                createPostContainer: {
+                    flex: 1,
+                    alignItems: 'center',
+                    bg: 'white',
+                },
             },
         },
         Heading: {
