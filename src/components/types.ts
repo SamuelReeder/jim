@@ -7,6 +7,21 @@ import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 // for progress pics specifically, will calculate how often they post a progress pic and track it
 //
 
+export type AppTabsParamList = {
+    Profile: undefined,
+    Search: undefined;
+    Statistics: undefined;
+    UserDetails: undefined;
+};
+
+export type AppStackParamList = {
+    Tabs: undefined;
+    UserProfile: undefined;
+    Post: { post: Post };
+    EditProfile: undefined;
+    Friends: undefined;
+    CreatePostStack: undefined;
+};
 
 export type Post = {
     id: string;
@@ -29,7 +44,6 @@ export type Media = {
     duration?: number;
     size: number;
 }
-
 
 export type User = {
     uid: string;

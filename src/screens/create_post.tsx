@@ -214,31 +214,40 @@ const FinalizePostScreen = ({ navigation }) => {
     const { user } = useAuth();
 
     const submitPost = async () => {
-        if (media === null) {
+        if (media === null || user === null || media == null || media.length == 0) {
             alert('No image has been selected.');
             return;
         }
-        const response = await fetch(media[0].uri);
-        const blob = await response.blob();
-
-        const ref = storage().ref(`images/${Date.now()}`);
+        
         setUploading(true);
-
-        await ref.put(blob);
-
-        console.log('Image uploaded to the bucket!')
-
-        const imageUrl = await ref.getDownloadURL();
 
         const postRef = firestore().collection('posts').doc();
 
-        if (user === null) {
-            alert('Error uploading image.');
-            return;
+        let mediaArr = [];
+        for (let i = 0; i < media.length; i++) {
+            const response = await fetch(media[i].uri);
+            const blob = await response.blob();
+
+            const ref = storage().ref(`images/${Date.now()}`);
+            
+
+            await ref.put(blob);
+
+            console.log('Image uploaded to the bucket!')
+
+            const imageUrl = await ref.getDownloadURL();
+
+            mediaArr.push({
+                type: media[i].type,
+                url: imageUrl,
+                resolution: [media[i].width, media[i].height],
+                aspectRatio: [media[i].width / media[i].height, 1], 
+                // thumbnail: imageUrl, // You can generate a separate thumbnail if needed. For now, using the same imageUrl
+                duration: media[i].duration ? media[i].duration : 0, 
+                size: blob.size,
+            } as Media);
         }
 
-        console.log(media[0])
-        console.log(blob.size)
         const post: Post = {
             id: postRef.id,
             userId: user.uid,
@@ -248,15 +257,7 @@ const FinalizePostScreen = ({ navigation }) => {
             timestamp: firestore.FieldValue.serverTimestamp(),
             pinned: false,
             tags: ["misc"],
-            media: [{
-                type: media[0].type, // Assuming the `image` object has a `type` property
-                url: imageUrl,
-                resolution: [media[0].width, media[0].height], // Assuming the `image` object has `width` and `height` properties
-                aspectRatio: [media[0].width / media[0].height, 1], // Assuming the `image` object has `width` and `height` properties
-                // thumbnail: imageUrl, // You can generate a separate thumbnail if needed. For now, using the same imageUrl
-                // duration: image[0].duration, // Assuming the `image` object has a `duration` property for videos
-                size: blob.size, // Assuming the `blob` object has a `size` property
-            } as Media],
+            media: mediaArr,
         };
 
         console.log(post);

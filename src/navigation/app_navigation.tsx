@@ -5,25 +5,8 @@ import { Image, Button, Icon, HStack } from 'native-base';
 import { useAuth } from './auth_provider';
 import * as Screens from '../screens';
 import { createStackNavigator } from '@react-navigation/stack';
-import { Post } from '../components';
+import { AppStackParamList, AppTabsParamList } from '../components';
 import { TouchableOpacity } from 'react-native';
-
-
-type AppTabsParamList = {
-    Profile: undefined,
-    Search: undefined;
-    Statistics: undefined;
-    UserDetails: undefined;
-};
-
-type AppStackParamList = {
-    Tabs: undefined;
-    UserProfile: undefined;
-    Post: { post: Post };
-    EditProfile: undefined;
-    Friends: undefined;
-    CreatePostStack: undefined;
-};
 
 const Tab = createBottomTabNavigator<AppTabsParamList>();
 const Stack = createStackNavigator<AppStackParamList>();
@@ -87,6 +70,7 @@ const TabNavigator = () => {
                 options={({ navigation }) => ({
                     headerShown: true,
                     tabBarLabel: 'Profile',
+                    headerTitle: `@${account.username}`,
                     tabBarIcon: ({ color, size }) => (
                         <Image
                             source={{ uri: account?.photoURL }}

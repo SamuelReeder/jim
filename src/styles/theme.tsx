@@ -17,6 +17,7 @@ const theme = extendTheme({
             variants: {
                 bold: {
                     fontFamily: 'Poppins_700Bold',
+                    fontWeight: 'bold',
                 },
             },
         },

@@ -20,6 +20,10 @@ const UserProfileScreen = ({ route, navigation }: ProfilePageProps) => {
     const [posts, setPosts] = useState<Post[] | null>();
     const [loading, setLoading] = useState(true);
     const [profile, setProfile] = useState<any>(null);
+    const tagList = ["misc", "tag2", "tag3"];
+    const [filteredPosts, setFilteredPosts] = useState<Post[]>();
+    const [selectedTags, setSelectedTags] = useState<string[]>(tagList);
+
 
     const fetchUserData = async () => {
 
@@ -37,17 +41,26 @@ const UserProfileScreen = ({ route, navigation }: ProfilePageProps) => {
         fetchUserData();
     }, [navigation, route.params.userId]);
 
+    useEffect(() => {
+        const filteredPosts = posts?.filter((post) =>
+            selectedTags.length > 0 ? selectedTags.includes(post?.tags[0]) : true
+        );
+        setFilteredPosts(filteredPosts);
+    }, [selectedTags, posts]);
+
+    
     if (loading) {
         return <PageLoader />;
     }
 
     return (
-        <Box variant="pageContainer" pt="0">
+        <Box variant="headerContainer" pt="0">
             <FlatList width="100%"
-                data={posts}
-                ListHeaderComponent={<ProfileHeader profile={profile} />}
+                contentContainerStyle={{ paddingHorizontal: 9 }}
+                data={filteredPosts}
+                ListHeaderComponent={<ProfileHeader navigation={navigation} account={profile} tags={tagList} selectedTags={selectedTags} setSelectedTags={setSelectedTags} />}
                 renderItem={({ item }) =>
-                    <View style={{ width: windowWidth / 3, height: windowWidth / 3 }}>
+                    <View style={{ width: windowWidth / 3 - 6, height: windowWidth / 3 - 6 }}>
                         <Box flex={1} margin="0.5">
                             <Pressable onPress={() => navigation.navigate('Post', { post: item })}>
                                 {item.media[0].type === 'image' ? (
