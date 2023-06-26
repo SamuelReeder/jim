@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Image, FlatList, HStack, VStack, Text, Button } from "native-base";
-import { fetchFriendRequests, fetchUserFriends, acceptFriendRequest } from "../api";
+import { getUserFollowRequests, getUserFollowers, acceptFollowRequest } from "../api";
 import { useAuth } from "../navigation/auth_provider";
 import { useEffect, useState } from "react";
 import { User, PageLoader } from "../components";
@@ -69,7 +69,7 @@ const FriendsScreen = () => {
 
     const fetchFriends = async () => {
         if (user) {
-            const friends = await fetchUserFriends(user.uid);
+            const friends = await getUserFollowers(user.uid);
             setFriends(friends);
             setLoading(false);
         }
@@ -103,7 +103,7 @@ const FriendsScreen = () => {
                         </Box>
                     </HStack>
                 }
-                keyExtractor={item => item.uid}
+                keyExtractor={index => index.toString()}
             />
         </Box>
     );
@@ -116,7 +116,7 @@ const FriendRequestsScreen = () => {
 
     const fetchFriends = async () => {
         if (user) {
-            const friendRequests = await fetchFriendRequests(user.uid);
+            const friendRequests = await getUserFollowRequests(user.uid);
             setFriendRequests(friendRequests);
             setLoading(false);
         }
@@ -153,7 +153,7 @@ const FriendRequestsScreen = () => {
                             if (!user) {
                                 return;
                             }
-                            acceptFriendRequest(user.uid, item.uid)
+                            acceptFollowRequest(user.uid, item.uid)
                         }}>Accept</Button>
                     </HStack>
                 }

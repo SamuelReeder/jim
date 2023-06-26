@@ -58,7 +58,7 @@ const UserProfileScreen = ({ route, navigation }: ProfilePageProps) => {
             <FlatList width="100%"
                 contentContainerStyle={{ paddingHorizontal: 9 }}
                 data={filteredPosts}
-                ListHeaderComponent={<ProfileHeader navigation={navigation} account={profile} tags={tagList} selectedTags={selectedTags} setSelectedTags={setSelectedTags} />}
+                ListHeaderComponent={<ProfileHeader navigation={navigation} account={profile} tags={tagList} selectedTags={selectedTags} setSelectedTags={setSelectedTags} isOtherUser={true} />}
                 renderItem={({ item }) =>
                     <View style={{ width: windowWidth / 3 - 6, height: windowWidth / 3 - 6 }}>
                         <Box flex={1} margin="0.5">

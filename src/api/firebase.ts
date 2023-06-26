@@ -1,25 +1,27 @@
 import firestore from "@react-native-firebase/firestore";
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
-import { Post } from "../components";
+import { Post, User } from "../components";
 
 export const createFirestoreUser = async (username: string, user: any) => {
     const userRef = firestore().collection('users').doc(user?.uid);
-    
+
     // Set the user details in the 'users' collection
     await userRef.set({
+        uid: user?.uid,
         username: username,
         displayName: user?.displayName,
         email: user?.email,
         metadata: user?.metadata,
         phoneNumber: user?.phoneNumber,
         photoURL: user?.photoURL,
+        private: false,
         streaks: {
             daily: 0,
             weekly: 0,
             monthly: 0,
         },
-    });
+    } as User);
 
     // Initialize the 'requests' array in the 'friend_requests' collection for the user
     await firestore().collection('friend_requests').doc(user?.uid).set({
@@ -91,68 +93,245 @@ export const sendFriendRequest = async (userId: string, friendId: string) => {
     }
 }
 
+// export const followUser = async (followerId: string, followedId: string) => {
+//     const db = firestore();
+//     const followedUserRef = db.collection('users').doc(followedId);
 
-export const fetchFriendRequests = async (userId: string) => {
-    try {
-        const friendRequests = await firestore().collection('friend_requests').doc(userId).get();
-        let friendsRequestsArray = friendRequests.data()?.requests;
+//     const followedUserDoc = await followedUserRef.get();
 
-        if (!friendsRequestsArray || friendsRequestsArray.length === 0) {
-            return []; // Return an empty array if no friends
-        }
+//     if (!followedUserDoc.exists) {
+//         throw new Error(`User ${followedId} does not exist`);
+//     }
 
-        let temp: any[] = [];
-        for (let i = 0; i < friendsRequestsArray.length; i++) {
-            const friend = await fetchUser(friendsRequestsArray[i]);
-            temp.push(friend);
-        }
+//     const followedUserData = followedUserDoc.data();
 
-        return temp;
-    } catch (err) {
-        console.log(err);
-        return null;
+//     if (followedUserData?.private) {
+//         // If the user to be followed has a private account, send a follow request
+//         const followRequestRef = followedUserRef.collection('requests').doc(followerId);
+//         await followRequestRef.set({ followerId, timestamp: firestore.FieldValue.serverTimestamp() });
+//     } else {
+//         // If the user to be followed has a public account, add the follower directly
+//         const followerRef = followedUserRef.collection('followers').doc(followerId);
+//         await followerRef.set({ followerId, timestamp: firestore.FieldValue.serverTimestamp() });
+//     }
+// };
+export const followUser = async (userId: string, followerId: string) => {
+    const db = firestore();
+    const userRef = db.collection('users').doc(userId);
+    const userDoc = await userRef.get();
+    const userData = userDoc.data();
+
+    if (!userData) {
+        throw new Error(`User ${userId} does not exist`);
     }
-}
 
-export const acceptFriendRequest = async (userId: string, friendId: string) => {
-    try {
-        const requestsRef = firestore().collection('friend_requests').doc(userId);
-        const friendsRefUser = firestore().collection('friends').doc(userId);
-        const friendsRefFriend = firestore().collection('friends').doc(friendId);
+    const followingRef = db.collection('users').doc(followerId).collection('following').doc(userId);
+    const followRequestRef = userRef.collection('requests').doc(followerId);
+    const followerRef = userRef.collection('followers').doc(followerId);
 
-        const [requestsSnapshot, friendsSnapshotUser, friendsSnapshotFriend] = await Promise.all([
-            requestsRef.get(),
-            friendsRefUser.get(),
-            friendsRefFriend.get(),
-        ]);
+    // Start a batch
+    const batch = db.batch();
 
-        if (!requestsSnapshot.exists) {
-            await requestsRef.set({ requests: [] });
-        }
-
-        if (!friendsSnapshotUser.exists) {
-            await friendsRefUser.set({ friends: [] });
-        }
-
-        if (!friendsSnapshotFriend.exists) {
-            await friendsRefFriend.set({ friends: [] });
-        }
-
-        await requestsRef.update({
-            requests: firestore.FieldValue.arrayRemove(friendId),
-        });
-
-        await friendsRefUser.update({
-            friends: firestore.FieldValue.arrayUnion(friendId),
-        });
-
-        await friendsRefFriend.update({
-            friends: firestore.FieldValue.arrayUnion(userId),
-        });
-    } catch (err) {
-        console.log(err);
+    if (userData.private) {
+        // Send follow request if user is private
+        batch.set(followRequestRef, { followerId, timestamp: firestore.FieldValue.serverTimestamp() });
+    } else {
+        // Follow user directly if user is public
+        batch.set(followerRef, { followerId, timestamp: firestore.FieldValue.serverTimestamp() });
+        batch.set(followingRef, { userId, timestamp: firestore.FieldValue.serverTimestamp() }); // add to following of the follower
     }
-}
+
+    // Commit the batch
+    await batch.commit();
+};
+
+export const getUserFollowing = async (userId: string) => {
+    try {
+        const db = firestore();
+        const followingRef = db.collection('users').doc(userId).collection('following');
+
+        const snapshot = await followingRef.get();
+
+        if (snapshot.empty) {
+            throw new Error(`No following found for user ${userId}`);
+        }
+
+        const following = snapshot.docs.map(doc => doc.data());
+
+        return following;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+};
+
+export const getUserFollowers = async (userId: string) => {
+    const db = firestore();
+    const followersRef = db.collection('users').doc(userId).collection('followers');
+  
+    const snapshot = await followersRef.get();
+    const followerIds = snapshot.docs.map(doc => doc.id);
+  
+    if (followerIds.length === 0) {
+      console.log("No followers found");
+      return [];
+    }
+  
+    // Get user documents for each follower
+    const followerPromises = followerIds.map(followerId => db.collection('users').doc(followerId).get());
+    const followerDocs = await Promise.all(followerPromises);
+    
+    // Check if user documents exist and map to their data
+    const followers = followerDocs.map(doc => {
+      if (!doc.exists) {
+        throw new Error(`User document for follower ${doc.id} does not exist`);
+      }
+  
+      return doc.data() as User;
+    });
+  
+    return followers;
+  };
+
+// export const getUserFollowRequests = async (userId: string) => {
+//     try {
+//         const db = firestore();
+//         const followRequestsRef = db.collection('users').doc(userId).collection('followRequests');
+
+//         const snapshot = await followRequestsRef.get();
+
+//         if (snapshot.empty) {
+//             throw new Error(`No follow requests found for user ${userId}`);
+//         }
+
+//         const followRequests = snapshot.docs.map(doc => doc.data());
+
+//         return followRequests;
+//     } catch (error) {
+//         console.error(error);
+//         throw error;
+//     }
+// };
+
+export const getUserFollowRequests = async (userId: string) => {
+    const db = firestore();
+    const followRequestsRef = db.collection('users').doc(userId).collection('requests');
+  
+    const snapshot = await followRequestsRef.get();
+    const followRequestIds = snapshot.docs.map(doc => doc.id);
+  
+    if (followRequestIds.length === 0) {
+      console.log("No followers found")
+      return [];
+    }
+  
+    // Get user documents for each follow request
+    const followRequestPromises = followRequestIds.map(requestId => db.collection('users').doc(requestId).get());
+    const followRequestDocs = await Promise.all(followRequestPromises);
+    
+    // Check if user documents exist and map to their data
+    const followRequests = followRequestDocs.map(doc => {
+      if (!doc.exists) {
+        throw new Error(`User document for follow request ${doc.id} does not exist`);
+      }
+  
+      return doc.data() as User;
+    });
+    
+    console.log(followRequests)
+    return followRequests;
+  };
+
+export const acceptFollowRequest = async (userId: string, followerId: string) => {
+    const db = firestore();
+    const userRef = db.collection('users').doc(userId);
+    const followRequestRef = userRef.collection('requests').doc(followerId);
+    const followerRef = userRef.collection('followers').doc(followerId);
+    const followingRef = db.collection('users').doc(followerId).collection('following').doc(userId);
+
+    const followRequestDoc = await followRequestRef.get();
+
+    if (!followRequestDoc.exists) {
+        throw new Error(`Follow request from ${followerId} does not exist`);
+    }
+
+    // Start a batch
+    const batch = db.batch();
+
+    // Remove the follow request
+    batch.delete(followRequestRef);
+
+    // Add the follower
+    batch.set(followerRef, { followerId, timestamp: firestore.FieldValue.serverTimestamp() });
+
+    // Add to the other user's following
+    batch.set(followingRef, { userId, timestamp: firestore.FieldValue.serverTimestamp() });
+
+    // Commit the batch
+    await batch.commit();
+};
+
+// export const fetchFriendRequests = async (userId: string) => {
+//     try {
+//         const friendRequests = await firestore().collection('friend_requests').doc(userId).get();
+//         let friendsRequestsArray = friendRequests.data()?.requests;
+
+//         if (!friendsRequestsArray || friendsRequestsArray.length === 0) {
+//             return []; // Return an empty array if no friends
+//         }
+
+//         let temp: any[] = [];
+//         for (let i = 0; i < friendsRequestsArray.length; i++) {
+//             const friend = await fetchUser(friendsRequestsArray[i]);
+//             temp.push(friend);
+//         }
+
+//         return temp;
+//     } catch (err) {
+//         console.log(err);
+//         return null;
+//     }
+// }
+
+// export const acceptFriendRequest = async (userId: string, friendId: string) => {
+//     try {
+//         const requestsRef = firestore().collection('friend_requests').doc(userId);
+//         const friendsRefUser = firestore().collection('friends').doc(userId);
+//         const friendsRefFriend = firestore().collection('friends').doc(friendId);
+
+//         const [requestsSnapshot, friendsSnapshotUser, friendsSnapshotFriend] = await Promise.all([
+//             requestsRef.get(),
+//             friendsRefUser.get(),
+//             friendsRefFriend.get(),
+//         ]);
+
+//         if (!requestsSnapshot.exists) {
+//             await requestsRef.set({ requests: [] });
+//         }
+
+//         if (!friendsSnapshotUser.exists) {
+//             await friendsRefUser.set({ friends: [] });
+//         }
+
+//         if (!friendsSnapshotFriend.exists) {
+//             await friendsRefFriend.set({ friends: [] });
+//         }
+
+//         await requestsRef.update({
+//             requests: firestore.FieldValue.arrayRemove(friendId),
+//         });
+
+//         await friendsRefUser.update({
+//             friends: firestore.FieldValue.arrayUnion(friendId),
+//         });
+
+//         await friendsRefFriend.update({
+//             friends: firestore.FieldValue.arrayUnion(userId),
+//         });
+//     } catch (err) {
+//         console.log(err);
+//     }
+// }
 
 
 export const fetchFriends = async (userId: string) => {

@@ -51,14 +51,17 @@ export type User = {
     displayName: string;
     metadata: any | null;
     photoURL: string;
-    friends: number;
-    followers: number;
-    streaks: {
+    private: boolean;
+    bio?: string;
+    following?: any;
+    followers?: any;
+    closeFriends?: any;
+    streaks?: {
         daily: number;
         weekly: number;
         monthly: number;
     }
-    stats: {
+    stats?: {
         state: string | null; // whether bulking ("bulk") or cutting ("cut")
         bodyweight: number | null;
         bodyfat: number | null;

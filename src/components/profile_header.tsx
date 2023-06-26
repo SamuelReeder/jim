@@ -2,49 +2,10 @@ import { sendFriendRequest } from "../api";
 import { useAuth } from '../navigation/auth_provider';
 import { AntDesign } from '@expo/vector-icons';
 import { FlatList, Image, Box, Text, VStack, Divider, Button, View, Pressable, Center, HStack, Heading, Select, CheckIcon, Avatar } from "native-base";
+import { followUser } from "../api";
 
-
-// const ProfileHeader = ({profile}) => {
-//     const { user } = useAuth();
-//     return (
-//         <VStack
-//             position="relative"
-//             alignItems="center"
-//             height={300}
-//             width="100%"
-//             justifyContent="flex-end"
-//         >
-//             <Image
-//                 alt="Profile Image"
-//                 source={{ uri: profile?.photoURL }}
-//                 size="lg"
-//                 rounded="full"
-//                 position="absolute"
-//                 top={50} 
-//                 alignSelf="center"
-//                 borderWidth={4}
-//                 borderColor="white" 
-//             />
-
-//             <Text fontSize="2xl" bold>
-//                 {profile.displayName}
-//             </Text>
-
-//             <Text fontSize="md" color="gray.500">
-//                 {profile.username}
-//             </Text>
-//             <Button onPress={() => {
-//                 if (!user?.uid) {
-//                     return;
-//                 }
-//                 sendFriendRequest(user?.uid, profile.uid);
-//             }}>Add friend</Button>
-//             <Divider my={5} />
-//         </VStack>
-//     );
-// };
-
-const ProfileHeader = ({ navigation, account, tags, selectedTags, setSelectedTags }) => {
+const ProfileHeader = ({ navigation, account, tags, selectedTags, setSelectedTags, isOtherUser }) => {
+    const { user } = useAuth();
     return (
         <Box variant="headerContainer" px="4" pt="5">
             <Avatar
@@ -59,6 +20,22 @@ const ProfileHeader = ({ navigation, account, tags, selectedTags, setSelectedTag
             <Text color="gray.500" fontSize="sm">
                 @{account.username}
             </Text>
+            {isOtherUser && (
+                <Button
+                    onPress={() => {
+                        if (user?.uid && account.uid) {
+                            followUser(user?.uid, account.uid);
+                        }
+                    }}
+                    variant="outline"
+                    mt={3}
+                    width="100%"
+                    justifyContent="center"
+                    borderColor="primary.500"
+                    colorScheme="primary"
+                    _text={{ color: "primary.500" }}
+                >Follow</Button>
+            )}
             <HStack width="100%" mt={3} px="5" justifyContent="space-around" space="4" alignItems="center">
                 <Box flex={1} alignItems="center">
                     <VStack alignItems="center">
