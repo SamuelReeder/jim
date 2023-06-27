@@ -65,6 +65,10 @@ const theme = extendTheme({
                     bg: 'white',
                     safeArea: true,
                 },
+                socialContainer: {
+                    flex: 1,
+                    bg: 'white',
+                },
                 headerContainer: {
                     flex: 1,
                     justifyContent: 'center',

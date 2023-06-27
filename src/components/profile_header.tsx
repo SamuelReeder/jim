@@ -37,23 +37,27 @@ const ProfileHeader = ({ navigation, account, tags, selectedTags, setSelectedTag
                 >Follow</Button>
             )}
             <HStack width="100%" mt={3} px="5" justifyContent="space-around" space="4" alignItems="center">
-                <Box flex={1} alignItems="center">
-                    <VStack alignItems="center">
-                        <Text variant="bold" fontSize='2xl'>
-                            272
-                        </Text>
-                        <Text color="gray.500" fontSize="sm">
-                            friends
-                        </Text>
-                    </VStack>
-                </Box>
+                <Pressable onPress={() => {
+                    navigation.navigate('Friends', { account: account.uid, screen: 'followers' });
+                }}>
+                    <Box flex={1} alignItems="center">
+                        <VStack alignItems="center">
+                            <Text variant="bold" fontSize='2xl'>
+                                272
+                            </Text>
+                            <Text color="gray.500" fontSize="sm">
+                                followers
+                            </Text>
+                        </VStack>
+                    </Box>
+                </Pressable>
                 <Box flex={1} alignItems="center">
                     <VStack alignItems="center">
                         <Text variant="bold" fontSize='2xl'>
                             47
                         </Text>
                         <Text color="gray.500" fontSize="sm">
-                            followers
+                            following
                         </Text>
                     </VStack>
                 </Box>

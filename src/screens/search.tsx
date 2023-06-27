@@ -26,7 +26,7 @@ interface HitInterface {
     lastmodified: LastModified
 }
 
-const SearchScreen = ({navigation}) => {
+const SearchScreen = ({ navigation }) => {
     const [loading, setLoading] = useState<boolean>(true);
 
     const searchClient = algoliasearch(
@@ -38,11 +38,7 @@ const SearchScreen = ({navigation}) => {
         <Pressable onPress={() => {
             navigation.navigate('UserProfile', { userId: hit.objectID });
         }}>
-            <HStack space={4} alignItems='center' justifyContent='space-between' py={2}>
-                <VStack space={1}>
-                    <Text bold>{hit.displayName}</Text>
-                    <Text fontSize='xs'>{hit.username}</Text>
-                </VStack>
+            <HStack space={4} alignItems='center' justifyContent='flex-start' py={2}>
                 <Box>
                     <Image
                         alt='user image'
@@ -51,6 +47,10 @@ const SearchScreen = ({navigation}) => {
                         rounded='full'
                     />
                 </Box>
+                <VStack space={1}>
+                    <Text bold>{hit.displayName}</Text>
+                    <Text fontSize='xs'>{hit.username}</Text>
+                </VStack>
             </HStack>
         </Pressable>
     );

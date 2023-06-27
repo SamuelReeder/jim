@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { useInfiniteHits } from 'react-instantsearch-hooks';
 import {View, FlatList} from 'native-base';
+import styles from '../styles/styles';
 
 const InfiniteHits = ({ hitComponent: Hit, ...props }) => {
   const { hits, isLastPage, showMore } = useInfiniteHits(props);
@@ -10,7 +11,7 @@ const InfiniteHits = ({ hitComponent: Hit, ...props }) => {
     <FlatList
       data={hits}
       keyExtractor={(item) => item.objectID}
-      ItemSeparatorComponent={() => <View style={styles.separator} />}
+      // ItemSeparatorComponent={() => <View style={styles.separator} />}
       onEndReached={() => {
         if (!isLastPage) {
           showMore();
@@ -24,15 +25,5 @@ const InfiniteHits = ({ hitComponent: Hit, ...props }) => {
     />
   );
 };
-
-const styles = StyleSheet.create({
-  separator: {
-    borderBottomWidth: 1,
-    borderColor: '#ddd',
-  },
-  item: {
-    padding: 18,
-  },
-});
 
 export default InfiniteHits;

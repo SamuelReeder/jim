@@ -8,6 +8,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { AppStackParamList, AppTabsParamList } from '../components';
 import { TouchableOpacity } from 'react-native';
 
+
 const Tab = createBottomTabNavigator<AppTabsParamList>();
 const Stack = createStackNavigator<AppStackParamList>();
 
@@ -104,6 +105,17 @@ const TabNavigator = () => {
                             >
                                 <AntDesign name="team" size={24} color="black" />
                             </Button>
+                            <Button
+                                onPress={() => navigation.navigate('EditProfile')}
+                                style={{
+                                    backgroundColor: 'white',
+                                    opacity: 1,
+                                    borderRadius: 10
+                                }}
+                            >
+                                <AntDesign name="setting" size={24} color="black" />
+                            </Button>
+
                         </HStack>
                     ),
                 })}
@@ -126,7 +138,7 @@ const AppStack = () => {
             <Stack.Screen name="Tabs" component={TabNavigator} options={{ headerShown: false }} />
             <Stack.Screen name="Post" component={Screens.PostScreen} />
             <Stack.Screen name="UserProfile" component={Screens.UserProfileScreen} />
-            <Stack.Screen name="EditProfile" component={Screens.EditProfileScreen} />
+            <Stack.Screen name="EditProfile" options={{title: "Edit profile"}} component={Screens.EditProfileScreen} />
             <Stack.Screen name="Friends" component={Screens.FriendsStack} />
             <Stack.Screen name="CreatePostStack" options={{title: "Post"}} component={Screens.CreatePostScreen} />
         </Stack.Navigator>

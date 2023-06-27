@@ -2,12 +2,13 @@ import React, { createContext, useState, useContext } from 'react';
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
+import { User } from '../components';
 
 
 export const AuthContext = createContext<{
     user: FirebaseAuthTypes.User | null;
     setUser: React.Dispatch<React.SetStateAction<FirebaseAuthTypes.User | null>>;
-    account: any;
+    account: User | null;
     setAccount: React.Dispatch<React.SetStateAction<any>>;
     googleLogin: () => Promise<void>;
     logout: () => Promise<void>;
@@ -25,7 +26,7 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
-    const [account, setAccount] = useState<FirebaseFirestoreTypes.DocumentData | null>(null);
+    const [account, setAccount] = useState<User | null>(null);
 
     GoogleSignin.configure({
         webClientId: '944395723231-vlsnl3sebdddeomjt2joql2c3c19qjte.apps.googleusercontent.com',

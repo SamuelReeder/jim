@@ -31,8 +31,14 @@ const styles = StyleSheet.create({
         borderColor: '#ddd',
     },
     item: {
-        padding: 18,
+        paddingHorizontal: 18,
+        paddingVertical: 8,
     },
+
+    socialItem: {
+        padding: 10,
+    },
+
     circleButton: {
         display: 'flex',
         justifyContent: 'center',
@@ -51,6 +57,67 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 40,
     },
+
+    // social
+    container: {
+        flexDirection: 'row',
+        height: 50,
+        margin: 10,
+        borderRadius: 25,
+        backgroundColor: 'grey',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 10,
+    },
+    tab: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 5,
+    },
+    innerTab: {
+        width: '100%',
+        height: '80%',
+        borderRadius: 25,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    innerTabFocused: {
+        backgroundColor: 'black',
+    },
+    innerTabUnfocused: {
+        backgroundColor: 'grey',
+    },
+    label: {
+        textAlign: 'center',
+    },
+    labelFocused: {
+        color: 'white',
+    },
+    labelUnfocused: {
+        color: 'black',
+    },
+
+    // edit profile
+    pfpButton: {
+        position: 'relative',
+    },
+
+    pfpImage: {
+        width: 150,
+        height: 150,
+        borderRadius: 75,
+    },
+    pfpIcon: {
+        backgroundColor: 'black',
+        padding: 5,
+        borderRadius: 50,
+        position: 'absolute',
+        bottom: 10,
+        right: 10,
+        color: 'white',
+    },
+    
 
 
 });
