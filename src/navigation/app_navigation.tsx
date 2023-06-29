@@ -35,8 +35,8 @@ const TabNavigator = () => {
             backBehavior="order"
             id="app-nav">
             <Tab.Screen
-                name="UserDetails"
-                component={Screens.LandingScreen}
+                name="Home"
+                component={Screens.HomeScreen}
                 options={({ route }) => ({
                     tabBarLabel: 'Feed',
                     // tabBarVisible: route.state && route.state.index === 0,

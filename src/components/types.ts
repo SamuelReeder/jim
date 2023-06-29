@@ -11,7 +11,7 @@ export type AppTabsParamList = {
     Profile: undefined,
     Search: undefined;
     Statistics: undefined;
-    UserDetails: undefined;
+    Home: undefined;
 };
 
 export type AppStackParamList = {

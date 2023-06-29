@@ -67,7 +67,7 @@ const PostScreen = ({ route, navigation }: PostPageProps) => {
       <ScrollView>
         <Box width="100%">
 
-          <Swiper showsButtons={true} width={screenWidth} height={(post.media[0].aspectRatio[1] / post.media[0].aspectRatio[0]) * screenWidth}>
+          <Swiper showsButtons={post.media.length > 1} width={screenWidth} height={(post.media[0].aspectRatio[1] / post.media[0].aspectRatio[0]) * screenWidth}>
             {post.media.map((media: any, index) => (
               <Box key={index} width="100%" height="100%">
                 {media.type == 'image' ? (

@@ -227,8 +227,6 @@ const RequestsScreen = () => {
                     </View>
                 }
                 keyExtractor={item => {
-                    console.log(item);
-                    console.log(item.uid);
                     return item.uid;
                 }}
                 ItemSeparatorComponent={() => <View style={styles.separator} />}

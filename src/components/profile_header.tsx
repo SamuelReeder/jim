@@ -24,7 +24,7 @@ const ProfileHeader = ({ navigation, account, tags, selectedTags, setSelectedTag
                 <Button
                     onPress={() => {
                         if (user?.uid && account.uid) {
-                            followUser(user?.uid, account.uid);
+                            followUser(account.uid, user?.uid);
                         }
                     }}
                     variant="outline"

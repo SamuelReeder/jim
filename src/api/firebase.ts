@@ -63,7 +63,7 @@ export const updateUserProfile = async (uid: string, username: string, displayNa
 export const fetchUser = async (userId: string) => {
     try {
         const user = await firestore().collection('users').doc(userId).get();
-        return user.data();
+        return user.data() as User;
     }
     catch (err) {
         console.log(err);
@@ -152,9 +152,11 @@ export const followUser = async (userId: string, followerId: string) => {
 
     if (userData.private) {
         // Send follow request if user is private
+        console.log("private")
         batch.set(followRequestRef, { followerId, timestamp: firestore.FieldValue.serverTimestamp() });
     } else {
         // Follow user directly if user is public
+        console.log("public")
         batch.set(followerRef, { followerId, timestamp: firestore.FieldValue.serverTimestamp() });
         batch.set(followingRef, { userId, timestamp: firestore.FieldValue.serverTimestamp() }); // add to following of the follower
     }
@@ -244,7 +246,6 @@ export const getUserFollowRequests = async (userId: string) => {
         return doc.data() as User;
     });
 
-    console.log(followRequests)
     return followRequests;
 };
 
@@ -275,6 +276,29 @@ export const acceptFollowRequest = async (userId: string, followerId: string) =>
 
     // Commit the batch
     await batch.commit();
+};
+
+export const getRecentPostsFromFollowing = async (userId: string) => {
+    const db = firestore();
+    const userFollowingRef = db.collection('users').doc(userId).collection('following');
+    const postsRef = db.collection('posts');
+
+    // Get all the users this user is following.
+    const followingDocs = await userFollowingRef.get();
+    const followingIds = followingDocs.docs.map(doc => doc.id);
+
+    // Fetch the most recent posts from the users this user is following.
+    const postsQuery = postsRef.where('userId', 'in', followingIds).orderBy('timestamp', 'desc'); // .limit(10);
+    const postsDocs = await postsQuery.get();
+
+    // Convert the post documents to Post objects.
+    const posts: Post[] = postsDocs.docs.map(doc => {
+        console.log(doc.data());
+        const data = doc.data();
+        return data as Post;
+    });
+
+    return posts;
 };
 
 
