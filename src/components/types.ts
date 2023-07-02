@@ -21,6 +21,7 @@ export type AppStackParamList = {
     EditProfile: undefined;
     Friends: { account?: string, screen?: string };
     CreatePostStack: undefined;
+    Stat: undefined;
 };
 
 export type Post = {

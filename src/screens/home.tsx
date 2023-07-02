@@ -89,6 +89,21 @@ const HomeScreen = ({ navigation }) => {
                 // onEndReached={fetchPosts}
                 // onEndReachedThreshold={0.5}
                 renderItem={({ item }) => <Box width="100%">
+                    <Box flex={1} py="2" px="4">
+                        <HStack space={2} flex={1} justifyContent="center" alignItems="center">
+                            <Avatar
+                                size="sm"
+                                mb={0.5}
+                                source={{ uri: item.author?.photoURL }}
+                                _text={{ fontSize: 'md', fontWeight: 'bold', color: 'white' }}
+                            />
+                            <VStack flex={1}>
+                                    <Text style={{ fontFamily: 'Poppins_700Bold' }}>{item.author?.displayName} </Text>
+                                    
+                            </VStack>
+
+                        </HStack>
+                    </Box>
                     <Swiper showsButtons={item.post.media.length > 1} width={0.9 * screenWidth} height={((item.post.media[0].aspectRatio[1] / item.post.media[0].aspectRatio[0]) * screenWidth) * 0.9} containerStyle={{borderRadius: 20, overflow: 'hidden'}}>
                         {item.post.media.map((media: any, index) => (
                             <Box key={index} width="100%" height="100%">
@@ -114,12 +129,12 @@ const HomeScreen = ({ navigation }) => {
                     </Swiper>
                     <Box flex={1} p="3">
                         <HStack space={2} flex={1}>
-                            <Avatar
+                            {/* <Avatar
                                 size="sm"
                                 mb={0.5}
                                 source={{ uri: item.author?.photoURL }}
                                 _text={{ fontSize: 'md', fontWeight: 'bold', color: 'white' }}
-                            />
+                            /> */}
                             <VStack flex={1}>
                                 <Text>
                                     <Text style={{ fontFamily: 'Poppins_700Bold' }}>{item.author?.displayName} </Text>

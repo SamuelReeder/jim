@@ -71,7 +71,7 @@ const TabNavigator = () => {
                 options={({ navigation }) => ({
                     headerShown: true,
                     tabBarLabel: 'Profile',
-                    headerTitle: `@${account.username}`,
+                    headerTitle: `@${account?.username}`,
                     tabBarIcon: ({ color, size }) => (
                         <Image
                             source={{ uri: account?.photoURL }}
@@ -141,6 +141,7 @@ const AppStack = () => {
             <Stack.Screen name="EditProfile" options={{title: "Edit profile"}} component={Screens.EditProfileScreen} />
             <Stack.Screen name="Friends" component={Screens.FriendsStack} />
             <Stack.Screen name="CreatePostStack" options={{title: "Post"}} component={Screens.CreatePostScreen} />
+            <Stack.Screen name="Stat" component={Screens.StatScreen} />
         </Stack.Navigator>
     );
 };
