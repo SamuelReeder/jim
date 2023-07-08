@@ -1,6 +1,6 @@
-import { Box, Button, Image, Text, FlatList, HStack, VStack, Avatar } from "native-base";
+import { Box, Button, Image, Text, FlatList, HStack, VStack, Avatar, Pressable } from "native-base";
 // import { FlatList } from "react-native-gesture-handler";
-import { getRecentPostsFromFollowing, fetchUser } from "../api";
+import { getRecentPostsFromFollowing, fetchUser, hasUserLikedPost, likePost, unlikePost } from "../api";
 import { useAuth } from "../navigation/auth_provider";
 import { Post, User, PageLoader } from "../components";
 import { useEffect, useState } from "react";
@@ -22,6 +22,42 @@ const HomeScreen = ({ navigation }) => {
     const [loading, setLoading] = useState(true);
     const [hasMoreItems, setHasMoreItems] = useState(true);
     const { user, logout } = useAuth();
+    const [likedPosts, setLikedPosts] = useState<Record<string, boolean>>({});
+
+    useEffect(() => {
+        if (user && user.uid) {
+            const fetchLikedPosts = async () => {
+                const likedPosts = {};
+
+                for (let i of posts) {
+
+                    likedPosts[i.post.id] = await hasUserLikedPost(i.post.id, user.uid);
+                }
+
+                setLikedPosts(likedPosts);
+            };
+
+            fetchLikedPosts();
+        }
+    }, [posts, user]);
+
+    const handleLikePress = async (postId) => {
+        if (user && user.uid) {
+            if (likedPosts[postId]) {
+                await unlikePost(postId, user.uid);
+                setLikedPosts({
+                    ...likedPosts,
+                    [postId]: false,
+                });
+            } else {
+                await likePost(postId, user.uid);
+                setLikedPosts({
+                    ...likedPosts,
+                    [postId]: true,
+                });
+            }
+        }
+    };
 
     const fetchPosts = async () => {
         if (!hasMoreItems || !user) {
@@ -90,21 +126,21 @@ const HomeScreen = ({ navigation }) => {
                 // onEndReachedThreshold={0.5}
                 renderItem={({ item }) => <Box width="100%">
                     <Box flex={1} py="2" px="4">
-                        <HStack space={2} flex={1} justifyContent="center" alignItems="center">
+                        <HStack space={2} flex={1} justifyContent="flex-start" alignItems="center">
                             <Avatar
                                 size="sm"
                                 mb={0.5}
                                 source={{ uri: item.author?.photoURL }}
                                 _text={{ fontSize: 'md', fontWeight: 'bold', color: 'white' }}
                             />
-                            <VStack flex={1}>
-                                    <Text style={{ fontFamily: 'Poppins_700Bold' }}>{item.author?.displayName} </Text>
-                                    
+                            <VStack space={0} justifyContent="center">
+                                <Text style={{ fontFamily: 'Poppins_700Bold', lineHeight: 15}}>{item.author?.displayName} </Text>
+                                <Text color="gray.500" style={{lineHeight: 14, fontSize: 12}}>@{item.author?.username}</Text>
                             </VStack>
 
                         </HStack>
                     </Box>
-                    <Swiper showsButtons={item.post.media.length > 1} width={0.9 * screenWidth} height={((item.post.media[0].aspectRatio[1] / item.post.media[0].aspectRatio[0]) * screenWidth) * 0.9} containerStyle={{borderRadius: 20, overflow: 'hidden'}}>
+                    <Swiper showsButtons={item.post.media.length > 1} width={0.9 * screenWidth} height={((item.post.media[0].aspectRatio[1] / item.post.media[0].aspectRatio[0]) * screenWidth) * 0.9} containerStyle={{ borderRadius: 20, overflow: 'hidden' }}>
                         {item.post.media.map((media: any, index) => (
                             <Box key={index} width="100%" height="100%">
                                 {media.type == 'image' ? (
@@ -113,17 +149,18 @@ const HomeScreen = ({ navigation }) => {
                                         source={{ uri: media.url }}
                                         resizeMode="contain"
                                         style={{
-                                            width: screenWidth * 0.9, height: ((media.aspectRatio[1] / media.aspectRatio[0]) * screenWidth) * 0.9}} // Set height to screenWidth as well to maintain aspect ratio. Adjust as needed.
-                                        />
+                                            width: screenWidth * 0.9, height: ((media.aspectRatio[1] / media.aspectRatio[0]) * screenWidth) * 0.9
+                                        }} // Set height to screenWidth as well to maintain aspect ratio. Adjust as needed.
+                                    />
                                 ) : (
-                                <Video
-                                    source={{ uri: media.url }}
-                                    style={{ width: screenWidth, height: (media.aspectRatio[1] / media.aspectRatio[0]) * screenWidth }}
-                                    resizeMode={ResizeMode.COVER}
-                                    isLooping
-                                    shouldPlay
-                                />
-                                    )}
+                                    <Video
+                                        source={{ uri: media.url }}
+                                        style={{ width: screenWidth, height: (media.aspectRatio[1] / media.aspectRatio[0]) * screenWidth }}
+                                        resizeMode={ResizeMode.COVER}
+                                        isLooping
+                                        shouldPlay
+                                    />
+                                )}
                             </Box>
                         ))}
                     </Swiper>
@@ -136,6 +173,12 @@ const HomeScreen = ({ navigation }) => {
                                 _text={{ fontSize: 'md', fontWeight: 'bold', color: 'white' }}
                             /> */}
                             <VStack flex={1}>
+                                <HStack space={2} alignItems="flex-start">
+                                    <Pressable onPress={() => handleLikePress(item.post.id)}>
+                                        <AntDesign name={likedPosts[item.post.id] ? "heart" : "hearto"} size={24} color={likedPosts[item.post.id] ? "red" : "black"} />
+                                    </Pressable>
+                                    <Text>{item.post.likesCount}</Text>
+                                </HStack>
                                 <Text>
                                     <Text style={{ fontFamily: 'Poppins_700Bold' }}>{item.author?.displayName} </Text>
                                     {item.post.description}
@@ -143,7 +186,6 @@ const HomeScreen = ({ navigation }) => {
                                     </Text>
                                 </Text>
                             </VStack>
-
                         </HStack>
                     </Box>
                 </Box>}
@@ -158,5 +200,20 @@ const HomeScreen = ({ navigation }) => {
         </Box>
     );
 };
+
+// const PostItem = ({ item, isLiked, onLikePress, likeCount }) => (
+//     <VStack flex={1}>
+//         <Pressable onPress={onLikePress}>
+//             <AntDesign name={isLiked ? "heart" : "hearto"} size={24} color={isLiked ? "red" : "black"} />
+//             <Text>{likeCount}</Text>
+//         </Pressable>
+//         <Text>
+//             <Text style={{ fontFamily: 'Poppins_700Bold' }}>{item.author?.displayName} </Text>
+//             {item.post.description}
+//             <Text color="gray.500">  {item.post.timestamp.toDate().toLocaleDateString()} {item.post.timestamp.toDate().toLocaleTimeString()}
+//             </Text>
+//         </Text>
+//     </VStack>
+// );
 
 export default HomeScreen;

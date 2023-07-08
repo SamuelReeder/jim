@@ -253,7 +253,8 @@ const FinalizePostScreen = ({ navigation }) => {
             userId: user.uid,
             description: description,
             comments: [],
-            likes: 0,
+            currentLikeDocId: 0,
+            likesCount: 0,
             timestamp: firestore.FieldValue.serverTimestamp(),
             pinned: false,
             tags: ["misc"],
@@ -263,6 +264,9 @@ const FinalizePostScreen = ({ navigation }) => {
         console.log(post);
 
         await postRef.set(post);
+
+        const likesRef = postRef.collection('likes').doc('likeDoc');
+        await likesRef.set({ likes: [] });
 
         setUploading(false);
         // setMedia(null);

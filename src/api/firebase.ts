@@ -2,7 +2,30 @@ import firestore from "@react-native-firebase/firestore";
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import { Post, User } from "../components";
+import { firebase } from "@react-native-firebase/firestore";
 
+
+export const gen = (length: number) => {
+    const db = firestore();
+    for (let i = 0; i < length; i++) {
+        const ref = db.collection('metrics').doc(i.toString());
+        ref.set({
+            id: i,
+            calories: Math.floor(Math.random() * 500),
+            bench_press: Math.floor(Math.random() * 500),
+            squats: Math.floor(Math.random() * 500),
+            deadlift: Math.floor(Math.random() * 500),
+            pull_ups: Math.floor(Math.random() * 500),
+            push_ups: Math.floor(Math.random() * 500),
+            bicep_curls: Math.floor(Math.random() * 500),
+            shoulder_press: Math.floor(Math.random() * 500),
+            lateral_raises: Math.floor(Math.random() * 500),
+            front_raises: Math.floor(Math.random() * 500),
+            sit_ups: Math.floor(Math.random() * 500)
+
+        })
+    }
+}
 export const createFirestoreUser = async (username: string, user: any) => {
     const userRef = firestore().collection('users').doc(user?.uid);
 
@@ -43,8 +66,6 @@ export const createFirestoreUser = async (username: string, user: any) => {
 
 export const updateUserProfile = async (uid: string, username: string, displayName: string, bio: string, photoURL: string) => {
     const userRef = firestore().collection('users').doc(uid);
-
-    console.log(username, displayName, bio, photoURL)
 
     try {
         await userRef.update({
@@ -293,7 +314,6 @@ export const getRecentPostsFromFollowing = async (userId: string) => {
 
     // Convert the post documents to Post objects.
     const posts: Post[] = postsDocs.docs.map(doc => {
-        console.log(doc.data());
         const data = doc.data();
         return data as Post;
     });
@@ -367,4 +387,96 @@ export const removeFriend = async (userId: string, friendId: string) => {
     } catch (err) {
         console.log(err);
     }
+}
+
+
+// LIKES
+
+export const likePost = async (postId: string, userId: string) => {
+    const db = firestore();
+    const postRef = db.collection('posts').doc(postId);
+    const userRef = db.collection('users').doc(userId).collection('likedPosts').doc(postId);
+  
+    // Get the post document to find out which like document to write to
+    const postSnapshot = await postRef.get();
+    const post = postSnapshot.data();
+    const currentLikeDocId = post?.currentLikeDocId;
+    const likesRef = postRef.collection('likes').doc(currentLikeDocId.toString());
+    
+    console.log(currentLikeDocId)
+    // Attempt to add the like to the current like document
+    try {
+      await likesRef.update({
+        [userId]: firestore.FieldValue.serverTimestamp(),
+      });
+    } catch (error) {
+      // If the update fails because the document is full or doesn't exist,
+      // create a new like document and update the post document to point to it
+      const newLikeDocId = currentLikeDocId + 1;
+      const newLikesRef = postRef.collection('likes').doc(newLikeDocId.toString());
+  
+      await newLikesRef.set({
+        [userId]: firestore.FieldValue.serverTimestamp(),
+      });
+  
+      await postRef.update({ currentLikeDocId: newLikeDocId });
+    }
+  
+    // Increment the likesCount in the post
+    await postRef.update({
+      likesCount: firestore.FieldValue.increment(1),
+    });
+  
+    // Add to the user's liked posts
+    await userRef.set({ timestamp: firestore.FieldValue.serverTimestamp() });
+  };
+  
+  
+
+
+export const hasUserLikedPost = async (postId: string, userId: string) => {
+    const db = firestore();
+    const likeRef = await db.collection('users').doc(userId).collection('likedPosts').doc(postId).get();
+    
+    return likeRef.exists;
+}
+
+export const getLikesForPost = async (postId: string) => {
+    const db = firestore();
+    const likesSnapshot = await db.collection('posts').doc(postId).collection('likes').doc('likeDoc').get();
+    
+    if (!likesSnapshot.exists) {
+        // The document does not exist.
+        return [];
+    }
+
+    return likesSnapshot.data()?.likes;
+}
+
+export const unlikePost = async (postId: string, userId: string) => {
+    const db = firestore();
+    const postRef = db.collection('posts').doc(postId);
+    const likesRef = db.collection('posts').doc(postId).collection('likes').doc('likeDoc');
+    const userRef = db.collection('users').doc(userId).collection('likedPosts').doc(postId);
+
+    const likesSnapshot = await likesRef.get();
+
+    if (!likesSnapshot.exists) {
+        // The document does not exist.
+        return;
+    }
+    const userLike = likesSnapshot.data()?.likes.find(like => like.userId === userId);
+
+    // Remove from the likes array in the likes document
+    await likesRef.update({
+        likes: firestore.FieldValue.arrayRemove(userLike)
+    });
+
+    // Decrement the likesCount in the post
+    await postRef.update({
+        likesCount: firestore.FieldValue.increment(-1),
+    });
+
+    // Remove from the user's liked posts
+    await userRef.delete();
 }

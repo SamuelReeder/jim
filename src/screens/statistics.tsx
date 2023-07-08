@@ -1,4 +1,4 @@
-import { Box, Text, Button, FlatList, HStack, Select } from "native-base"
+import { Box, Text, Button, FlatList, HStack, Select, Pressable } from "native-base"
 import { Animated, Dimensions, StyleSheet, View, PanResponder } from 'react-native';
 import React, { Component, useRef, useState, useEffect } from 'react';
 import Constants from 'expo-constants';
@@ -8,6 +8,7 @@ import Svg, { Circle } from 'react-native-svg';
 import { BlurView } from 'expo-blur';
 import styles from "../styles/styles";
 import * as Progress from 'react-native-progress';
+import { gen } from "../api";
 
 
 const screenWidth = Dimensions.get('window').width;
@@ -81,6 +82,10 @@ const data2 = [
 
 
 ]
+
+const genData = () => {
+
+}
 
 const ProgressBar = ({ args }) => {
     // const progress = useRef(new Animated.Value(0)).current;
@@ -221,11 +226,13 @@ const StatisticsScreen = ({ navigation }) => {
             <FlatList
                 data={data2}
                 renderItem={({ item }) =>
-                    <Box style={{ borderRadius: 15, backgroundColor: "black", padding: 20, margin: 5 }}>
-                        <Text marginBottom="3" style={styles.title}>{item.metric}</Text><CircularProgress args={item} />
-                        <Text marginY="3" style={{ color: 'white', fontWeight: '700', fontSize: 16 }}>Percentile</Text>
-                        <ProgressBar args={0.7} />
-                    </Box>}
+                    <Pressable onPress={() => navigation.navigate('Stat', { stat: item.metric })}>
+                        <Box style={{ borderRadius: 15, backgroundColor: "black", padding: 20, margin: 5 }}>
+                            <Text marginBottom="3" style={styles.title}>{item.metric}</Text><CircularProgress args={item} />
+                            <Text marginY="3" style={{ color: 'white', fontWeight: '700', fontSize: 16 }}>Percentile</Text>
+                            <ProgressBar args={0.7} />
+                        </Box>
+                    </Pressable>}
                 keyExtractor={item => item.metric.toString()}
                 numColumns={2}
             />
@@ -234,6 +241,7 @@ const StatisticsScreen = ({ navigation }) => {
                 <Button style={styles.statButton} position="absolute" bottom="0" p="5" marginY="5" onPress={() => {
                     // handleUpdateProfile();
                     // navigation.navigate('Profile');
+                    gen(10);
                 }}>
                     <Box justifyContent="center" alignItems="center">
                         <Text

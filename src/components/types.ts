@@ -21,7 +21,7 @@ export type AppStackParamList = {
     EditProfile: undefined;
     Friends: { account?: string, screen?: string };
     CreatePostStack: undefined;
-    Stat: undefined;
+    Stat: { stat: string };
 };
 
 export type Post = {
@@ -29,12 +29,19 @@ export type Post = {
     userId: string;
     description: string;
     comments: string[];
-    likes: number;
+    currentLikeDocId?: number;
+    likes?: any;
+    likesCount: number;
     timestamp: FirebaseFirestoreTypes.FieldValue;
     pinned: boolean;
     tags: string[];
     media: Media[];
 };
+
+// export type Stat = {
+//     id: string;
+//     userId: string;
+// }
 
 export type Media = {
     type: string;
