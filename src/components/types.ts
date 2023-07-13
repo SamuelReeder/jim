@@ -22,6 +22,7 @@ export type AppStackParamList = {
     Friends: { account?: string, screen?: string };
     CreatePostStack: undefined;
     Stat: { stat: string };
+    Settings: undefined;
 };
 
 export type Post = {

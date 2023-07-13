@@ -106,7 +106,7 @@ const TabNavigator = () => {
                                 <AntDesign name="team" size={24} color="black" />
                             </Button>
                             <Button
-                                onPress={() => navigation.navigate('EditProfile')}
+                                onPress={() => navigation.navigate('Settings')}
                                 style={{
                                     backgroundColor: 'white',
                                     opacity: 1,
@@ -142,6 +142,7 @@ const AppStack = () => {
             <Stack.Screen name="Friends" component={Screens.FriendsStack} />
             <Stack.Screen name="CreatePostStack" options={{title: "Post"}} component={Screens.CreatePostScreen} />
             <Stack.Screen name="Stat" component={Screens.StatScreen} />
+            <Stack.Screen name="Settings" component={Screens.SettingsScreen} />
         </Stack.Navigator>
     );
 };

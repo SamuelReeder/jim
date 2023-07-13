@@ -12,3 +12,4 @@ export { default as PostScreen } from './post';
 export { default as FriendsStack } from './friends';
 export { default as StatisticsScreen } from './statistics';
 export { default as StatScreen } from './stat';
+export { default as SettingsScreen } from './settings';
