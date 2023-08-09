@@ -308,6 +308,10 @@ export const getRecentPostsFromFollowing = async (userId: string) => {
     const followingDocs = await userFollowingRef.get();
     const followingIds = followingDocs.docs.map(doc => doc.id);
 
+    if (followingIds.length === 0) {
+        console.log("No following found");
+        return [];
+    }
     // Fetch the most recent posts from the users this user is following.
     const postsQuery = postsRef.where('userId', 'in', followingIds).orderBy('timestamp', 'desc'); // .limit(10);
     const postsDocs = await postsQuery.get();

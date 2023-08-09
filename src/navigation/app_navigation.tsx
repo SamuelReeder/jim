@@ -1,6 +1,6 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { AntDesign, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { AntDesign, Ionicons, MaterialCommunityIcons, MaterialIcons  } from '@expo/vector-icons';
 import { Image, Button, Icon, HStack } from 'native-base';
 import { useAuth } from './auth_provider';
 import * as Screens from '../screens';
@@ -39,7 +39,48 @@ const TabNavigator = () => {
                 component={Screens.HomeScreen}
                 options={({ route }) => ({
                     tabBarLabel: 'Feed',
+                    headerShown: true,
+                    headerTitleAlign: 'center',
+                    // headerTitleStyle: {
+                    //     display: 'none'
+                    // },
                     // tabBarVisible: route.state && route.state.index === 0,
+                
+                    // Set the logo on the left side of the header
+                    // headerLeft: () => (
+                    //     <Image 
+                    //         source={require('../../assets/logo.png')} 
+                    //         style={{ width: 57, height: 40, marginLeft: 20 }} 
+                    //         alt="Logo"
+                    //     />
+                    // ),
+                    headerTitle: () => (
+                        <Image 
+                            source={require('../../assets/logo.png')} 
+                            style={{ width: 57, height: 40}} 
+                            alt="Logo"
+                        />
+                    ),
+                    headerLeft: () => (
+                        <TouchableOpacity onPress={() => {
+                            // Handle the press event here
+                            console.log('Left icon pressed!');
+                        }}>
+                            <MaterialIcons name="notifications-none" size={24} color="black" style={{ marginLeft: 20 }}/>
+                        </TouchableOpacity>
+                    ),
+                
+                    // Set the pressable icon on the right side of the header
+                    headerRight: () => (
+                        <TouchableOpacity onPress={() => {
+                            // Handle the press event here
+                            console.log('Icon pressed!');
+                        }}>
+                            <MaterialIcons name="notifications-none" size={24} color="black" style={{ marginRight: 20 }}/>
+
+                        </TouchableOpacity>
+                    ),
+                
                     tabBarIcon: ({ color, size }) => (
                         <AntDesign name="home" size={size} color={color} />
                     ),

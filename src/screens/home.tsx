@@ -125,7 +125,7 @@ const HomeScreen = ({ navigation }) => {
                 // onEndReached={fetchPosts}
                 // onEndReachedThreshold={0.5}
                 renderItem={({ item }) => <Box width="100%">
-                    <Box flex={1} py="2" px="4">
+                    <Box flex={1} pb="2" px="4">
                         <HStack space={2} flex={1} justifyContent="flex-start" alignItems="center">
                             <Avatar
                                 size="sm"
