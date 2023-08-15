@@ -12,6 +12,13 @@ import styles from '../styles/styles';
 import { FlatList, Dimensions, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import { createStackNavigator } from "@react-navigation/stack";
+import Animated, {
+        useSharedValue,
+        withTiming,
+        useAnimatedStyle,
+        Easing,
+} from 'react-native-reanimated';
+
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -33,7 +40,7 @@ const CreatePostProvider = ({ navigation }) => {
     const [media, setMedia] = useState<ImagePicker.ImagePickerAsset[] | null>(null);
     const [currentIndex, setCurrentIndex] = useState<number>(0);
     const [description, setDescription] = useState<string>('');
-    const [tags, setTags] = useState<string[]>(["misc"]);
+    const [tags, setTags] = useState<string[] | null>(null));
 
     const context = { media, setMedia, currentIndex, setCurrentIndex, description, setDescription, tags, setTags };
 
@@ -208,10 +215,10 @@ const FinalizePostScreen = ({ navigation }) => {
         throw new Error("useAuth must be used within a AuthProvider");
     }
 
-    const tagList = ["misc", "tag2", "tag3"];
+    const tagList = ["PR", "Progress"];
     const { media, currentIndex, description, setDescription, tags, setTags } = context;
     const [uploading, setUploading] = useState(false);
-    const { user } = useAuth();
+    const { user, account } = useAuth();
 
     const submitPost = async () => {
         if (media === null || user === null || media == null || media.length == 0) {
@@ -257,7 +264,7 @@ const FinalizePostScreen = ({ navigation }) => {
             likesCount: 0,
             timestamp: firestore.FieldValue.serverTimestamp(),
             pinned: false,
-            tags: ["misc"],
+            tags: tags == null ? ["misc"] : tags,
             media: mediaArr,
         };
 
@@ -269,10 +276,27 @@ const FinalizePostScreen = ({ navigation }) => {
         await likesRef.set({ likes: [] });
 
         setUploading(false);
+
+        // if (post.tags.includes("Progress")) {
+        //     account.set
+        // }
         // setMedia(null);
 
         navigation.navigate("Profile");
     }
+
+    const randomWidth = useSharedValue(10);
+
+  const config = {
+    duration: 500,
+    easing: Easing.bezier(0.5, 0.01, 0, 1),
+  };
+
+  const anim = useAnimatedStyle(() => {
+    return {
+      width: withTiming(randomWidth.value, config),
+    };
+  });
 
     return (
         <Box variant="createPostContainer" justifyContent="space-between" px="4" py="2">
@@ -315,6 +339,7 @@ const FinalizePostScreen = ({ navigation }) => {
                             key={tag}
                             variant="tag"
                             // TODO: CHANGE COLOUR BASED ON SELECTION
+                            backgroundColor={tags.includes(tag) ? "red.400" : "red.200"}
                             color="white"
                             startIcon={<AntDesign name="tagso" size={24} color="black" />}
                             onPress={() => {
@@ -324,17 +349,6 @@ const FinalizePostScreen = ({ navigation }) => {
                                     setTags([...tags, tag]);
                                 }
                             }}>
-                            {/* <LinearGradient
-                            colors={['rgba(0,0,0,0.6)', 'rgba(0,0,0,0.3)']}
-                            style={{
-                                position: 'absolute',
-                                left: 0,
-                                right: 0,
-                                top: 0,
-                                height: '100%',
-                                borderRadius: 8
-                            }}
-                        /> */}
                             {tag}</Button>
                     ))}
                 </HStack>

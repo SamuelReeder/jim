@@ -36,6 +36,7 @@ const theme = extendTheme({
                     rounded: 'full',
                     margin: 0.5,
                     bg: 'red.200',
+                    color: 'red.500',
                 }
             }
 

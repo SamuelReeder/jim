@@ -8,8 +8,51 @@ import {
     ContributionGraph,
     StackedBarChart
 } from "react-native-chart-kit";
+import styles from '../styles/styles';
+import { useState, useEffect } from 'react';
+import * as Progress from 'react-native-progress';
+import { LineGraph, GraphPoint } from 'react-native-graph'
+
+export function generateRandomGraphData(length: number): GraphPoint[] {
+    return Array<number>(length)
+      .fill(0)
+      .map((_, index) => ({
+        date: new Date(
+          new Date(2000, 0, 1).getTime() + 1000 * 60 * 60 * 24 * index
+        ),
+        value: Math.random(),
+      }))
+  }
 
 const screenWidth = Dimensions.get("window").width;
+
+const ProgressBar = ({ args }) => {
+    // const progress = useRef(new Animated.Value(0)).current;
+    const [progress, setProgress] = useState(0);
+
+    //   useEffect(() => {
+    //     Animated.timing(progress, {
+    //       toValue: (args / 100),
+    //       duration: 2000,
+    //       useNativeDriver: false,
+    //     }).start();
+    //   }, []);
+
+    useEffect(() => {
+        // Start the animation
+        let progress = 0;
+        setTimeout(() => {
+            progress += args;
+            setProgress(progress);
+        }, 1000); // Change the speed of animation by modifying the interval
+    }, []);
+
+    return (
+        // <Box>
+        <Progress.Bar progress={0.5} animated={true} animationType="decay" height={5} borderWidth={0} borderRadius={50} borderColor="#3d5875" color="#00e0ff" />
+        // {/* </Box> */}
+    );
+};
 
 const StatScreen = () => {
 
@@ -30,8 +73,23 @@ const StatScreen = () => {
         useShadowColorFromDataset: false // optional
     };
     return (
-        <Box variant="pageContainer">
-            <View>
+        <Box variant="createPostContainer" justifyContent="space-between" px="4" py="2" alignItems="flex-start">
+            <Box style={{ borderRadius: 15, backgroundColor: "black", padding: 20, margin: 5 }}>
+                <Text color="gray.500" fontSize="sm">
+                    Max Weight
+                </Text>
+                <Text variant="bold" fontSize='3xl'>
+                    225LBs
+                </Text>
+                <ProgressBar args={0.7} />
+            </Box>
+            <LineGraph
+                points={generateRandomGraphData(100)}
+                animated={false}
+                color="#4484B2"
+            />
+
+            {/* <View>
                 <Text>Bezier Line Chart</Text>
                 <LineChart
                     data={{
@@ -62,7 +120,20 @@ const StatScreen = () => {
                         alert(`The value is ${value}`)
                     }
                 />
-            </View>
+            </View> */}
+            <Button style={styles.landing_button} p="5" marginY="5">
+                <Box justifyContent="center" alignItems="center">
+                    <Text
+                        style={{
+                            color: '#FFFFFF',
+                            // fontSize: 20,
+                        }}>
+                        SUBMIT
+                    </Text>
+                    {/* npm i react-native-progress */}
+                </Box>
+
+            </Button>
         </Box>
     );
 }

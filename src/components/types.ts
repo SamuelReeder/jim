@@ -65,7 +65,8 @@ export type User = {
     following?: any;
     followers?: any;
     closeFriends?: any;
-    streaks?: {
+    lastPostDate?: any;
+    streaks: {
         daily: number;
         weekly: number;
         monthly: number;
