@@ -134,36 +134,58 @@ const HomeScreen = ({ navigation }) => {
                                 _text={{ fontSize: 'md', fontWeight: 'bold', color: 'white' }}
                             />
                             <VStack space={0} justifyContent="center">
-                                <Text style={{ fontFamily: 'Poppins_700Bold', lineHeight: 15}}>{item.author?.displayName} </Text>
-                                <Text color="gray.500" style={{lineHeight: 14, fontSize: 12}}>@{item.author?.username}</Text>
+                                <Text style={{ fontFamily: 'Poppins_700Bold', lineHeight: 15 }}>{item.author?.displayName} </Text>
+                                <Text color="gray.500" style={{ lineHeight: 14, fontSize: 12 }}>@{item.author?.username}</Text>
                             </VStack>
 
                         </HStack>
                     </Box>
-                    <Swiper showsButtons={item.post.media.length > 1} width={0.9 * screenWidth} height={((item.post.media[0].aspectRatio[1] / item.post.media[0].aspectRatio[0]) * screenWidth) * 0.9} containerStyle={{ borderRadius: 20, overflow: 'hidden' }}>
-                        {item.post.media.map((media: any, index) => (
-                            <Box key={index} width="100%" height="100%">
-                                {media.type == 'image' ? (
-                                    <Image
-                                        alt="item Image"
-                                        source={{ uri: media.url }}
-                                        resizeMode="contain"
-                                        style={{
-                                            width: screenWidth * 0.9, height: ((media.aspectRatio[1] / media.aspectRatio[0]) * screenWidth) * 0.9
-                                        }} // Set height to screenWidth as well to maintain aspect ratio. Adjust as needed.
-                                    />
-                                ) : (
-                                    <Video
-                                        source={{ uri: media.url }}
-                                        style={{ width: screenWidth, height: (media.aspectRatio[1] / media.aspectRatio[0]) * screenWidth }}
-                                        resizeMode={ResizeMode.COVER}
-                                        isLooping
-                                        shouldPlay
-                                    />
-                                )}
-                            </Box>
-                        ))}
-                    </Swiper>
+                    <Box position="relative">
+                        <Swiper showsButtons={item.post.media.length > 1} width={0.9 * screenWidth} height={((item.post.media[0].aspectRatio[1] / item.post.media[0].aspectRatio[0]) * screenWidth) * 0.9} containerStyle={{ borderRadius: 20, overflow: 'hidden' }}>
+                            {item.post.media.map((media: any, index) => (
+                                <Box key={index} width="100%" height="100%">
+                                    {media.type == 'image' ? (
+                                        <Image
+                                            alt="item Image"
+                                            source={{ uri: media.url }}
+                                            resizeMode="contain"
+                                            style={{
+                                                width: screenWidth * 0.9, height: ((media.aspectRatio[1] / media.aspectRatio[0]) * screenWidth) * 0.9
+                                            }} // Set height to screenWidth as well to maintain aspect ratio. Adjust as needed.
+                                        />
+                                    ) : (
+                                        <Video
+                                            source={{ uri: media.url }}
+                                            style={{ width: screenWidth, height: (media.aspectRatio[1] / media.aspectRatio[0]) * screenWidth }}
+                                            resizeMode={ResizeMode.COVER}
+                                            isLooping
+                                            shouldPlay
+                                        />
+                                    )}
+
+                                </Box>
+                            ))}
+                        </Swiper>
+                        <Box
+                            position="absolute"  // Absolute positioning
+                            right={0}             // Aligned to the left
+                            bottom={0} 
+                            m="1.5"          // Aligned to the bottom
+                            p="1.5"                // Padding for some space
+                            borderColor="white"  // Border color
+                            // borderWidth={2}      // Border width
+                            borderRadius={20}  // Rounded border to match the heart shape
+                            bgColor="rgba(0,0,0,0.4)" // Optional: Background color for better visibility
+                        >
+                            <Pressable onPress={() => handleLikePress(item.post.id)}>
+                                <HStack alignItems="center" space={1}>
+                                    <AntDesign name={likedPosts[item.post.id] ? "heart" : "hearto"} size={24} color={likedPosts[item.post.id] ? "red" : "black"} />
+                                    <Text color="white" fontSize="sm">{item.post.likesCount}</Text>
+                                </HStack>
+                            </Pressable>
+                        </Box>
+
+                    </Box>
                     <Box flex={1} p="3">
                         <HStack space={2} flex={1}>
                             {/* <Avatar
@@ -173,12 +195,12 @@ const HomeScreen = ({ navigation }) => {
                                 _text={{ fontSize: 'md', fontWeight: 'bold', color: 'white' }}
                             /> */}
                             <VStack flex={1}>
-                                <HStack space={2} alignItems="flex-start">
+                                {/* <HStack space={2} alignItems="flex-start">
                                     <Pressable onPress={() => handleLikePress(item.post.id)}>
                                         <AntDesign name={likedPosts[item.post.id] ? "heart" : "hearto"} size={24} color={likedPosts[item.post.id] ? "red" : "black"} />
                                     </Pressable>
                                     <Text>{item.post.likesCount}</Text>
-                                </HStack>
+                                </HStack> */}
                                 <Text>
                                     <Text style={{ fontFamily: 'Poppins_700Bold' }}>{item.author?.displayName} </Text>
                                     {item.post.description}
@@ -191,12 +213,6 @@ const HomeScreen = ({ navigation }) => {
                 </Box>}
                 keyExtractor={item => item.post.id}
             />
-            <Button
-                onPress={() =>
-                    logout()
-                }
-                w="100%"
-            >Log In</Button>
         </Box>
     );
 };

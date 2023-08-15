@@ -66,7 +66,7 @@ const TabNavigator = () => {
                             // Handle the press event here
                             console.log('Left icon pressed!');
                         }}>
-                            <MaterialIcons name="notifications-none" size={24} color="black" style={{ marginLeft: 20 }}/>
+                            <MaterialIcons name="local-fire-department" size={24} color="orange" style={{ marginLeft: 20, borderWidth: 1 }}/>
                         </TouchableOpacity>
                     ),
                 

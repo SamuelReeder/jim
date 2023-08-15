@@ -40,7 +40,7 @@ const CreatePostProvider = ({ navigation }) => {
     const [media, setMedia] = useState<ImagePicker.ImagePickerAsset[] | null>(null);
     const [currentIndex, setCurrentIndex] = useState<number>(0);
     const [description, setDescription] = useState<string>('');
-    const [tags, setTags] = useState<string[] | null>(null));
+    const [tags, setTags] = useState<string[]>([]);
 
     const context = { media, setMedia, currentIndex, setCurrentIndex, description, setDescription, tags, setTags };
 
@@ -264,7 +264,7 @@ const FinalizePostScreen = ({ navigation }) => {
             likesCount: 0,
             timestamp: firestore.FieldValue.serverTimestamp(),
             pinned: false,
-            tags: tags == null ? ["misc"] : tags,
+            tags: tags.length == 0 ? ["misc"] : tags,
             media: mediaArr,
         };
 

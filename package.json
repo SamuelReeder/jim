@@ -24,6 +24,7 @@
     "@shopify/react-native-skia": "^0.1.200",
     "algoliasearch": "^4.17.1",
     "d3-shape": "^3.2.0",
+    "date-fns": "^2.30.0",
     "expo": "~48.0.15",
     "expo-av": "~13.2.1",
     "expo-blur": "~12.2.2",
