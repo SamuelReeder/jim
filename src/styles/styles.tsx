@@ -58,35 +58,40 @@ const styles = StyleSheet.create({
         fontSize: 40,
     },
 
+    outer: {
+        backgroundColor: "white",
+        padding:20,
+    },
+
     // social
     container: {
         flexDirection: 'row',
-        height: 50,
-        margin: 10,
+        height: 47,
+        // margin: 10,
         borderRadius: 25,
-        backgroundColor: 'grey',
+        backgroundColor: 'rgba(0,0,0,0.3)',
         justifyContent: 'center',
         alignItems: 'center',
-        paddingHorizontal: 10,
+        // padding: 4,    
     },
     tab: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 5,
+        // padding: 1,
     },
     innerTab: {
         width: '100%',
-        height: '80%',
+        height: '100%',
         borderRadius: 25,
         justifyContent: 'center',
         alignItems: 'center',
     },
     innerTabFocused: {
-        backgroundColor: 'black',
+        backgroundColor: 'rgba(0,0,0, 1)',
     },
     innerTabUnfocused: {
-        backgroundColor: 'grey',
+        backgroundColor: 'transparent',
     },
     label: {
         textAlign: 'center',
@@ -95,7 +100,7 @@ const styles = StyleSheet.create({
         color: 'white',
     },
     labelUnfocused: {
-        color: 'black',
+        color: 'white',
     },
 
     // edit profile

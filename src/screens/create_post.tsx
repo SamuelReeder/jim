@@ -338,6 +338,7 @@ const FinalizePostScreen = ({ navigation }) => {
                         <Button
                             key={tag}
                             variant="tag"
+                            margin="0.5"
                             // TODO: CHANGE COLOUR BASED ON SELECTION
                             backgroundColor={tags.includes(tag) ? "red.400" : "red.200"}
                             color="white"

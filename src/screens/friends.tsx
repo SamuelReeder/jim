@@ -13,6 +13,7 @@ const Tab = createBottomTabNavigator();
 
 const CustomTabBar = ({ state, descriptors, navigation }) => {
     return (
+        <View style={styles.outer}>
         <View style={styles.container}>
             {state.routes.map((route, index) => {
                 const { options } = descriptors[route.key];
@@ -74,6 +75,7 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
                     </View>
                 );
             })}
+        </View>
         </View>
     );
 };
@@ -198,7 +200,7 @@ const RequestsScreen = () => {
     }
 
     return (
-        <Box variant="socialContainer" px="3">
+        <Box variant="socialContainer" px="5">
             <FlatList
                 data={friendRequests}
                 renderItem={({ item }) =>

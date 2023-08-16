@@ -141,7 +141,13 @@ const HomeScreen = ({ navigation }) => {
                         </HStack>
                     </Box>
                     <Box position="relative">
-                        <Swiper showsButtons={item.post.media.length > 1} width={0.9 * screenWidth} height={((item.post.media[0].aspectRatio[1] / item.post.media[0].aspectRatio[0]) * screenWidth) * 0.9} containerStyle={{ borderRadius: 20, overflow: 'hidden' }}>
+                        <Swiper 
+                            showsPagination={item.post.media.length > 1} width={0.9 * screenWidth} 
+                            showsButtons={false}
+                            height={((item.post.media[0].aspectRatio[1] / item.post.media[0].aspectRatio[0]) * screenWidth) * 0.9} 
+                            containerStyle={{ borderRadius: 20, overflow: 'hidden' }}
+                            activeDotColor="rgba(255, 255, 255, 0.7)"
+                            >
                             {item.post.media.map((media: any, index) => (
                                 <Box key={index} width="100%" height="100%">
                                     {media.type == 'image' ? (
@@ -166,24 +172,41 @@ const HomeScreen = ({ navigation }) => {
                                 </Box>
                             ))}
                         </Swiper>
-                        <Box
+                        <HStack
+
                             position="absolute"  // Absolute positioning
                             right={0}             // Aligned to the left
-                            bottom={0} 
+                            bottom={0}
                             m="1.5"          // Aligned to the bottom
-                            p="1.5"                // Padding for some space
-                            borderColor="white"  // Border color
-                            // borderWidth={2}      // Border width
-                            borderRadius={20}  // Rounded border to match the heart shape
-                            bgColor="rgba(0,0,0,0.4)" // Optional: Background color for better visibility
                         >
-                            <Pressable onPress={() => handleLikePress(item.post.id)}>
-                                <HStack alignItems="center" space={1}>
-                                    <AntDesign name={likedPosts[item.post.id] ? "heart" : "hearto"} size={24} color={likedPosts[item.post.id] ? "red" : "black"} />
-                                    <Text color="white" fontSize="sm">{item.post.likesCount}</Text>
-                                </HStack>
-                            </Pressable>
-                        </Box>
+                            {item.post.tags.map((tag, index) => (
+                                <Button
+                                    variant="tag"
+                                    // TODO: CHANGE COLOUR BASED ON SELECTION
+                                    backgroundColor="rgba(179, 79, 83, 0.8)"
+                                    color="white"
+                                    padding={2}
+                                    startIcon={<AntDesign name="tagso" size={20} color="black" />}>
+                                    {tag}
+                                </Button>
+                            ))}
+                            <Box
+
+                                p="1.5"                // Padding for some space
+                                borderColor="white"  // Border color
+                                // borderWidth={2}      // Border width
+                                borderRadius={20}  // Rounded border to match the heart shape
+                                bgColor="rgba(0,0,0,0.4)" // Optional: Background color for better visibility
+                                justifyContent="center"
+                            >
+                                <Pressable onPress={() => handleLikePress(item.post.id)}>
+                                    <HStack alignItems="center" space={1}>
+                                        <AntDesign name={likedPosts[item.post.id] ? "heart" : "hearto"} size={22} color={likedPosts[item.post.id] ? "rgb(171, 43, 48)" : "black"} />
+                                        <Text color="white" fontSize="sm">{item.post.likesCount}</Text>
+                                    </HStack>
+                                </Pressable>
+                            </Box>
+                        </HStack>
 
                     </Box>
                     <Box flex={1} p="3">
