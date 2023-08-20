@@ -37,7 +37,7 @@ const ProfileHeader = ({ navigation, account, tags, selectedTags, setSelectedTag
                 >Follow</Button>
             )}
             <HStack width="100%" mt={3} px="5" justifyContent="space-around" space="4" alignItems="center">
-                <Pressable onPress={() => {
+                <Pressable width="20%" onPress={() => {
                     navigation.navigate('Friends', { account: account.uid, screen: 'followers' });
                 }}>
                     <Box flex={1} alignItems="center">
@@ -51,30 +51,38 @@ const ProfileHeader = ({ navigation, account, tags, selectedTags, setSelectedTag
                         </VStack>
                     </Box>
                 </Pressable>
-                <Box flex={1} alignItems="center">
-                    <VStack alignItems="center">
-                        <Text variant="bold" fontSize='2xl'>
-                            47
-                        </Text>
-                        <Text color="gray.500" fontSize="sm">
-                            following
-                        </Text>
-                    </VStack>
-                </Box>
-                <Box flex={1} alignItems="center">
-                    <VStack alignItems="center">
-                        <Text variant="bold" fontSize='2xl'>
-                            13
-                        </Text>
-                        <Text color="gray.500" fontSize="sm">
-                            percent
-                        </Text>
-                    </VStack>
-                </Box>
+                <Pressable width="20%" onPress={() => {
+                    navigation.navigate('Friends', { account: account.uid, screen: 'followers' });
+                }}>
+                    <Box flex={1} alignItems="center">
+                        <VStack alignItems="center">
+                            <Text variant="bold" fontSize='2xl'>
+                                47
+                            </Text>
+                            <Text color="gray.500" fontSize="sm">
+                                following
+                            </Text>
+                        </VStack>
+                    </Box>
+                </Pressable>
+                <Pressable width="20%" onPress={() => {
+                    navigation.navigate('Friends', { account: account.uid, screen: 'followers' });
+                }}>
+                    <Box flex={1} alignItems="center">
+                        <VStack alignItems="center">
+                            <Text variant="bold" fontSize='2xl'>
+                                13
+                            </Text>
+                            <Text color="gray.500" fontSize="sm">
+                                percent
+                            </Text>
+                        </VStack>
+                    </Box>
+                </Pressable>
             </HStack>
             <VStack width="100%" mt={3}>
                 <HStack width="100%" justifyContent="space-between" alignItems="center" mt={4}>
-                    <Text fontWeight="bold" fontSize="lg">
+                    <Text fontWeight="bold" fontSize="lg" mb={2}>
                         Metrics
                     </Text>
                 </HStack>
@@ -86,16 +94,42 @@ const ProfileHeader = ({ navigation, account, tags, selectedTags, setSelectedTag
                     p="5"
                     width="100%"
                 >
-                    <HStack space={4} alignItems="center">
-                        <Text color="primary.800" fontWeight="bold">
-                            Item 1
-                        </Text>
-                        <Text color="secondary.800" fontWeight="bold">
-                            Item 2
-                        </Text>
-                        <Text color="tertiary.800" fontWeight="bold">
-                            Item 3
-                        </Text>
+                    <HStack space={4} alignItems="center" justifyContent="space-between">
+                        <VStack alignItems="center" width="30%">
+                            <Text color="primary.800" fontWeight="bold" mb={1}>
+                                Bench Press
+                            </Text>
+                            <Text variant="bold" fontSize='2xl'>
+                                272
+                            </Text>
+                            <Text color="gray.500" fontSize="sm">
+                                lbs
+                            </Text>
+                        </VStack>
+                        <VStack alignItems="center" width="30%">
+                            <Text color="secondary.800" fontWeight="bold" mb={1}>
+                                Squat
+                            </Text>
+                            <Text variant="bold" fontSize='2xl'>
+                                272
+                            </Text>
+                            <Text color="gray.500" fontSize="sm">
+                                lbs
+                            </Text>
+                        </VStack>
+                        <VStack alignItems="center" width="30%">
+                            <Text color="tertiary.800" fontWeight="bold" mb={1}>
+                                Deaflit
+                            </Text>
+                            <Text variant="bold" fontSize='2xl'>
+                                272
+                            </Text>
+                            <Text color="gray.500" fontSize="sm">
+                                lbs
+                            </Text>
+                        </VStack>
+
+
                     </HStack>
                 </Box>
             </VStack>
@@ -121,22 +155,22 @@ const ProfileHeader = ({ navigation, account, tags, selectedTags, setSelectedTag
                     Posts
                 </Text>
                 <HStack justifyContent="flex-end">
-                {tags.map((tag: string) => (
-                    <Button
-                        key={tag}
-                        variant="tag"
-                        // colorScheme={selectedTags.includes(tag) ? "primary" : "secondary"}
-                        // TODO: CHANGE COLOUR BASED ON SELECTION
-                        color="white"
-                        startIcon={<AntDesign name="tagso" size={24} color="black" />}
-                        onPress={() => {
-                            if (selectedTags.includes(tag)) {
-                                setSelectedTags(selectedTags.filter((t: string) => t !== tag));
-                            } else {
-                                setSelectedTags([...selectedTags, tag]);
-                            }
-                        }}>
-                        {/* <LinearGradient
+                    {tags.map((tag: string) => (
+                        <Button
+                            key={tag}
+                            variant="tag"
+                            // colorScheme={selectedTags.includes(tag) ? "primary" : "secondary"}
+                            // TODO: CHANGE COLOUR BASED ON SELECTION
+                            color="white"
+                            startIcon={<AntDesign name="tagso" size={24} color="black" />}
+                            onPress={() => {
+                                if (selectedTags.includes(tag)) {
+                                    setSelectedTags(selectedTags.filter((t: string) => t !== tag));
+                                } else {
+                                    setSelectedTags([...selectedTags, tag]);
+                                }
+                            }}>
+                            {/* <LinearGradient
                             colors={['rgba(0,0,0,0.6)', 'rgba(0,0,0,0.3)']}
                             style={{
                                 position: 'absolute',
@@ -147,8 +181,8 @@ const ProfileHeader = ({ navigation, account, tags, selectedTags, setSelectedTag
                                 borderRadius: 8
                             }}
                         /> */}
-                        {tag}</Button>
-                ))}
+                            {tag}</Button>
+                    ))}
                 </HStack>
             </HStack>
         </Box>

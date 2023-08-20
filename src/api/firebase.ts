@@ -4,7 +4,48 @@ import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import { Post, User } from "../components";
 import { firebase } from "@react-native-firebase/firestore";
 import { addDays, differenceInDays, isToday, isYesterday } from 'date-fns';
+import { Stat } from "../components";
 
+// metrics
+export const updateStat = async (userId: string, stat: Stat) => {
+    // Validate the metric to ensure it's one of the allowed stats
+    if (stat.value == null) {
+        return;
+    }
+    
+    const validMetrics = [
+        "Calories",
+        "Bench press",
+        "Squats",
+        "Deadlift",
+        "Pull ups",
+        "Push ups",
+        "Bicep curls",
+        "Shoulder press",
+        "Lateral raises",
+        "Front raises",
+        "Sit ups"
+    ];
+    
+    if (!validMetrics.includes(stat.metric)) {
+        console.error("Invalid metric provided");
+        return;
+    }
+
+    try {
+        // Get a reference to the user's document
+        const userDocRef = firestore().collection('users').doc(userId);
+
+        // Update the specific metric in the stats field
+        await userDocRef.update({
+            [`stats.${stat.metric}`]: stat.value
+        });
+
+        console.log("Stat updated successfully");
+    } catch (error) {
+        console.error("Error updating stat: ", error);
+    }
+};
 
 export const gen = (length: number) => {
     const db = firestore();

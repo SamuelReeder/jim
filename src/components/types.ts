@@ -72,15 +72,24 @@ export type User = {
         monthly: number;
     }
     stats?: {
-        state: string | null; // whether bulking ("bulk") or cutting ("cut")
-        bodyweight: number | null;
-        bodyfat: number | null;
-        height: number | null;
-        age: number | null;
-        benchMax: number | null;
-        squatMax: number | null;
-        deadliftMax: number | null;
+        "State": string | null; // whether bulking ("bulk") or cutting ("cut")
+        "Calories": number | null;
+        "Bench press": number | null;
+        "Squats": number | null;
+        "Deadlift": number | null;
+        "Pull ups": number | null;
+        "Push ups": number | null;
+        "Bicep curls": number | null;
+        "Shoulder press": number | null;
+        "Lateral raises": number | null;
+        "Front raises": number | null;
+        "Sit ups": number | null;
     } | null;
+}
+
+export type Stat = {
+    metric: string;
+    value: number | null;
 }
 
 export type Comment = {
