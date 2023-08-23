@@ -9,9 +9,10 @@ import { BlurView } from 'expo-blur';
 import styles from "../styles/styles";
 import * as Progress from 'react-native-progress';
 import { gen } from "../api";
-import { updateStat } from "../api";
+import { updateStat, saveChoice, fetchStatistics } from "../api";
 import { Stat } from "../components";
 import { useAuth } from "../navigation/auth_provider";
+// import { PieChart } from "react-native-chart-kit";
 
 
 const screenWidth = Dimensions.get('window').width;
@@ -183,7 +184,58 @@ const CircularProgress = ({ args }) => {
 const StatisticsScreen = ({ navigation }) => {
     const { user } = useAuth();
     const [showModal0, setShowModal0] = useState(false);
+    const [showModal1, setShowModal1] = useState(false);
     const [currentStat, setCurrentStat] = useState<Stat | null>(null)
+    const [currentState, setCurrentState] = useState("");
+
+    const data = [
+        {
+            name: "Seoul",
+            population: 21500000,
+            //   color: "rgba(131, 167, 234, 1)",
+            legendFontColor: "#7F7F7F",
+            legendFontSize: 15
+        },
+        {
+            name: "Toronto",
+            population: 2800000,
+            //   color: "#F00",
+            legendFontColor: "#7F7F7F",
+            legendFontSize: 15
+        },
+        {
+            name: "Beijing",
+            population: 527612,
+            //   color: "red",
+            legendFontColor: "#7F7F7F",
+            legendFontSize: 15
+        },
+        {
+            name: "New York",
+            population: 8538000,
+            //   color: "#ffffff",
+            legendFontColor: "#7F7F7F",
+            legendFontSize: 15
+        },
+        {
+            name: "Moscow",
+            population: 11920000,
+            //   color: "rgb(0, 0, 255)",
+            legendFontColor: "#7F7F7F",
+            legendFontSize: 15
+        }
+    ];
+
+    const chartConfig = {
+        backgroundGradientFrom: "#1E2923",
+        backgroundGradientFromOpacity: 0,
+        backgroundGradientTo: "#08130D",
+        backgroundGradientToOpacity: 0.5,
+        color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
+        strokeWidth: 2, // optional, default 3
+        barPercentage: 0.5,
+        useShadowColorFromDataset: false // optional
+    };
 
     // const onBoardingCompleted = () => {
     //     alert('Boarding process is completed!')
@@ -229,13 +281,48 @@ const StatisticsScreen = ({ navigation }) => {
                     <Select.Item label="Option 3" value="3" />
                 </Select>
             </HStack>
+            <Pressable width="100%" flexDirection="row" onPress={() => {
+                // navigation.navigate('Stat', { stat: item.metric })
+
+                // const stat: Stat = {
+                //     metric: data2[index].metric,  // Assuming data2.metric is a string
+                //     value: null,
+                // };
+                // setCurrentStat(stat)
+                // setShowModal0(true);
+            }}>
+                <Box style={{ flex: 1, borderRadius: 15, backgroundColor: "black", padding: 20, margin: 10 }}>
+                    <Text marginBottom="3" style={styles.title}>State</Text>
+                    <Text marginY="3"
+                        style={{
+                            color: currentState === 'bulking' ? 'green' :
+                                currentState === 'cutting' ? 'red' :
+                                    currentState === 'maintaining' ? 'blue' : 'white',
+                            fontWeight: '700',
+                            fontSize: 16
+                        }}>{currentState}</Text>
+                    {/* <PieChart
+                        data={data}
+                        width={screenWidth}
+                        height={220}
+                        // chartConfig={chartConfig}
+                        accessor={"population"}
+                        backgroundColor={"transparent"}
+                        paddingLeft={"15"}
+                        center={[10, 50]}
+                        absolute     
+                    /> */}
+                    {/* <ProgressBar args={0.7} /> */}
+                </Box>
+            </Pressable>
+
 
             <FlatList
                 data={data2}
                 renderItem={({ item, index }) =>
                     <Pressable onPress={() => {
                         // navigation.navigate('Stat', { stat: item.metric })
-                        
+
                         const stat: Stat = {
                             metric: data2[index].metric,  // Assuming data2.metric is a string
                             value: null,
@@ -319,6 +406,62 @@ const StatisticsScreen = ({ navigation }) => {
                     </Modal.Footer> */}
                 </Modal.Content>
             </Modal>
+            <Modal isOpen={showModal1} onClose={() => setShowModal1(false)}>
+                <Modal.Content>
+                    <Modal.CloseButton borderRadius="full" />
+                    {/* <Modal.Header>Change amount</Modal.Header> */}
+                    <Modal.Body height={300}>
+                        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} flex={1}>
+                            <Box p="6" flex={1} justifyContent="space-between">
+                                <Heading marginX={6} size="lg">Change {currentStat?.metric}</Heading>
+                                <Pressable>
+                                    <Box>
+                                        <Text>Cutting</Text>
+                                    </Box>
+                                </Pressable>
+                                <Pressable>
+                                    <Box>
+                                        <Text>Maintaining</Text>
+                                    </Box>
+                                </Pressable>
+                                <Pressable>
+                                    <Box>
+                                        <Text>Bulking</Text>
+                                    </Box>
+                                </Pressable>
+                                <Button
+                                    p="5"
+                                    style={styles.landing_button}
+                                // onPress={() => {
+                                //     if (user && currentStat && currentStat.value != null) {
+                                //         updateStat(user?.uid, currentStat)
+                                //         setShowModal0(false);
+                                //     }
+                                // }}
+                                >
+                                    <Text style={styles.login_button}>SUBMIT
+                                    </Text>
+                                </Button>
+                            </Box>
+                        </KeyboardAvoidingView>
+                    </Modal.Body>
+                    {/* <Modal.Footer>
+                        <Button.Group space={2}>
+                            <Button variant="ghost" colorScheme="blueGray" onPress={() => {
+                                setShowModal(false);
+                            }}>
+                                Cancel
+                            </Button>
+                            <Button onPress={() => {
+                                setShowModal(false);
+                            }}>
+                                Save
+                            </Button>
+                        </Button.Group>
+                    </Modal.Footer> */}
+                </Modal.Content>
+            </Modal>
+
 
 
         </Box>

@@ -12,7 +12,7 @@ export const updateStat = async (userId: string, stat: Stat) => {
     if (stat.value == null) {
         return;
     }
-    
+
     const validMetrics = [
         "Calories",
         "Bench press",
@@ -26,7 +26,7 @@ export const updateStat = async (userId: string, stat: Stat) => {
         "Front raises",
         "Sit ups"
     ];
-    
+
     if (!validMetrics.includes(stat.metric)) {
         console.error("Invalid metric provided");
         return;
@@ -46,6 +46,40 @@ export const updateStat = async (userId: string, stat: Stat) => {
         console.error("Error updating stat: ", error);
     }
 };
+
+export const saveChoice = async (userId, choice) => {
+    // Update user's choice
+    const ref = firestore().collection('users').doc(userId);
+
+    await ref.update({
+        [`stats.State}`]: choice
+    });
+
+    // Increment the count for the chosen option in statistics
+    const statsRef = firestore().collection('statistics').doc('states');
+    statsRef.update({
+        [choice]: firestore.FieldValue.increment(1)
+    });
+}
+
+export const fetchStatistics = async () => {
+    const snapshot = await firestore().collection('statistics').doc('choices').get();
+    const data = snapshot.data();
+
+    if (data == null) {
+        return;
+    }
+  
+    const total = data.cutting + data.maintaining + data.bulking;
+  
+    return {
+      cutting: (data.cutting / total) * 100,
+      maintaining: (data.maintaining / total) * 100,
+      bulking: (data.bulking / total) * 100
+    };
+  }
+  
+
 
 export const gen = (length: number) => {
     const db = firestore();

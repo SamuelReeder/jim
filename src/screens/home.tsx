@@ -148,7 +148,7 @@ const HomeScreen = ({ navigation }) => {
                             containerStyle={{ borderRadius: 20, overflow: 'hidden' }}
                             activeDotColor="rgba(255, 255, 255, 0.7)"
                             >
-                            {item.post.media.map((media: any, index) => (
+                            {item.post.media.map((media: any, index: number) => (
                                 <Box key={index} width="100%" height="100%">
                                     {media.type == 'image' ? (
                                         <Image
@@ -181,6 +181,7 @@ const HomeScreen = ({ navigation }) => {
                         >
                             {item.post.tags.map((tag, index) => (
                                 <Button
+                                    key={tag}
                                     variant="tag"
                                     // TODO: CHANGE COLOUR BASED ON SELECTION
                                     backgroundColor="rgba(179, 79, 83, 0.8)"
