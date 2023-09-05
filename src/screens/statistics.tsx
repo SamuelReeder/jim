@@ -187,6 +187,8 @@ const StatisticsScreen = ({ navigation }) => {
     const [showModal1, setShowModal1] = useState(false);
     const [currentStat, setCurrentStat] = useState<Stat | null>(null)
     const [currentState, setCurrentState] = useState("");
+    const [selectedOption, setSelectedOption] = useState<string | null>(null);
+
 
     const data = [
         {
@@ -281,7 +283,7 @@ const StatisticsScreen = ({ navigation }) => {
                     <Select.Item label="Option 3" value="3" />
                 </Select>
             </HStack>
-            <Pressable width="100%" flexDirection="row" onPress={() => {
+            {/* <Pressable width="100%" flexDirection="row" onPress={() => {
                 // navigation.navigate('Stat', { stat: item.metric })
 
                 // const stat: Stat = {
@@ -290,8 +292,9 @@ const StatisticsScreen = ({ navigation }) => {
                 // };
                 // setCurrentStat(stat)
                 // setShowModal0(true);
-            }}>
-                <Box style={{ flex: 1, borderRadius: 15, backgroundColor: "black", padding: 20, margin: 10 }}>
+            }}> */}
+            <Pressable width="100%" onPress={() => setShowModal1(true)}>
+                <Box style={{ borderRadius: 15, backgroundColor: "black", padding: 20, margin: 10 }}>
                     <Text marginBottom="3" style={styles.title}>State</Text>
                     <Text marginY="3"
                         style={{
@@ -413,34 +416,36 @@ const StatisticsScreen = ({ navigation }) => {
                     <Modal.Body height={300}>
                         <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} flex={1}>
                             <Box p="6" flex={1} justifyContent="space-between">
-                                <Heading marginX={6} size="lg">Change {currentStat?.metric}</Heading>
-                                <Pressable>
-                                    <Box>
-                                        <Text>Cutting</Text>
-                                    </Box>
-                                </Pressable>
-                                <Pressable>
-                                    <Box>
-                                        <Text>Maintaining</Text>
-                                    </Box>
-                                </Pressable>
-                                <Pressable>
-                                    <Box>
-                                        <Text>Bulking</Text>
-                                    </Box>
-                                </Pressable>
+                                <Heading marginX={6} size="lg">Change state</Heading>
+                                <HStack justifyContent="space-between">
+                                    <Pressable onPress={() => setSelectedOption('Cutting')}>
+                                        <Box borderRadius={10} padding={2} bgColor={selectedOption === 'Cutting' ? 'green.300' : 'gray.300'}>
+                                            <Text fontWeight="bold">Cutting</Text>
+                                        </Box>
+                                    </Pressable>
+                                    <Pressable onPress={() => setSelectedOption('Maintaining')}>
+                                        <Box borderRadius={10} padding={2} bgColor={selectedOption === 'Maintaining' ? 'green.300' : 'gray.300'}>
+                                            <Text fontWeight="bold">Maintaining</Text>
+                                        </Box>
+                                    </Pressable>
+                                    <Pressable onPress={() => setSelectedOption('Bulking')}>
+                                        <Box borderRadius={10} padding={2} bgColor={selectedOption === 'Bulking' ? 'green.300' : 'gray.300'}>
+                                            <Text fontWeight="bold">Bulking</Text>
+                                        </Box>
+                                    </Pressable>
+                                </HStack>
                                 <Button
                                     p="5"
                                     style={styles.landing_button}
-                                // onPress={() => {
-                                //     if (user && currentStat && currentStat.value != null) {
-                                //         updateStat(user?.uid, currentStat)
-                                //         setShowModal0(false);
-                                //     }
-                                // }}
+                                    onPress={() => {
+                                        if (user && selectedOption) {
+                                            setCurrentState(selectedOption);
+                                            saveChoice(user?.uid, selectedOption);
+                                            setShowModal1(false);
+                                        }
+                                    }}
                                 >
-                                    <Text style={styles.login_button}>SUBMIT
-                                    </Text>
+                                    <Text style={styles.login_button}>SUBMIT</Text>
                                 </Button>
                             </Box>
                         </KeyboardAvoidingView>
@@ -464,7 +469,7 @@ const StatisticsScreen = ({ navigation }) => {
 
 
 
-        </Box>
+        </Box >
     )
 }
 

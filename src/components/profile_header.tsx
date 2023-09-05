@@ -80,59 +80,40 @@ const ProfileHeader = ({ navigation, account, tags, selectedTags, setSelectedTag
                     </Box>
                 </Pressable>
             </HStack>
-            <VStack width="100%" mt={3}>
-                <HStack width="100%" justifyContent="space-between" alignItems="center" mt={4}>
-                    <Text fontWeight="bold" fontSize="lg" mb={2}>
-                        Metrics
-                    </Text>
-                </HStack>
-                <Box
-                    bg="white"
-                    shadow={2}
-                    rounded="lg"
-                    mx="auto"
-                    p="5"
-                    width="100%"
-                >
-                    <HStack space={4} alignItems="center" justifyContent="space-between">
-                        <VStack alignItems="center" width="30%">
-                            <Text color="primary.800" fontWeight="bold" mb={1}>
-                                Bench Press
-                            </Text>
-                            <Text variant="bold" fontSize='2xl'>
-                                272
-                            </Text>
-                            <Text color="gray.500" fontSize="sm">
-                                lbs
-                            </Text>
-                        </VStack>
-                        <VStack alignItems="center" width="30%">
-                            <Text color="secondary.800" fontWeight="bold" mb={1}>
-                                Squat
-                            </Text>
-                            <Text variant="bold" fontSize='2xl'>
-                                272
-                            </Text>
-                            <Text color="gray.500" fontSize="sm">
-                                lbs
-                            </Text>
-                        </VStack>
-                        <VStack alignItems="center" width="30%">
-                            <Text color="tertiary.800" fontWeight="bold" mb={1}>
-                                Deaflit
-                            </Text>
-                            <Text variant="bold" fontSize='2xl'>
-                                272
-                            </Text>
-                            <Text color="gray.500" fontSize="sm">
-                                lbs
-                            </Text>
-                        </VStack>
-
-
+            {account.stats && Object.keys(account.stats).length > 0 && (
+                <VStack width="100%" mt={3}>
+                    <HStack width="100%" justifyContent="space-between" alignItems="center" mt={4}>
+                        <Text fontWeight="bold" fontSize="lg" mb={2}>
+                            Metrics
+                        </Text>
                     </HStack>
-                </Box>
-            </VStack>
+                    <Box
+                        bg="white"
+                        shadow={2}
+                        rounded="lg"
+                        mx="auto"
+                        p="5"
+                        width="100%"
+                    >
+                        <HStack space={4} alignItems="center" justifyContent="space-between">
+                            {Object.entries(account.stats).slice(0, 3).map(([name, value]) => (
+                                <VStack alignItems="center" width="30%" key={name}>
+                                    <Text color="primary.800" fontWeight="bold" mb={1}>
+                                        {name}
+                                    </Text>
+                                    <Text variant="bold" fontSize='2xl'>
+                                        {value}
+                                    </Text>
+                                    <Text color="gray.500" fontSize="sm">
+                                        lbs
+                                    </Text>
+                                </VStack>
+                            ))}
+                        </HStack>
+                    </Box>
+                </VStack>
+            )}
+
             {/* <HStack width="100%" justifyContent="space-between" alignItems="center" mt={4}>
                 <Text fontWeight="bold" fontSize="lg">
                     Posts
