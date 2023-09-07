@@ -120,123 +120,124 @@ const HomeScreen = ({ navigation }) => {
 
     return (
         <Box variant="pageContainer">
-            <FlatList
-                data={posts}
-                // onEndReached={fetchPosts}
-                // onEndReachedThreshold={0.5}
-                renderItem={({ item }) => <Box width="100%">
-                    <Box flex={1} pb="2" px="4">
-                        <HStack space={2} flex={1} justifyContent="flex-start" alignItems="center">
-                            <Avatar
-                                size="sm"
-                                mb={0.5}
-                                source={{ uri: item.author?.photoURL }}
-                                _text={{ fontSize: 'md', fontWeight: 'bold', color: 'white' }}
-                            />
-                            <VStack space={0} justifyContent="center">
-                                <Text style={{ fontFamily: 'Poppins_700Bold', lineHeight: 15 }}>{item.author?.displayName} </Text>
-                                <Text color="gray.500" style={{ lineHeight: 14, fontSize: 12 }}>@{item.author?.username}</Text>
-                            </VStack>
+            {posts && posts.length == 0 ? <Text>No posts to show, add some friends!</Text> :
+                <FlatList
+                    data={posts}
+                    // onEndReached={fetchPosts}
+                    // onEndReachedThreshold={0.5}
+                    renderItem={({ item }) => <Box width="100%">
+                        <Box flex={1} pb="2" px="4">
+                            <HStack space={2} flex={1} justifyContent="flex-start" alignItems="center">
+                                <Avatar
+                                    size="sm"
+                                    mb={0.5}
+                                    source={{ uri: item.author?.photoURL }}
+                                    _text={{ fontSize: 'md', fontWeight: 'bold', color: 'white' }}
+                                />
+                                <VStack space={0} justifyContent="center">
+                                    <Text style={{ fontFamily: 'Poppins_700Bold', lineHeight: 15 }}>{item.author?.displayName} </Text>
+                                    <Text color="gray.500" style={{ lineHeight: 14, fontSize: 12 }}>@{item.author?.username}</Text>
+                                </VStack>
 
-                        </HStack>
-                    </Box>
-                    <Box position="relative">
-                        <Swiper 
-                            showsPagination={item.post.media.length > 1} width={0.9 * screenWidth} 
-                            showsButtons={false}
-                            height={((item.post.media[0].aspectRatio[1] / item.post.media[0].aspectRatio[0]) * screenWidth) * 0.9} 
-                            containerStyle={{ borderRadius: 20, overflow: 'hidden' }}
-                            activeDotColor="rgba(255, 255, 255, 0.7)"
+                            </HStack>
+                        </Box>
+                        <Box position="relative">
+                            <Swiper
+                                showsPagination={item.post.media.length > 1} width={0.9 * screenWidth}
+                                showsButtons={false}
+                                height={((item.post.media[0].aspectRatio[1] / item.post.media[0].aspectRatio[0]) * screenWidth) * 0.9}
+                                containerStyle={{ borderRadius: 20, overflow: 'hidden' }}
+                                activeDotColor="rgba(255, 255, 255, 0.7)"
                             >
-                            {item.post.media.map((media: any, index: number) => (
-                                <Box key={index} width="100%" height="100%">
-                                    {media.type == 'image' ? (
-                                        <Image
-                                            alt="item Image"
-                                            source={{ uri: media.url }}
-                                            resizeMode="contain"
-                                            style={{
-                                                width: screenWidth * 0.9, height: ((media.aspectRatio[1] / media.aspectRatio[0]) * screenWidth) * 0.9
-                                            }} // Set height to screenWidth as well to maintain aspect ratio. Adjust as needed.
-                                        />
-                                    ) : (
-                                        <Video
-                                            source={{ uri: media.url }}
-                                            style={{ width: screenWidth, height: (media.aspectRatio[1] / media.aspectRatio[0]) * screenWidth }}
-                                            resizeMode={ResizeMode.COVER}
-                                            isLooping
-                                            shouldPlay
-                                        />
-                                    )}
+                                {item.post.media.map((media: any, index: number) => (
+                                    <Box key={index} width="100%" height="100%">
+                                        {media.type == 'image' ? (
+                                            <Image
+                                                alt="item Image"
+                                                source={{ uri: media.url }}
+                                                resizeMode="contain"
+                                                style={{
+                                                    width: screenWidth * 0.9, height: ((media.aspectRatio[1] / media.aspectRatio[0]) * screenWidth) * 0.9
+                                                }} // Set height to screenWidth as well to maintain aspect ratio. Adjust as needed.
+                                            />
+                                        ) : (
+                                            <Video
+                                                source={{ uri: media.url }}
+                                                style={{ width: screenWidth, height: (media.aspectRatio[1] / media.aspectRatio[0]) * screenWidth }}
+                                                resizeMode={ResizeMode.COVER}
+                                                isLooping
+                                                shouldPlay
+                                            />
+                                        )}
 
+                                    </Box>
+                                ))}
+                            </Swiper>
+                            <HStack
+
+                                position="absolute"  // Absolute positioning
+                                right={0}             // Aligned to the left
+                                bottom={0}
+                                m="1.5"          // Aligned to the bottom
+                            >
+                                {item.post.tags.map((tag, index) => (
+                                    <Button
+                                        key={tag}
+                                        variant="tag"
+                                        // TODO: CHANGE COLOUR BASED ON SELECTION
+                                        backgroundColor="rgba(179, 79, 83, 0.8)"
+                                        color="white"
+                                        padding={2}
+                                        startIcon={<AntDesign name="tagso" size={20} color="black" />}>
+                                        {tag}
+                                    </Button>
+                                ))}
+                                <Box
+
+                                    p="1.5"                // Padding for some space
+                                    borderColor="white"  // Border color
+                                    // borderWidth={2}      // Border width
+                                    borderRadius={20}  // Rounded border to match the heart shape
+                                    bgColor="rgba(0,0,0,0.4)" // Optional: Background color for better visibility
+                                    justifyContent="center"
+                                >
+                                    <Pressable onPress={() => handleLikePress(item.post.id)}>
+                                        <HStack alignItems="center" space={1}>
+                                            <AntDesign name={likedPosts[item.post.id] ? "heart" : "hearto"} size={22} color={likedPosts[item.post.id] ? "rgb(171, 43, 48)" : "black"} />
+                                            <Text color="white" fontSize="sm">{item.post.likesCount}</Text>
+                                        </HStack>
+                                    </Pressable>
                                 </Box>
-                            ))}
-                        </Swiper>
-                        <HStack
+                            </HStack>
 
-                            position="absolute"  // Absolute positioning
-                            right={0}             // Aligned to the left
-                            bottom={0}
-                            m="1.5"          // Aligned to the bottom
-                        >
-                            {item.post.tags.map((tag, index) => (
-                                <Button
-                                    key={tag}
-                                    variant="tag"
-                                    // TODO: CHANGE COLOUR BASED ON SELECTION
-                                    backgroundColor="rgba(179, 79, 83, 0.8)"
-                                    color="white"
-                                    padding={2}
-                                    startIcon={<AntDesign name="tagso" size={20} color="black" />}>
-                                    {tag}
-                                </Button>
-                            ))}
-                            <Box
-
-                                p="1.5"                // Padding for some space
-                                borderColor="white"  // Border color
-                                // borderWidth={2}      // Border width
-                                borderRadius={20}  // Rounded border to match the heart shape
-                                bgColor="rgba(0,0,0,0.4)" // Optional: Background color for better visibility
-                                justifyContent="center"
-                            >
-                                <Pressable onPress={() => handleLikePress(item.post.id)}>
-                                    <HStack alignItems="center" space={1}>
-                                        <AntDesign name={likedPosts[item.post.id] ? "heart" : "hearto"} size={22} color={likedPosts[item.post.id] ? "rgb(171, 43, 48)" : "black"} />
-                                        <Text color="white" fontSize="sm">{item.post.likesCount}</Text>
-                                    </HStack>
-                                </Pressable>
-                            </Box>
-                        </HStack>
-
-                    </Box>
-                    <Box flex={1} p="3">
-                        <HStack space={2} flex={1}>
-                            {/* <Avatar
+                        </Box>
+                        <Box flex={1} p="3">
+                            <HStack space={2} flex={1}>
+                                {/* <Avatar
                                 size="sm"
                                 mb={0.5}
                                 source={{ uri: item.author?.photoURL }}
                                 _text={{ fontSize: 'md', fontWeight: 'bold', color: 'white' }}
                             /> */}
-                            <VStack flex={1}>
-                                {/* <HStack space={2} alignItems="flex-start">
+                                <VStack flex={1}>
+                                    {/* <HStack space={2} alignItems="flex-start">
                                     <Pressable onPress={() => handleLikePress(item.post.id)}>
                                         <AntDesign name={likedPosts[item.post.id] ? "heart" : "hearto"} size={24} color={likedPosts[item.post.id] ? "red" : "black"} />
                                     </Pressable>
                                     <Text>{item.post.likesCount}</Text>
                                 </HStack> */}
-                                <Text>
-                                    <Text style={{ fontFamily: 'Poppins_700Bold' }}>{item.author?.displayName} </Text>
-                                    {item.post.description}
-                                    <Text color="gray.500">  {item.post.timestamp.toDate().toLocaleDateString()} {item.post.timestamp.toDate().toLocaleTimeString()}
+                                    <Text>
+                                        <Text style={{ fontFamily: 'Poppins_700Bold' }}>{item.author?.displayName} </Text>
+                                        {item.post.description}
+                                        <Text color="gray.500">  {item.post.timestamp.toDate().toLocaleDateString()} {item.post.timestamp.toDate().toLocaleTimeString()}
+                                        </Text>
                                     </Text>
-                                </Text>
-                            </VStack>
-                        </HStack>
-                    </Box>
-                </Box>}
-                keyExtractor={item => item.post.id}
-            />
+                                </VStack>
+                            </HStack>
+                        </Box>
+                    </Box>}
+                    keyExtractor={item => item.post.id}
+                />}
         </Box>
     );
 };

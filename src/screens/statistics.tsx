@@ -8,9 +8,9 @@ import Svg, { Circle } from 'react-native-svg';
 import { BlurView } from 'expo-blur';
 import styles from "../styles/styles";
 import * as Progress from 'react-native-progress';
-import { gen } from "../api";
+import { fetchStats, gen } from "../api";
 import { updateStat, saveChoice, fetchStatistics } from "../api";
-import { Stat } from "../components";
+import { Stat, PageLoader, ErrorMessage } from "../components";
 import { useAuth } from "../navigation/auth_provider";
 // import { PieChart } from "react-native-chart-kit";
 
@@ -70,22 +70,6 @@ const Scene = ({ animatedValue, title, subtitle }: Props) => {
 
 const MAX_POINTS = 500;
 const data = [1, 2, 3, 4, 5, 6];
-
-const data2 = [
-    { metric: "Calories", value: Math.floor(Math.random() * 500) },
-    { metric: "Bench press", value: Math.floor(Math.random() * 500) },
-    { metric: "Squats", value: Math.floor(Math.random() * 500) },
-    { metric: "Deadlift", value: Math.floor(Math.random() * 500) },
-    { metric: "Pull ups", value: Math.floor(Math.random() * 500) },
-    { metric: "Push ups", value: Math.floor(Math.random() * 500) },
-    { metric: "Bicep curls", value: Math.floor(Math.random() * 500) },
-    { metric: "Shoulder press", value: Math.floor(Math.random() * 500) },
-    { metric: "Lateral raises", value: Math.floor(Math.random() * 500) },
-    { metric: "Front raises", value: Math.floor(Math.random() * 500) },
-    { metric: "Sit ups", value: Math.floor(Math.random() * 500) },
-
-
-]
 
 const genData = () => {
 
@@ -182,51 +166,16 @@ const CircularProgress = ({ args }) => {
 };
 
 const StatisticsScreen = ({ navigation }) => {
-    const { user } = useAuth();
+    const { user, account } = useAuth();
     const [showModal0, setShowModal0] = useState(false);
     const [showModal1, setShowModal1] = useState(false);
     const [currentStat, setCurrentStat] = useState<Stat | null>(null)
-    const [currentState, setCurrentState] = useState("");
+    const [currentState, setCurrentState] = useState<string | undefined>();
     const [selectedOption, setSelectedOption] = useState<string | null>(null);
+    const [stats, setStats] = useState<any | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
 
-
-    const data = [
-        {
-            name: "Seoul",
-            population: 21500000,
-            //   color: "rgba(131, 167, 234, 1)",
-            legendFontColor: "#7F7F7F",
-            legendFontSize: 15
-        },
-        {
-            name: "Toronto",
-            population: 2800000,
-            //   color: "#F00",
-            legendFontColor: "#7F7F7F",
-            legendFontSize: 15
-        },
-        {
-            name: "Beijing",
-            population: 527612,
-            //   color: "red",
-            legendFontColor: "#7F7F7F",
-            legendFontSize: 15
-        },
-        {
-            name: "New York",
-            population: 8538000,
-            //   color: "#ffffff",
-            legendFontColor: "#7F7F7F",
-            legendFontSize: 15
-        },
-        {
-            name: "Moscow",
-            population: 11920000,
-            //   color: "rgb(0, 0, 255)",
-            legendFontColor: "#7F7F7F",
-            legendFontSize: 15
-        }
-    ];
 
     const chartConfig = {
         backgroundGradientFrom: "#1E2923",
@@ -266,6 +215,66 @@ const StatisticsScreen = ({ navigation }) => {
     //         onCompleted={onBoardingCompleted}
     //     />
     // );
+
+    const data2 = [];
+
+
+    useEffect(() => {
+
+        const fetchStuff = async () => {
+            if (user) {
+                fetchStats(user?.uid).then((res) => {
+                    console.log(res);
+                    setStats(res);
+                })
+            }
+
+            if (stats == null) {
+                setLoading(false);
+                setError(true);
+                return;
+            }
+
+            if (stats.State) {
+                setCurrentState(stats.State);
+            }
+
+            stats.map((stat: any) => {
+                data2.push({ metric: stat.metric, value: stat.value });
+            })
+
+            setLoading(false);
+        }
+        fetchStuff();
+    }, [user])
+
+    // const data2 = [
+    //     { metric: "Calories", value: Math.floor(Math.random() * 500) },
+    //     { metric: "Bench press", value: Math.floor(Math.random() * 500) },
+    //     { metric: "Squats", value: Math.floor(Math.random() * 500) },
+    //     { metric: "Deadlift", value: Math.floor(Math.random() * 500) },
+    //     { metric: "Pull ups", value: Math.floor(Math.random() * 500) },
+    //     { metric: "Push ups", value: Math.floor(Math.random() * 500) },
+    //     { metric: "Bicep curls", value: Math.floor(Math.random() * 500) },
+    //     { metric: "Shoulder press", value: Math.floor(Math.random() * 500) },
+    //     { metric: "Lateral raises", value: Math.floor(Math.random() * 500) },
+    //     { metric: "Front raises", value: Math.floor(Math.random() * 500) },
+    //     { metric: "Sit ups", value: Math.floor(Math.random() * 500) },
+
+
+    // ]
+
+
+
+    if (loading) {
+        return <PageLoader />;  // Replace with your loading component or UI
+    }
+    
+    if (error) {
+        return <ErrorMessage handler={() => {}}/>;  // Replace with your error UI
+    }
+
+
     return (
         <Box variant="pageContainer">
             <HStack px="5" justifyContent="space-between" alignItems="center" width="100%">

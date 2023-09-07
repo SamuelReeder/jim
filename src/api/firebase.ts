@@ -80,6 +80,17 @@ export const fetchStatistics = async () => {
   }
   
 
+export const fetchStats = async (uid: string) => {
+    const snapshot = await firestore().collection('users').doc(uid).get();
+    const data = snapshot.data();
+
+    if (data == null || data.stats == null) {
+        return null;
+    }
+    
+    return data.stats;
+}
+
 
 export const gen = (length: number) => {
     const db = firestore();
