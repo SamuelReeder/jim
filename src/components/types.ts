@@ -73,17 +73,17 @@ export type User = {
     }
     stats?: {
         "State": string | null; // whether bulking ("bulk") or cutting ("cut")
-        "Calories": number | null;
-        "Bench press": number | null;
-        "Squats": number | null;
-        "Deadlift": number | null;
-        "Pull ups": number | null;
-        "Push ups": number | null;
-        "Bicep curls": number | null;
-        "Shoulder press": number | null;
-        "Lateral raises": number | null;
-        "Front raises": number | null;
-        "Sit ups": number | null;
+        "Calories"?: number | null;
+        "Bench press"?: number | null;
+        "Squats"?: number | null;
+        "Deadlift"?: number | null;
+        "Pull ups"?: number | null;
+        "Push ups"?: number | null;
+        "Bicep curls"?: number | null;
+        "Shoulder press"?: number | null;
+        "Lateral raises"?: number | null;
+        "Front raises"?: number | null;
+        "Sit ups"?: number | null;
     } | null;
 }
 

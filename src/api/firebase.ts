@@ -48,19 +48,28 @@ export const updateStat = async (userId: string, stat: Stat) => {
 };
 
 export const saveChoice = async (userId, choice) => {
-    // Update user's choice
-    const ref = firestore().collection('users').doc(userId);
+    try {
 
-    await ref.update({
-        [`stats.State}`]: choice
-    });
+        console.log(choice);
+        // Update user's choice
+        const ref = firestore().collection('users').doc(userId);
+        await ref.update({
+            ['stats.State']: choice
+        });
+        
 
-    // Increment the count for the chosen option in statistics
-    const statsRef = firestore().collection('statistics').doc('states');
-    statsRef.update({
-        [choice]: firestore.FieldValue.increment(1)
-    });
+        // Increment the count for the chosen option in statistics
+        const statsRef = firestore().collection('statistics').doc('states');
+        await statsRef.update({
+            [choice.lower()]: firestore.FieldValue.increment(1)
+        });
+
+        console.log("Choice saved successfully");
+    } catch (error) {
+        console.error("Error saving choice:", error);
+    }
 }
+
 
 export const fetchStatistics = async () => {
     const snapshot = await firestore().collection('statistics').doc('choices').get();
@@ -85,7 +94,7 @@ export const fetchStats = async (uid: string) => {
     const data = snapshot.data();
 
     if (data == null || data.stats == null) {
-        return null;
+        return;
     }
     
     return data.stats;
@@ -131,6 +140,9 @@ export const createFirestoreUser = async (username: string, user: any) => {
             weekly: 0,
             monthly: 0,
         },
+        stats: {
+            State: "NA",
+        }
     } as User);
 
     // Initialize the 'requests' array in the 'friend_requests' collection for the user

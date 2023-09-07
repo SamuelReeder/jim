@@ -175,7 +175,7 @@ const StatisticsScreen = ({ navigation }) => {
     const [stats, setStats] = useState<any | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
-
+    const [data2, setData2] = useState<any | undefined>();
 
     const chartConfig = {
         backgroundGradientFrom: "#1E2923",
@@ -216,37 +216,43 @@ const StatisticsScreen = ({ navigation }) => {
     //     />
     // );
 
-    const data2 = [];
-
-
     useEffect(() => {
-
         const fetchStuff = async () => {
             if (user) {
-                fetchStats(user?.uid).then((res) => {
+                try {
+                    const res = await fetchStats(user.uid);
                     console.log(res);
+    
+                    if (res == null) {
+                        setLoading(false);
+                        setError(true);
+                        return;
+                    }
+
+    
                     setStats(res);
-                })
+    
+                    if (res.State) {
+                        console.log(res.State)
+                        setCurrentState(res.State);
+                    }   
+                    
+                    const newData = Object.entries(res).map(([metric, value]) => ({ metric, value }));
+
+                    setData2(newData); // Assuming you have a state [data2, setData2] for this
+                    
+                    setLoading(false);
+                } catch (error) {
+                    console.error("Error fetching stats:", error);
+                    setLoading(false);
+                    setError(true);
+                }
             }
-
-            if (stats == null) {
-                setLoading(false);
-                setError(true);
-                return;
-            }
-
-            if (stats.State) {
-                setCurrentState(stats.State);
-            }
-
-            stats.map((stat: any) => {
-                data2.push({ metric: stat.metric, value: stat.value });
-            })
-
-            setLoading(false);
-        }
+        };
+    
         fetchStuff();
-    }, [user])
+    }, [user]);
+    
 
     // const data2 = [
     //     { metric: "Calories", value: Math.floor(Math.random() * 500) },
@@ -271,7 +277,7 @@ const StatisticsScreen = ({ navigation }) => {
     }
     
     if (error) {
-        return <ErrorMessage handler={() => {}}/>;  // Replace with your error UI
+        return <ErrorMessage handler={fetchStats}/>;  // Replace with your error UI
     }
 
 
