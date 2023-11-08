@@ -30,7 +30,7 @@ const TabNavigator = () => {
                 headerTitleStyle: {
                     fontFamily: 'Poppins_400Regular',
                 },
-                tabBarActiveTintColor: '#e91e63',
+                tabBarActiveTintColor: 'black',
             }}
             backBehavior="order"
             id="app-nav">

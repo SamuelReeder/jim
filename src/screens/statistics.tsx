@@ -12,6 +12,8 @@ import { fetchStats, gen } from "../api";
 import { updateStat, saveChoice, fetchStatistics } from "../api";
 import { Stat, PageLoader, ErrorMessage } from "../components";
 import { useAuth } from "../navigation/auth_provider";
+import { setStatusBarNetworkActivityIndicatorVisible } from "expo-status-bar";
+import { set } from "date-fns";
 // import { PieChart } from "react-native-chart-kit";
 
 
@@ -176,6 +178,7 @@ const StatisticsScreen = ({ navigation }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
     const [data2, setData2] = useState<any | undefined>();
+    const [unit, setUnits] = useState<string>("lbs");
 
     const chartConfig = {
         backgroundGradientFrom: "#1E2923",
@@ -221,25 +224,25 @@ const StatisticsScreen = ({ navigation }) => {
             if (user) {
                 try {
                     const res = await fetchStats(user.uid);
-                    console.log(res);
     
                     if (res == null) {
                         setLoading(false);
                         setError(true);
                         return;
                     }
-
-    
-                    setStats(res);
     
                     if (res.State) {
-                        console.log(res.State)
                         setCurrentState(res.State);
                     }   
-                    
-                    const newData = Object.entries(res).map(([metric, value]) => ({ metric, value }));
-
-                    setData2(newData); // Assuming you have a state [data2, setData2] for this
+    
+                    // Remove the State attribute from res before setting it to the other variables
+                    const resCopy = { ...res };
+                    delete resCopy.State;
+                    setStats(resCopy);
+    
+                    const newData = Object.entries(resCopy).map(([metric, value]) => ({ metric, value }));
+                    setData2(newData);
+                    console.log(data2)
                     
                     setLoading(false);
                 } catch (error) {
@@ -252,6 +255,7 @@ const StatisticsScreen = ({ navigation }) => {
     
         fetchStuff();
     }, [user]);
+    
     
 
     // const data2 = [
@@ -282,8 +286,8 @@ const StatisticsScreen = ({ navigation }) => {
 
 
     return (
-        <Box variant="pageContainer">
-            <HStack px="5" justifyContent="space-between" alignItems="center" width="100%">
+        <Box variant="pageContainer" px="4" py="2">
+            <HStack justifyContent="space-between" alignItems="center" width="100%">
                 <Text>Metrics</Text>
                 <Select
                     width={24}
@@ -292,10 +296,12 @@ const StatisticsScreen = ({ navigation }) => {
                 //     bg: "cyan.600",
                 //     endIcon: <CheckIcon size="4" />,
                 // }}
+                onValueChange={(itemValue) => {
+                    setUnits(itemValue)
+                }}
                 >
-                    <Select.Item label="Option 1" value="1" />
-                    <Select.Item label="Option 2" value="2" />
-                    <Select.Item label="Option 3" value="3" />
+                    <Select.Item label="kg" value="kg" />
+                    <Select.Item label="lb" value="lb" />
                 </Select>
             </HStack>
             {/* <Pressable width="100%" flexDirection="row" onPress={() => {
@@ -309,13 +315,13 @@ const StatisticsScreen = ({ navigation }) => {
                 // setShowModal0(true);
             }}> */}
             <Pressable width="100%" onPress={() => setShowModal1(true)}>
-                <Box style={{ borderRadius: 15, backgroundColor: "black", padding: 20, margin: 10 }}>
+                <Box style={{ borderRadius: 15, backgroundColor: "black", padding: 20, marginVertical: 10}}>
                     <Text marginBottom="3" style={styles.title}>State</Text>
                     <Text marginY="3"
                         style={{
-                            color: currentState === 'bulking' ? 'green' :
-                                currentState === 'cutting' ? 'red' :
-                                    currentState === 'maintaining' ? 'blue' : 'white',
+                            color: currentState === 'Bulking' ? 'green' :
+                                currentState === 'Cutting' ? 'red' :
+                                    currentState === 'Maintaining' ? 'blue' : 'white',
                             fontWeight: '700',
                             fontSize: 16
                         }}>{currentState}</Text>
@@ -383,7 +389,7 @@ const StatisticsScreen = ({ navigation }) => {
                         <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} flex={1}>
                             <Box p="6" flex={1} justifyContent="space-between">
                                 <Heading marginX={6} size="lg">Change {currentStat?.metric}</Heading>
-                                <Input marginX={6} variant="underlined" style={styles.landing_input} py={3} placeholder="Weight (lbs)"
+                                <Input marginX={6} variant="underlined" style={styles.landing_input} py={3} placeholder={`Weight (${unit})`}
                                     onChangeText={(value) => {
                                         const stat = currentStat;
                                         if (!isNaN(parseFloat(value)) && stat != null) {
@@ -465,22 +471,37 @@ const StatisticsScreen = ({ navigation }) => {
                             </Box>
                         </KeyboardAvoidingView>
                     </Modal.Body>
-                    {/* <Modal.Footer>
+                     {/* <Modal.Footer>
                         <Button.Group space={2}>
                             <Button variant="ghost" colorScheme="blueGray" onPress={() => {
-                                setShowModal(false);
+                                setShowModal0(false);
                             }}>
                                 Cancel
                             </Button>
                             <Button onPress={() => {
-                                setShowModal(false);
+                                setShowModal0(false);
                             }}>
                                 Save
                             </Button>
                         </Button.Group>
-                    </Modal.Footer> */}
+                    </Modal.Footer>  */}
                 </Modal.Content>
             </Modal>
+
+            
+            <Button style={styles.landing_button} p="5" marginY="5" onPress={() => setShowModal0(true)}>
+                <Box justifyContent="center" alignItems="center">
+                    <Text
+                        style={{
+                            color: '#FFFFFF',
+                            // fontSize: 20,
+                        }}>
+                        ADD
+                    </Text>
+                    {/* npm i react-native-progress */}
+                </Box>
+
+            </Button>
 
 
 

@@ -61,7 +61,7 @@ export const saveChoice = async (userId, choice) => {
         // Increment the count for the chosen option in statistics
         const statsRef = firestore().collection('statistics').doc('states');
         await statsRef.update({
-            [choice.lower()]: firestore.FieldValue.increment(1)
+            [choice.toLowerCase()]: firestore.FieldValue.increment(1)
         });
 
         console.log("Choice saved successfully");
@@ -142,6 +142,18 @@ export const createFirestoreUser = async (username: string, user: any) => {
         },
         stats: {
             State: "NA",
+Bench_press: 0,
+Squats: 0,
+Deadlift: 0,
+Pull_ups: 0,
+Push_ups: 0,
+Bicep_curls: 0,
+Shoulder_press: 0,
+Lateral_raises: 0,
+Front_raises: 0,
+Sit_ups: 0
+            
+            
         }
     } as User);
 
