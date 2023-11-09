@@ -15,7 +15,7 @@ Welcome to jim, the social media platform for fitness enthusiasts! jim is design
 
 Ready to join the jim community? Download the latest version of Jim for Android:
 
-[Download Jim APK](https://expo.dev/artifacts/eas/aNft3J22oPFa6X7y1LRAzB.aab)
+[Download Jim APK](https://expo.dev/artifacts/eas/pwpHEYBewujsAbhu653bWP.apk)
 
 ### Installation Instructions
 
