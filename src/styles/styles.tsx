@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: 'white',
         lineHeight: 24,
-        fontSize: 24,
+        fontSize: 20,
         // lineHeight: 40,
         fontFamily: 'Poppins',
         fontWeight: '700',

@@ -1,11 +1,12 @@
 import { sendFriendRequest } from "../api";
 import { useAuth } from '../navigation/auth_provider';
-import { AntDesign, MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
+import { AntDesign, MaterialCommunityIcons, Ionicons, FontAwesome6  } from '@expo/vector-icons';
 import { FlatList, Image, Box, Text, VStack, Divider, Button, View, Pressable, Center, HStack, Heading, Select, CheckIcon, Avatar } from "native-base";
 import { followUser } from "../api";
+import { User } from "./types";
 import React from "react";
 
-const ProfileHeader = ({ navigation, account, tags, selectedTags, setSelectedTags, isOtherUser }) => {
+const ProfileHeader = ({ navigation, account, tags, selectedTags, setSelectedTags, isOtherUser }: { navigation: any, account: User, tags: string[], selectedTags: string[], setSelectedTags: React.Dispatch<React.SetStateAction<string[]>>, isOtherUser: boolean }) => {
     const { user } = useAuth();
     const iconSize : number = 42;
     return (
@@ -45,7 +46,7 @@ const ProfileHeader = ({ navigation, account, tags, selectedTags, setSelectedTag
                     <Box flex={1} alignItems="center">
                         <VStack alignItems="center">
                             <Text variant="bold" fontSize='2xl'>
-                                272
+                                {account.followers ? Object.keys(account.followers).length : 0}
                             </Text>
                             <Text color="gray.500" fontSize="sm">
                                 followers
@@ -59,7 +60,7 @@ const ProfileHeader = ({ navigation, account, tags, selectedTags, setSelectedTag
                     <Box flex={1} alignItems="center">
                         <VStack alignItems="center">
                             <Text variant="bold" fontSize='2xl'>
-                                47
+                                {account.following ? Object.keys(account.following).length : 0}
                             </Text>
                             <Text color="gray.500" fontSize="sm">
                                 following
@@ -121,8 +122,14 @@ const ProfileHeader = ({ navigation, account, tags, selectedTags, setSelectedTag
                                             <Text color="primary.800" fontWeight="bold" mb={1} fontSize="md">
                                                 {name}
                                             </Text>
-                                            <MaterialCommunityIcons name="weight-lifter" size={iconSize} color="black" />
-                                            
+                                            {value === 'Cutting' ? (
+                                                <MaterialCommunityIcons name="content-cut" size={iconSize} color="black" />
+                                            ) : value === 'Bulking' ? (
+                                                <FontAwesome6 name="weight-scale" size={iconSize} color="black" />
+                                            ) : (
+                                                <MaterialCommunityIcons name="speedometer-medium" size={iconSize} color="black" />
+                                            )
+                                        }               
                                         </>
                                     ) : (
                                         <Text color="primary.800" fontWeight="bold" mb={1}>
@@ -138,24 +145,6 @@ const ProfileHeader = ({ navigation, account, tags, selectedTags, setSelectedTag
                     </Box>
                 </VStack>
             )}
-
-            {/* <HStack width="100%" justifyContent="space-between" alignItems="center" mt={4}>
-                <Text fontWeight="bold" fontSize="lg">
-                    Posts
-                </Text>
-                <Select
-                    width={20}
-                    placeholder="Filter"
-                    _selectedItem={{
-                        bg: "cyan.600",
-                        endIcon: <CheckIcon size="4" />,
-                    }}
-                >
-                    <Select.Item label="Option 1" value="1" />
-                    <Select.Item label="Option 2" value="2" />
-                    <Select.Item label="Option 3" value="3" />
-                </Select>
-            </HStack> */}
             <HStack alignItems="center" justifyContent="space-between" width="100%" my={4}>
                 <Text fontWeight="bold" fontSize="lg">
                     Posts

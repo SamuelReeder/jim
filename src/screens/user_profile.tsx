@@ -7,6 +7,7 @@ import { fetchUser, fetchUserPosts } from "../api";
 import { NavigationProp } from "@react-navigation/native";
 import ErrorMessage from "../components/error";
 import { Video, ResizeMode } from "expo-av";
+import React from "react";
 
 const windowWidth = Dimensions.get('window').width;
 

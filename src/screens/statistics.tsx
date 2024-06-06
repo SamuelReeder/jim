@@ -77,17 +77,9 @@ const genData = () => {
 
 }
 
-const ProgressBar = ({ args }) => {
+const ProgressBar = ({ args }: { args: number }) => {
     // const progress = useRef(new Animated.Value(0)).current;
     const [progress, setProgress] = useState(0);
-
-    //   useEffect(() => {
-    //     Animated.timing(progress, {
-    //       toValue: (args / 100),
-    //       duration: 2000,
-    //       useNativeDriver: false,
-    //     }).start();
-    //   }, []);
 
     useEffect(() => {
         // Start the animation
@@ -99,17 +91,25 @@ const ProgressBar = ({ args }) => {
     }, []);
 
     return (
-        // <Box>
-        <Progress.Bar progress={0.5} animated={true} animationType="decay" height={5} borderWidth={7.5} borderRadius={50} borderColor="#3d5875" color="#00e0ff" />
-        // {/* </Box> */}
+        <Progress.Bar 
+            progress={0.5} 
+            animated={true} 
+            animationType="decay" 
+            height={5} 
+            borderWidth={7.5} 
+            borderRadius={50} 
+            borderColor="#3d5875" 
+            color="#00e0ff" 
+            width={null} // Set width to null to make the progress bar take up the full width of its parent container
+        />
     );
 };
 
 
-const CircularProgress = ({ args }) => {
-    const [isMoving, setIsMoving] = useState(false);
-    const [pointsDelta, setPointsDelta] = useState(0);
-    const [points, setPoints] = useState(args.value);
+const CircularProgress = ({ args }: {args: Stat}) => {
+    const [isMoving, setIsMoving] = useState<boolean>(false);
+    const [pointsDelta, setPointsDelta] = useState<number>(0);
+    const [points, setPoints] = useState<number>(args.value ?? 0);
 
     const circularProgressRef = useRef(null);
 
@@ -142,9 +142,8 @@ const CircularProgress = ({ args }) => {
     const fill = (points / MAX_POINTS) * 100;
 
     return (
-        //   <View style={styles.container} {...panResponder.panHandlers}>
         <AnimatedCircularProgress
-            size={(screenWidth / 2) - 60}
+            size={(screenWidth / 1.3) - 60}
             width={5}
             backgroundWidth={15}
             fill={fill}
@@ -157,13 +156,6 @@ const CircularProgress = ({ args }) => {
                 </View>
             )}
         </AnimatedCircularProgress>
-
-
-        // <Text style={[styles.pointsDelta, isMoving && styles.pointsDeltaActive]}>
-        //   {pointsDelta >= 0 && '+'}
-        //   {pointsDelta}
-        // </Text>
-        //   </View>
     );
 };
 
@@ -224,26 +216,26 @@ const StatisticsScreen = ({ navigation }) => {
             if (user) {
                 try {
                     const res = await fetchStats(user.uid);
-    
+
                     if (res == null) {
                         setLoading(false);
                         setError(true);
                         return;
                     }
-    
+
                     if (res.State) {
                         setCurrentState(res.State);
-                    }   
-    
+                    }
+
                     // Remove the State attribute from res before setting it to the other variables
                     const resCopy = { ...res };
                     delete resCopy.State;
                     setStats(resCopy);
-    
+
                     const newData = Object.entries(resCopy).map(([metric, value]) => ({ metric, value }));
                     setData2(newData);
                     console.log(data2)
-                    
+
                     setLoading(false);
                 } catch (error) {
                     console.error("Error fetching stats:", error);
@@ -252,11 +244,11 @@ const StatisticsScreen = ({ navigation }) => {
                 }
             }
         };
-    
+
         fetchStuff();
     }, [user]);
-    
-    
+
+
 
     // const data2 = [
     //     { metric: "Calories", value: Math.floor(Math.random() * 500) },
@@ -279,9 +271,9 @@ const StatisticsScreen = ({ navigation }) => {
     if (loading) {
         return <PageLoader />;  // Replace with your loading component or UI
     }
-    
+
     if (error) {
-        return <ErrorMessage handler={fetchStats}/>;  // Replace with your error UI
+        return <ErrorMessage handler={fetchStats} />;  // Replace with your error UI
     }
 
 
@@ -292,13 +284,13 @@ const StatisticsScreen = ({ navigation }) => {
                 <Select
                     width={24}
                     placeholder="Units"
-                // _selectedItem={{
-                //     bg: "cyan.600",
-                //     endIcon: <CheckIcon size="4" />,
-                // }}
-                onValueChange={(itemValue) => {
-                    setUnits(itemValue)
-                }}
+                    // _selectedItem={{
+                    //     bg: "cyan.600",
+                    //     endIcon: <CheckIcon size="4" />,
+                    // }}
+                    onValueChange={(itemValue) => {
+                        setUnits(itemValue)
+                    }}
                 >
                     <Select.Item label="kg" value="kg" />
                     <Select.Item label="lb" value="lb" />
@@ -315,7 +307,7 @@ const StatisticsScreen = ({ navigation }) => {
                 // setShowModal0(true);
             }}> */}
             <Pressable width="100%" onPress={() => setShowModal1(true)}>
-                <Box style={{ borderRadius: 15, backgroundColor: "black", padding: 20, marginVertical: 10}}>
+                <Box style={{ borderRadius: 15, backgroundColor: "black", padding: 20, marginVertical: 10 }}>
                     <Text marginBottom="3" style={styles.title}>State</Text>
                     <Text marginY="3"
                         style={{
@@ -340,11 +332,10 @@ const StatisticsScreen = ({ navigation }) => {
                 </Box>
             </Pressable>
 
-
             <FlatList
                 data={data2}
-                renderItem={({ item, index }) =>
-                    <Pressable onPress={() => {
+                renderItem={({ item, index }: { item: Stat, index: number }) =>
+                    <Pressable width="100%" onPress={() => {
                         // navigation.navigate('Stat', { stat: item.metric })
 
                         const stat: Stat = {
@@ -354,13 +345,22 @@ const StatisticsScreen = ({ navigation }) => {
                         setCurrentStat(stat)
                         setShowModal0(true);
                     }}>
-                        <Box style={{ borderRadius: 15, backgroundColor: "black", padding: 20, margin: 5 }}>
-                            <Text marginBottom="3" style={styles.title}>{item.metric}</Text><CircularProgress args={item} />
+                        <Box style={{
+                            borderRadius: 15,
+                            backgroundColor: "black",
+                            padding: 20,
+                            margin: 5,
+                            justifyContent: 'center', // Center content vertically
+                        }}>
+                            <Text marginBottom="3" style={styles.title}>{item.metric}</Text>
+                            <View style={{ alignItems: 'center' }}>
+                                <CircularProgress args={item} />
+                            </View>
                             <Text marginY="3" style={{ color: 'white', fontWeight: '700', fontSize: 16 }}>Percentile</Text>
                             <ProgressBar args={0.7} />
                         </Box>
                     </Pressable>}
-                keyExtractor={item => item.metric.toString()}
+                keyExtractor={item => item.metric.toString( )}
                 numColumns={2}
             />
             {/* <Box width="90%">
@@ -471,7 +471,7 @@ const StatisticsScreen = ({ navigation }) => {
                             </Box>
                         </KeyboardAvoidingView>
                     </Modal.Body>
-                     {/* <Modal.Footer>
+                    {/* <Modal.Footer>
                         <Button.Group space={2}>
                             <Button variant="ghost" colorScheme="blueGray" onPress={() => {
                                 setShowModal0(false);
@@ -488,7 +488,7 @@ const StatisticsScreen = ({ navigation }) => {
                 </Modal.Content>
             </Modal>
 
-            
+
             <Button style={styles.landing_button} p="5" marginY="5" onPress={() => setShowModal0(true)}>
                 <Box justifyContent="center" alignItems="center">
                     <Text
