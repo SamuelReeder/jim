@@ -1,11 +1,13 @@
 import { sendFriendRequest } from "../api";
 import { useAuth } from '../navigation/auth_provider';
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign, MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import { FlatList, Image, Box, Text, VStack, Divider, Button, View, Pressable, Center, HStack, Heading, Select, CheckIcon, Avatar } from "native-base";
 import { followUser } from "../api";
+import React from "react";
 
 const ProfileHeader = ({ navigation, account, tags, selectedTags, setSelectedTags, isOtherUser }) => {
     const { user } = useAuth();
+    const iconSize : number = 42;
     return (
         <Box variant="headerContainer" px="4" pt="5">
             <Avatar
@@ -97,15 +99,38 @@ const ProfileHeader = ({ navigation, account, tags, selectedTags, setSelectedTag
                     >
                         <HStack space={4} alignItems="center" justifyContent="space-between">
                             {Object.entries(account.stats).slice(0, 3).map(([name, value]) => (
-                                <VStack alignItems="center" width="30%" key={name}>
-                                    <Text color="primary.800" fontWeight="bold" mb={1}>
-                                        {name}
-                                    </Text>
-                                    <Text variant="bold" fontSize='2xl'>
-                                        {value}
-                                    </Text>
+                                <VStack alignItems="center" width="50%" key={name} space={1} >
+                                    {name === 'Priority' ? (
+                                        <>
+                                            <Text color="primary.800" fontWeight="bold" mb={1} fontSize="md">
+                                                {name}
+                                            </Text>
+                                            {value === 'Aesthetics' ? (
+                                                <Ionicons name="body" size={iconSize} color="black" />
+                                            ) : value === 'Powerlifting' ? (
+                                                <MaterialCommunityIcons name="weight-lifter" size={iconSize} color="black" />
+                                            ) : value === 'Strongman' ? (
+                                                <MaterialCommunityIcons name="size-xxxl" size={iconSize} color="black" />
+                                            ) : (
+                                                <MaterialCommunityIcons name="size-xxs" size={iconSize} color="black" />
+                                            )
+                                        }                                            
+                                        </>
+                                    ) : name === 'State' ? (
+                                        <>
+                                            <Text color="primary.800" fontWeight="bold" mb={1} fontSize="md">
+                                                {name}
+                                            </Text>
+                                            <MaterialCommunityIcons name="weight-lifter" size={iconSize} color="black" />
+                                            
+                                        </>
+                                    ) : (
+                                        <Text color="primary.800" fontWeight="bold" mb={1}>
+                                            {name}
+                                        </Text>
+                                    )}
                                     <Text color="gray.500" fontSize="sm">
-                                        lbs
+                                        {value}
                                     </Text>
                                 </VStack>
                             ))}
