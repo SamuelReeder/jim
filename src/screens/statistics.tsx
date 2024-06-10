@@ -14,6 +14,7 @@ import { Stat, PageLoader, ErrorMessage } from "../components";
 import { useAuth } from "../navigation/auth_provider";
 import { setStatusBarNetworkActivityIndicatorVisible } from "expo-status-bar";
 import { set } from "date-fns";
+import { line } from "d3-shape";
 // import { PieChart } from "react-native-chart-kit";
 
 
@@ -311,11 +312,13 @@ const StatisticsScreen = ({ navigation }) => {
                     <Text marginBottom="3" style={styles.title}>State</Text>
                     <Text marginY="3"
                         style={{
-                            color: currentState === 'Bulking' ? 'green' :
-                                currentState === 'Cutting' ? 'red' :
-                                    currentState === 'Maintaining' ? 'blue' : 'white',
+                            color: currentState === 'Bulking' ? '#98FB98' : // Light green
+                                currentState === 'Cutting' ? '#FF7F7F' : // Light red
+                                    currentState === 'Maintaining' ? '#ADD8E6' : // Light blue
+                                        'white',
                             fontWeight: '700',
-                            fontSize: 16
+                            fontSize: 28,
+                            lineHeight: 30
                         }}>{currentState}</Text>
                     {/* <PieChart
                         data={data}
@@ -349,7 +352,6 @@ const StatisticsScreen = ({ navigation }) => {
                             borderRadius: 15,
                             backgroundColor: "black",
                             padding: 20,
-                            margin: 5,
                             justifyContent: 'center', // Center content vertically
                         }}>
                             <Text marginBottom="3" style={styles.title}>{item.metric}</Text>
@@ -414,20 +416,6 @@ const StatisticsScreen = ({ navigation }) => {
                             </Box>
                         </KeyboardAvoidingView>
                     </Modal.Body>
-                    {/* <Modal.Footer>
-                        <Button.Group space={2}>
-                            <Button variant="ghost" colorScheme="blueGray" onPress={() => {
-                                setShowModal(false);
-                            }}>
-                                Cancel
-                            </Button>
-                            <Button onPress={() => {
-                                setShowModal(false);
-                            }}>
-                                Save
-                            </Button>
-                        </Button.Group>
-                    </Modal.Footer> */}
                 </Modal.Content>
             </Modal>
             <Modal isOpen={showModal1} onClose={() => setShowModal1(false)}>
@@ -471,25 +459,11 @@ const StatisticsScreen = ({ navigation }) => {
                             </Box>
                         </KeyboardAvoidingView>
                     </Modal.Body>
-                    {/* <Modal.Footer>
-                        <Button.Group space={2}>
-                            <Button variant="ghost" colorScheme="blueGray" onPress={() => {
-                                setShowModal0(false);
-                            }}>
-                                Cancel
-                            </Button>
-                            <Button onPress={() => {
-                                setShowModal0(false);
-                            }}>
-                                Save
-                            </Button>
-                        </Button.Group>
-                    </Modal.Footer>  */}
                 </Modal.Content>
             </Modal>
 
 
-            <Button style={styles.landing_button} p="5" marginY="5" onPress={() => setShowModal0(true)}>
+            {/* <Button style={styles.landing_button} p="5" marginY="5" onPress={() => setShowModal0(true)}>
                 <Box justifyContent="center" alignItems="center">
                     <Text
                         style={{
@@ -498,10 +472,9 @@ const StatisticsScreen = ({ navigation }) => {
                         }}>
                         ADD
                     </Text>
-                    {/* npm i react-native-progress */}
                 </Box>
 
-            </Button>
+            </Button> */}
 
 
 

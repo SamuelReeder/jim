@@ -7,6 +7,12 @@ import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 // for progress pics specifically, will calculate how often they post a progress pic and track it
 //
 
+export enum Tags {
+    Progress = "Progress",
+    PersonalRecord = "PR",
+    Miscellaneous = "Misc",
+}
+
 export type AppTabsParamList = {
     Profile: undefined,
     Search: undefined;

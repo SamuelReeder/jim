@@ -21,7 +21,7 @@ const UserProfileScreen = ({ route, navigation }: ProfilePageProps) => {
     const [posts, setPosts] = useState<Post[] | null>();
     const [loading, setLoading] = useState(true);
     const [profile, setProfile] = useState<any>(null);
-    const tagList = ["misc", "tag2", "tag3"];
+    const tagList = ["misc", "progress", "pr"];
     const [filteredPosts, setFilteredPosts] = useState<Post[]>();
     const [selectedTags, setSelectedTags] = useState<string[]>(tagList);
 
