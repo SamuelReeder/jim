@@ -173,6 +173,14 @@ const styles = StyleSheet.create({
         borderRadius: 100,
     },
 
+    selectedTag: {
+        backgroundColor: '#000000',
+    },
+
+    unselectedTag: {
+        backgroundColor: '#700646',
+    },
+
 });
 
 export default styles;

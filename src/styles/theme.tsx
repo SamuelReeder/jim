@@ -1,7 +1,4 @@
 import { extendTheme } from 'native-base';
-import * as Font from 'expo-font';
-import { Poppins_400Regular, Poppins_700Bold, useFonts } from '@expo-google-fonts/poppins';
-import { tags } from 'react-native-svg/lib/typescript/xml';
 
 const theme = extendTheme({
     components: {

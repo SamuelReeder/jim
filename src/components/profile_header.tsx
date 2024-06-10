@@ -1,14 +1,14 @@
-import { sendFriendRequest } from "../api";
 import { useAuth } from '../navigation/auth_provider';
-import { AntDesign, MaterialCommunityIcons, Ionicons, FontAwesome6  } from '@expo/vector-icons';
-import { FlatList, Image, Box, Text, VStack, Divider, Button, View, Pressable, Center, HStack, Heading, Select, CheckIcon, Avatar } from "native-base";
+import { AntDesign, MaterialCommunityIcons, Ionicons, FontAwesome6 } from '@expo/vector-icons';
+import { Box, Text, VStack, Button, Pressable, HStack, Avatar } from "native-base";
 import { followUser } from "../api";
-import { User } from "./types";
+import { Tags, User } from "./types";
 import React from "react";
+import styles from '../styles/styles';
 
-const ProfileHeader = ({ navigation, account, tags, selectedTags, setSelectedTags, isOtherUser }: { navigation: any, account: User, tags: string[], selectedTags: string[], setSelectedTags: React.Dispatch<React.SetStateAction<string[]>>, isOtherUser: boolean }) => {
+const ProfileHeader = ({ navigation, account, tags, selectedTags, setSelectedTags, isOtherUser }: { navigation: any, account: User, tags: Tags[], selectedTags: Tags[], setSelectedTags: React.Dispatch<React.SetStateAction<Tags[]>>, isOtherUser: boolean }) => {
     const { user } = useAuth();
-    const iconSize : number = 42;
+    const iconSize: number = 42;
     return (
         <Box variant="headerContainer" px="4" pt="5">
             <Avatar
@@ -115,7 +115,7 @@ const ProfileHeader = ({ navigation, account, tags, selectedTags, setSelectedTag
                                             ) : (
                                                 <MaterialCommunityIcons name="size-xxs" size={iconSize} color="black" />
                                             )
-                                        }                                            
+                                            }
                                         </>
                                     ) : name === 'State' ? (
                                         <>
@@ -129,7 +129,7 @@ const ProfileHeader = ({ navigation, account, tags, selectedTags, setSelectedTag
                                             ) : (
                                                 <MaterialCommunityIcons name="speedometer-medium" size={iconSize} color="black" />
                                             )
-                                        }               
+                                            }
                                         </>
                                     ) : (
                                         <Text color="primary.800" fontWeight="bold" mb={1}>
@@ -150,33 +150,24 @@ const ProfileHeader = ({ navigation, account, tags, selectedTags, setSelectedTag
                     Posts
                 </Text>
                 <HStack justifyContent="flex-end">
-                    {tags.map((tag: string) => (
+                    {tags.map((tag: Tags) => (
                         <Button
                             key={tag}
                             variant="tag"
-                            // colorScheme={selectedTags.includes(tag) ? "primary" : "secondary"}
-                            // TODO: CHANGE COLOUR BASED ON SELECTION
-                            color="white"
-                            startIcon={<AntDesign name="tagso" size={24} color="black" />}
+                            // style={selectedTags.includes(tag) ? styles.selectedTag : styles.unselectedTag}
+                            backgroundColor={selectedTags.includes(tag) ? 'dark.100' : 'dark.300'}
+                            startIcon={<AntDesign name="tagso" size={24} color="white"/>}
                             onPress={() => {
                                 if (selectedTags.includes(tag)) {
-                                    setSelectedTags(selectedTags.filter((t: string) => t !== tag));
+                                    const newTags = selectedTags.filter((t: Tags) => t !== tag);
+                                    setSelectedTags(newTags);
                                 } else {
-                                    setSelectedTags([...selectedTags, tag]);
+                                    const newTags = [...selectedTags, tag];
+                                    setSelectedTags(newTags);
                                 }
                             }}>
-                            {/* <LinearGradient
-                            colors={['rgba(0,0,0,0.6)', 'rgba(0,0,0,0.3)']}
-                            style={{
-                                position: 'absolute',
-                                left: 0,
-                                right: 0,
-                                top: 0,
-                                height: '100%',
-                                borderRadius: 8
-                            }}
-                        /> */}
-                            {tag}</Button>
+                            <Text color="white">{tag}</Text>
+                        </Button>
                     ))}
                 </HStack>
             </HStack>

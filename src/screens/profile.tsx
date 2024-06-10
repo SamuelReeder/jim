@@ -1,27 +1,25 @@
-import { FlatList, Image, Box, Text, VStack, Divider, Button, View, Pressable, Center, HStack, Heading, Select, CheckIcon, Avatar } from "native-base";
+import { FlatList, Image, Box,View, Pressable } from "native-base";
 import { useAuth } from "../navigation/auth_provider"
 import { Dimensions } from "react-native";
-import { useRef, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import firestore from "@react-native-firebase/firestore";
 import { Post } from "../components";
 import { ResizeMode, Video } from 'expo-av';
-import { AntDesign } from '@expo/vector-icons';
-// import { LinearGradient } from 'expo-linear-gradient';
 import { ProfileHeader } from "../components";
+import React from "react";
+import { Tags } from "../components/types";
 
 
 const windowWidth = Dimensions.get('window').width;
 
 
 
-const ProfileScreen = ({ navigation }) => {
-    const tagList = ["misc", "tag2", "tag3"];
+const ProfileScreen = ({ navigation } : {navigation: any}) => {
     const { user, account } = useAuth();
     const [posts, setPosts] = useState<Post[]>();
     const [filteredPosts, setFilteredPosts] = useState<Post[]>();
     const [loading, setLoading] = useState(true);
-    const [selectedTags, setSelectedTags] = useState<string[]>(tagList);
-
+    const [selectedTags, setSelectedTags] = useState<Tags[]>([Tags.Progress, Tags.PersonalRecord, Tags.Miscellaneous]);
 
 
     const fetchUserPosts = async () => {
@@ -60,33 +58,35 @@ const ProfileScreen = ({ navigation }) => {
     // };
 
     useEffect(() => {
-        const unsubscribe = navigation.addListener('focus', async () => {
+        const fetchPosts = async () => {
             if (user) {
                 const userPosts = await fetchUserPosts();
-                setPosts(userPosts);
-                // setLoading(false)
+    
+                const filteredPosts = userPosts.filter((post) =>
+                    selectedTags.length > 0 ? selectedTags.includes(post?.tags[0] as Tags) : true
+                );
+
+                setFilteredPosts(filteredPosts);
             }
+        };
+    
+        fetchPosts(); // Fetch posts immediately when the component mounts
+    
+        const unsubscribe = navigation.addListener('focus', async () => {
+            fetchPosts(); // Fetch posts also when the screen gains focus
         });
-
+    
         return unsubscribe;
-    }, [navigation, user]);
-
-    useEffect(() => {
-        const filteredPosts = posts?.filter((post) =>
-            selectedTags.length > 0 ? selectedTags.includes(post?.tags[0]) : true
-        );
-        setFilteredPosts(filteredPosts);
-    }, [selectedTags, posts]);
-
+    }, [navigation, user, selectedTags]); // Add selectedTags to the dependency array
 
     return (
         <Box variant="headerContainer">
             <FlatList width="100%"
                 contentContainerStyle={{ paddingHorizontal: 9 }}
                 data={filteredPosts}
-                ListHeaderComponent={<ProfileHeader navigation={navigation} account={account} tags={tagList} selectedTags={selectedTags} setSelectedTags={setSelectedTags} isOtherUser={false} />}
-                renderItem={({ item }) =>
-                    <View style={{ width: windowWidth / 3 - 6, height: windowWidth / 3 - 6 }}>
+                ListHeaderComponent={<ProfileHeader navigation={navigation} account={account} tags={[Tags.Progress, Tags.PersonalRecord, Tags.Miscellaneous]} selectedTags={selectedTags} setSelectedTags={setSelectedTags} isOtherUser={false} />}
+                renderItem={({ item }) => {
+                    return <View style={{ width: windowWidth / 3 - 6, height: windowWidth / 3 - 6 }}>
                         <Box flex={1} margin="0.5">
                             <Pressable onPress={() => navigation.navigate('Post', { post: item })}>
                                 {item.media[0].type === 'image' ? (
@@ -111,6 +111,7 @@ const ProfileScreen = ({ navigation }) => {
                             </Pressable>
                         </Box>
                     </View>
+                    }
                 }
                 keyExtractor={item => item.id}
                 numColumns={3}
