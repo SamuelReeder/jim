@@ -1,4 +1,4 @@
-import { Text, Input, Box, Heading, KeyboardAvoidingView, Button } from '@gluestack-ui/themed-native-base';
+import { Text, Input, Box, Heading, KeyboardAvoidingView, Button } from 'native-base';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/auth_navigation';
 import { useAuth } from '../navigation/auth_provider';

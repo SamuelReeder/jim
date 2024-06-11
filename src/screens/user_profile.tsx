@@ -1,4 +1,4 @@
-import { FlatList, Image, Box, View, Pressable } from "@gluestack-ui/themed-native-base";
+import { FlatList, Image, Box, View, Pressable } from "native-base";
 import { Dimensions } from "react-native";
 import { useState, useEffect } from "react";
 import { PageLoader, Post } from "../components";

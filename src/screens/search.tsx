@@ -1,4 +1,4 @@
-import { Box, Text, HStack, Image, VStack, Pressable } from '@gluestack-ui/themed-native-base';
+import { Box, Text, HStack, Image, VStack, Pressable } from 'native-base';
 import { useState } from 'react';
 import algoliasearch from 'algoliasearch/lite';
 import { InstantSearch } from 'react-instantsearch-hooks';

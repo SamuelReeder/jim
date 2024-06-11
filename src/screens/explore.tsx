@@ -1,4 +1,4 @@
-import { Box } from "@gluestack-ui/themed-native-base";
+import { Box } from "native-base";
 
 
 const ExploreScreen = ({ navigation }) => {

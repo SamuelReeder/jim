@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pressable, Box } from '@gluestack-ui/themed-native-base';
+import { Pressable, Box } from 'native-base';
 
 type PressableProps = React.ComponentProps<typeof Pressable> & {
   children: (states: { isHovered: boolean; isPressed: boolean; isFocused: boolean }) => React.ReactNode;

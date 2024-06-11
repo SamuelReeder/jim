@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { useInfiniteHits } from 'react-instantsearch-hooks';
-import {View, FlatList} from '@gluestack-ui/themed-native-base';
+import {View, FlatList} from 'native-base';
 import styles from '../styles/styles';
 
 const InfiniteHits = ({ hitComponent: Hit, ...props }) => {

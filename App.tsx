@@ -1,7 +1,7 @@
 import React from 'react';
 import 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
-import { NativeBaseProvider, Box } from "@gluestack-ui/themed-native-base";
+import { NativeBaseProvider, Box } from "native-base";
 import theme from './src/styles/theme';
 import 'expo-dev-client';
 import Providers from './src/navigation/providers';

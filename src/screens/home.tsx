@@ -1,4 +1,4 @@
-import { Box, Button, Image, Text, FlatList, HStack, VStack, Avatar, Pressable } from "@gluestack-ui/themed-native-base";
+import { Box, Button, Image, Text, FlatList, HStack, VStack, Avatar, Pressable } from "native-base";
 // import { FlatList } from "react-native-gesture-handler";
 import { getRecentPostsFromFollowing, fetchUser, hasUserLikedPost, likePost, unlikePost } from "../api";
 import { useAuth } from "../navigation/auth_provider";

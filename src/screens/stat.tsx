@@ -1,4 +1,4 @@
-import { Center, Text, Button, useColorMode, HStack, Switch, Box } from '@gluestack-ui/themed-native-base';
+import { Center, Text, Button, useColorMode, HStack, Switch, Box } from 'native-base';
 import { Dimensions, View } from 'react-native';
 import {
     LineChart,
