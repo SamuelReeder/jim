@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Image, FlatList, HStack, VStack, Text, Button } from "native-base";
+import { Box, Image, FlatList, HStack, VStack, Text, Button } from "@gluestack-ui/themed-native-base";
 import { getUserFollowRequests, getUserFollowers, acceptFollowRequest, getUserFollowing } from "../api";
 import { useAuth } from "../navigation/auth_provider";
 import { useEffect, useState } from "react";

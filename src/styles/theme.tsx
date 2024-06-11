@@ -1,4 +1,4 @@
-import { extendTheme } from 'native-base';
+import { extendTheme } from '@gluestack-ui/themed-native-base';
 
 const theme = extendTheme({
     components: {

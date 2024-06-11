@@ -1,4 +1,4 @@
-import { Center } from "native-base";
+import { Center } from "@gluestack-ui/themed-native-base";
 import { ReactNode } from "react";
 
 

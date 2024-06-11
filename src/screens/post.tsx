@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
-import { Box, ScrollView, Text, Image, VStack, Button, HStack, Avatar } from "native-base";
+import { Box, ScrollView, Text, Image, VStack, Button, HStack, Avatar } from "@gluestack-ui/themed-native-base";
 import { Post, User } from "../components";
 import { NavigationProp, RouteProp } from '@react-navigation/native';
 import { Dimensions, StyleSheet } from "react-native";

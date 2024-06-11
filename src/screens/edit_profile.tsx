@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Image } from 'react-native';
-import { Box, VStack, Button, Input, Text, FormControl, ScrollView, Pressable } from 'native-base';
+import { Box, VStack, Button, Input, Text, FormControl, ScrollView, Pressable } from '@gluestack-ui/themed-native-base';
 import { useAuth } from '../navigation/auth_provider';
 import styles from '../styles/styles';
 import { AntDesign } from '@expo/vector-icons';

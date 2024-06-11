@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, VStack, HStack, Button, Modal, Link, Input, Divider, IconButton, Text, Switch, FormControl, ScrollView, Pressable, Image } from 'native-base';
+import { Box, VStack, HStack, Button, Modal, Link, Input, Divider, IconButton, Text, Switch, FormControl, ScrollView, Pressable, Image } from '@gluestack-ui/themed-native-base';
 import { useAuth } from '../navigation/auth_provider';
 import { NicePressable } from '../components';
 import { MaterialIcons, AntDesign } from '@expo/vector-icons';

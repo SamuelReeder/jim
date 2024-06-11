@@ -1,7 +1,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AntDesign, Ionicons, MaterialCommunityIcons, MaterialIcons  } from '@expo/vector-icons';
-import { Image, Button, Icon, HStack } from 'native-base';
+import { Image, Button, Icon, HStack } from '@gluestack-ui/themed-native-base';
 import { useAuth } from './auth_provider';
 import * as Screens from '../screens';
 import { createStackNavigator } from '@react-navigation/stack';

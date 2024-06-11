@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { View, Input } from 'native-base';
+import { View, Input } from '@gluestack-ui/themed-native-base';
 import { useSearchBox } from 'react-instantsearch-hooks';
 import { StyleSheet } from 'react-native';
 

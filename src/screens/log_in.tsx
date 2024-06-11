@@ -1,5 +1,5 @@
 import {useEffect}from 'react';
-import { Center, Text, Input, Button, Box, Image, HStack, VStack, Spacer } from 'native-base';
+import { Center, Text, Input, Button, Box, Image, HStack, VStack, Spacer } from '@gluestack-ui/themed-native-base';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/auth_navigation';
 import styles from '../styles/styles';

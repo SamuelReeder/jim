@@ -1,6 +1,6 @@
 import { useAuth } from '../navigation/auth_provider';
 import { AntDesign, MaterialCommunityIcons, Ionicons, FontAwesome6 } from '@expo/vector-icons';
-import { Box, Text, VStack, Button, Pressable, HStack, Avatar } from "native-base";
+import { Box, Text, VStack, Button, Pressable, HStack, Avatar } from "@gluestack-ui/themed-native-base";
 import { followUser } from "../api";
 import { Tags, User } from "./types";
 import React from "react";

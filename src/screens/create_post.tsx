@@ -1,5 +1,5 @@
 // import 'react-native-get-random-values';
-import { Box, Button, Image, Text, Input, KeyboardAvoidingView, HStack, Pressable } from "native-base";
+import { Box, Button, Image, Text, Input, KeyboardAvoidingView, HStack, Pressable } from "@gluestack-ui/themed-native-base";
 import { useState, useEffect, useContext, createContext } from "react";
 // import { v4 as uuidv4 } from 'uuid';
 import storage from '@react-native-firebase/storage';

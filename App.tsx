@@ -1,13 +1,10 @@
 import React from 'react';
 import 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
-import { NativeBaseProvider } from "native-base";
+import { NativeBaseProvider, Box } from "@gluestack-ui/themed-native-base";
 import theme from './src/styles/theme';
 import 'expo-dev-client';
 import Providers from './src/navigation/providers';
-import {Box } from 'native-base';
-import { useFonts } from 'expo-font';
-import { Poppins_400Regular, Poppins_700Bold } from '@expo-google-fonts/poppins';
 
 
 export default function App() {

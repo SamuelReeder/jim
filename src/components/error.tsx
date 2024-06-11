@@ -1,4 +1,4 @@
-import { Box, Button, Text } from "native-base";
+import { Box, Button, Text } from "@gluestack-ui/themed-native-base";
 
 // TODO: make sure this is correct type
 const ErrorMessage = ({handler}: {handler}) => {

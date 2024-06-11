@@ -1,4 +1,4 @@
-import { Box, Button, Image, Text, FlatList, HStack, VStack, Avatar, Pressable } from "native-base";
+import { Box, Button, Image, Text, FlatList, HStack, VStack, Avatar, Pressable } from "@gluestack-ui/themed-native-base";
 // import { FlatList } from "react-native-gesture-handler";
 import { getRecentPostsFromFollowing, fetchUser, hasUserLikedPost, likePost, unlikePost } from "../api";
 import { useAuth } from "../navigation/auth_provider";
@@ -8,6 +8,7 @@ import { AntDesign } from '@expo/vector-icons';
 import Swiper from 'react-native-swiper';
 import { Dimensions, StyleSheet } from "react-native";
 import { Video, ResizeMode } from 'expo-av';
+import React from "react";
 
 type PostAndAuthor = {
     post: Post;
