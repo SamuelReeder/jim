@@ -12,6 +12,8 @@ web-build/
 
 todo.txt
 
+.vscode/
+
 # macOS
 .DS_Store
 
