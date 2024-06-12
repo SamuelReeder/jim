@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import firestore from "@react-native-firebase/firestore";
 import { Post } from "../components";
 import { ResizeMode, Video } from 'expo-av';
-import { ProfileHeader } from "../components";
+import { PageLoader, ProfileHeader } from "../components";
 import React from "react";
 import { Tags } from "../components/types";
 
@@ -41,25 +41,10 @@ const ProfileScreen = ({ navigation } : {navigation: any}) => {
         return temp;
     }
 
-    // const postsRef = useRef<FlatList<any>>(null);
-
-    // const scrollToTop = () => {
-    //     postsRef.current?.scrollToOffset({ animated: true, offset: 0 });
-    //   };
-    // const loadMorePosts = async () => {
-    //     if (!loading) {
-    //         setLoading(true);
-
-    //         const morePosts = await fetchMorePosts(posts.length, 10);
-    //         // setPosts(prevPosts => [...prevPosts, ...morePosts]);
-
-    //         setLoading(false);
-    //     }
-    // };
-
     useEffect(() => {
         const fetchPosts = async () => {
             if (user) {
+                setLoading(true);
                 const userPosts = await fetchUserPosts();
     
                 const filteredPosts = userPosts.filter((post) =>
@@ -67,6 +52,7 @@ const ProfileScreen = ({ navigation } : {navigation: any}) => {
                 );
 
                 setFilteredPosts(filteredPosts);
+                setLoading(false);
             }
         };
     
@@ -78,6 +64,10 @@ const ProfileScreen = ({ navigation } : {navigation: any}) => {
     
         return unsubscribe;
     }, [navigation, user, selectedTags]); // Add selectedTags to the dependency array
+
+    if (loading) {
+        return <PageLoader />;
+    }
 
     return (
         <Box variant="headerContainer">

@@ -44,9 +44,11 @@ const Routes = () => {
 
   if (initializing || accountLoading || !fontsLoaded) return <PageLoader/>;
 
+
   return (
     <NavigationContainer>
       {account ? <AppStack/> : <RootStack/>}
+      {/* <RootStack/> */}
     </NavigationContainer>
   );
 };

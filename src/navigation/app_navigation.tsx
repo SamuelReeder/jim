@@ -15,6 +15,7 @@ const Stack = createStackNavigator<AppStackParamList>();
 const TabNavigator = () => {
 
     const { account } = useAuth();
+    const iconSize = 20;
 
     return (
         <Tab.Navigator
@@ -29,6 +30,7 @@ const TabNavigator = () => {
                 },
                 headerTitleStyle: {
                     fontFamily: 'Poppins_400Regular',
+                    fontSize: 18,
                 },
                 tabBarActiveTintColor: 'black',
             }}
@@ -41,19 +43,9 @@ const TabNavigator = () => {
                     tabBarLabel: 'Feed',
                     headerShown: true,
                     headerTitleAlign: 'center',
-                    // headerTitleStyle: {
-                    //     display: 'none'
-                    // },
-                    // tabBarVisible: route.state && route.state.index === 0,
-                
-                    // Set the logo on the left side of the header
-                    // headerLeft: () => (
-                    //     <Image 
-                    //         source={require('../../assets/logo.png')} 
-                    //         style={{ width: 57, height: 40, marginLeft: 20 }} 
-                    //         alt="Logo"
-                    //     />
-                    // ),
+                    headerStyle: {
+                        height:100,
+                    },
                     headerTitle: () => (
                         <Image 
                             source={require('../../assets/logo.png')} 
@@ -113,6 +105,13 @@ const TabNavigator = () => {
                     headerShown: true,
                     tabBarLabel: 'Profile',
                     headerTitle: `@${account?.username}`,
+                    headerStyle: {
+                        height:100,
+                        elevation: 0, // remove shadow on Android
+                        shadowOpacity: 0, // remove shadow on iOS
+                        borderBottomWidth: 0, // remove bottom border
+                        // marginTop: 10,
+                    },
                     tabBarIcon: ({ color, size }) => (
                         <Image
                             source={{ uri: account?.photoURL }}
@@ -134,7 +133,7 @@ const TabNavigator = () => {
                                     borderRadius: 10
                                 }}
                             >
-                                <MaterialCommunityIcons name="plus-box-multiple-outline" size={24} color="black" />
+                                <MaterialCommunityIcons name="plus-box-multiple-outline" size={iconSize} color="black" />
                             </Button>
                             <Button
                                 onPress={() => navigation.navigate('Friends')}
@@ -144,7 +143,7 @@ const TabNavigator = () => {
                                     borderRadius: 10
                                 }}
                             >
-                                <AntDesign name="team" size={24} color="black" />
+                                <AntDesign name="team" size={iconSize} color="black" />
                             </Button>
                             <Button
                                 onPress={() => navigation.navigate('Settings')}
@@ -154,7 +153,7 @@ const TabNavigator = () => {
                                     borderRadius: 10
                                 }}
                             >
-                                <AntDesign name="setting" size={24} color="black" />
+                                <AntDesign name="setting" size={iconSize} color="black" />
                             </Button>
 
                         </HStack>
@@ -172,13 +171,26 @@ const AppStack = () => {
                 {
                     headerTitleStyle: {
                         fontFamily: 'Poppins_400Regular',
+                        fontSize: 18,
                     },
+                    headerStyle: {
+                        height:100,
+                        elevation: 0, // remove shadow on Android
+                        shadowOpacity: 0, // remove shadow on iOS
+                        borderBottomWidth: 0, // remove bottom border
+                        // marginTop: 10,
+                    },
+                    // headerBackImage: () => <Ionicons name="arrow-back" size={22} c   olor="black" />, // custom back button
+    
+    
+                    headerTitleAlign: 'center', // align the title to the center
+                    headerBackTitleVisible: false,
                 }
             }
         >
             <Stack.Screen name="Tabs" component={TabNavigator} options={{ headerShown: false }} />
             <Stack.Screen name="Post" component={Screens.PostScreen} />
-            <Stack.Screen name="UserProfile" component={Screens.UserProfileScreen} />
+            <Stack.Screen name="UserProfile" options={{headerTitle: "Profile"}} component={Screens.UserProfileScreen} />
             <Stack.Screen name="EditProfile" options={{title: "Edit profile"}} component={Screens.EditProfileScreen} />
             <Stack.Screen name="Friends" component={Screens.FriendsStack} />
             <Stack.Screen name="CreatePostStack" options={{title: "Post"}} component={Screens.CreatePostScreen} />

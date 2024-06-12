@@ -122,6 +122,8 @@ export const gen = (length: number) => {
         })
     }
 }
+
+
 export const createFirestoreUser = async (username: string, user: any) => {
     const userRef = firestore().collection('users').doc(user?.uid);
 
@@ -191,6 +193,18 @@ export const updateUserProfile = async (uid: string, username: string, displayNa
     }
 };
 
+export const setPrivate = async (uid: string, value: boolean) => {
+    const db = firestore();
+    const userRef = db.collection('users').doc(uid);
+    try {
+        return await userRef.update({
+            private: value
+        });
+    } catch (error) {
+        console.error('Error updating user profile: ', error);
+    }
+}
+
 
 export const fetchUser = async (userId: string) => {
     try {
@@ -243,59 +257,99 @@ export const sendFriendRequest = async (userId: string, friendId: string) => {
     }
 }
 
-// export const followUser = async (followerId: string, followedId: string) => {
-//     const db = firestore();
-//     const followedUserRef = db.collection('users').doc(followedId);
-
-//     const followedUserDoc = await followedUserRef.get();
-
-//     if (!followedUserDoc.exists) {
-//         throw new Error(`User ${followedId} does not exist`);
-//     }
-
-//     const followedUserData = followedUserDoc.data();
-
-//     if (followedUserData?.private) {
-//         // If the user to be followed has a private account, send a follow request
-//         const followRequestRef = followedUserRef.collection('requests').doc(followerId);
-//         await followRequestRef.set({ followerId, timestamp: firestore.FieldValue.serverTimestamp() });
-//     } else {
-//         // If the user to be followed has a public account, add the follower directly
-//         const followerRef = followedUserRef.collection('followers').doc(followerId);
-//         await followerRef.set({ followerId, timestamp: firestore.FieldValue.serverTimestamp() });
-//     }
-// };
+// userId is the user who is accepting the friend request follower is sender
 export const followUser = async (userId: string, followerId: string) => {
     const db = firestore();
-    const userRef = db.collection('users').doc(userId);
-    const userDoc = await userRef.get();
-    const userData = userDoc.data();
+    const recieverRef = db.collection('users').doc(userId);
+    const recieverDoc = await recieverRef.get();
+    const recieverData = recieverDoc.data();
 
-    if (!userData) {
+    if (!recieverData) {
         throw new Error(`User ${userId} does not exist`);
     }
 
-    const followingRef = db.collection('users').doc(followerId).collection('following').doc(userId);
-    const followRequestRef = userRef.collection('requests').doc(followerId);
-    const followerRef = userRef.collection('followers').doc(followerId);
+    const senderRef = db.collection('users').doc(followerId);
 
     // Start a batch
     const batch = db.batch();
 
-    if (userData.private) {
+    if (recieverData.private) {
+        const recieverFollowRequestRef = recieverRef.collection('requests').doc(followerId);
+        const senderPendingRequestsRef = senderRef.collection('pending_requests').doc(userId);
+
         // Send follow request if user is private
         console.log("private")
-        batch.set(followRequestRef, { followerId, timestamp: firestore.FieldValue.serverTimestamp() });
+        batch.set(recieverFollowRequestRef, { followerId, timestamp: firestore.FieldValue.serverTimestamp() });
+        batch.set(senderPendingRequestsRef, { userId, timestamp: firestore.FieldValue.serverTimestamp() }); // add to pending requests of the sender
     } else {
+        const recieverFollowerRef = recieverRef.collection('followers').doc(followerId);
+        const senderFollowingRef = senderRef.collection('following').doc(userId);
+
         // Follow user directly if user is public
         console.log("public")
-        batch.set(followerRef, { followerId, timestamp: firestore.FieldValue.serverTimestamp() });
-        batch.set(followingRef, { userId, timestamp: firestore.FieldValue.serverTimestamp() }); // add to following of the follower
+        batch.set(recieverFollowerRef, { followerId, timestamp: firestore.FieldValue.serverTimestamp() });
+        batch.set(senderFollowingRef, { userId, timestamp: firestore.FieldValue.serverTimestamp() }); // add to following of the follower
     }
 
     // Commit the batch
     await batch.commit();
 };
+
+export const unfollowUser = async (userId: string, followerId: string) => {
+    const db = firestore();
+    const recieverRef = db.collection('users').doc(userId);
+    const recieverFollowerRef = recieverRef.collection('followers').doc(followerId);
+    const senderFollowingRef = db.collection('users').doc(followerId).collection('following').doc(userId);
+
+    // Start a batch
+    const batch = db.batch();
+
+    // Remove the follower
+    batch.delete(recieverFollowerRef);
+
+    // Remove from the following
+    batch.delete(senderFollowingRef);
+
+    // Commit the batch
+    await batch.commit();
+};
+
+export const fetchFollowingStatus = async (userId: string, followerId: string) => {
+    const db = firestore();
+    const followerRef = db.collection('users').doc(followerId);
+
+    const followerFollowingRef = followerRef.collection('following').doc(userId);
+    const followerPendingRef = followerRef.collection('pending_requests').doc(userId);
+    // need to obtain whether the user is following, not following, or has a pending request 
+
+    const followerFollowingDoc = await followerFollowingRef.get();
+    if (followerFollowingDoc.exists) {
+        return 'following';
+    }
+
+    const followerPendingDoc = await followerPendingRef.get();
+    if (followerPendingDoc.exists) {
+        return 'pending';
+    }
+
+    return "none";
+}
+
+export const unsendFollowRequest = async (userId: string, followerID: string) => {
+    const db = firestore();
+    const followRequestRef = db.collection('users').doc(userId).collection('requests').doc(followerID);
+    const pendingRequestRef = db.collection('users').doc(followerID).collection('pending_requests').doc(userId);
+
+    // Start a batch
+    const batch = db.batch();
+
+    batch.delete(followRequestRef);
+    batch.delete(pendingRequestRef);
+
+    // Commit the batch
+    await batch.commit();
+
+}
 
 export const getUserFollowing = async (userId: string) => {
     const db = firestore();

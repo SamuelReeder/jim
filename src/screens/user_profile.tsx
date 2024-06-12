@@ -8,6 +8,8 @@ import { NavigationProp } from "@react-navigation/native";
 import ErrorMessage from "../components/error";
 import { Video, ResizeMode } from "expo-av";
 import React from "react";
+import { Tags } from "../components/types";
+
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -21,9 +23,8 @@ const UserProfileScreen = ({ route, navigation }: ProfilePageProps) => {
     const [posts, setPosts] = useState<Post[] | null>();
     const [loading, setLoading] = useState(true);
     const [profile, setProfile] = useState<any>(null);
-    const tagList = ["misc", "progress", "pr"];
     const [filteredPosts, setFilteredPosts] = useState<Post[]>();
-    const [selectedTags, setSelectedTags] = useState<string[]>(tagList);
+    const [selectedTags, setSelectedTags] = useState<Tags[]>([Tags.Progress, Tags.PersonalRecord, Tags.Miscellaneous]);
 
 
     const fetchUserData = async () => {
@@ -43,8 +44,8 @@ const UserProfileScreen = ({ route, navigation }: ProfilePageProps) => {
     }, [navigation, route.params.userId]);
 
     useEffect(() => {
-        const filteredPosts = posts?.filter((post) =>
-            selectedTags.length > 0 ? selectedTags.includes(post?.tags[0]) : true
+        const filteredPosts = posts?.filter((post: Post) =>
+            selectedTags.length > 0 ? selectedTags.includes(post?.tags[0] as Tags) : true
         );
         setFilteredPosts(filteredPosts);
     }, [selectedTags, posts]);
@@ -59,7 +60,7 @@ const UserProfileScreen = ({ route, navigation }: ProfilePageProps) => {
             <FlatList width="100%"
                 contentContainerStyle={{ paddingHorizontal: 9 }}
                 data={filteredPosts}
-                ListHeaderComponent={<ProfileHeader navigation={navigation} account={profile} tags={tagList} selectedTags={selectedTags} setSelectedTags={setSelectedTags} isOtherUser={true} />}
+                ListHeaderComponent={<ProfileHeader navigation={navigation} account={profile} tags={[Tags.Progress, Tags.PersonalRecord, Tags.Miscellaneous]} selectedTags={selectedTags} setSelectedTags={setSelectedTags} isOtherUser={true} />}
                 renderItem={({ item }) =>
                     <View style={{ width: windowWidth / 3 - 6, height: windowWidth / 3 - 6 }}>
                         <Box flex={1} margin="0.5">

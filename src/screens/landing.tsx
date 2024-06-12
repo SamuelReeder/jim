@@ -2,6 +2,7 @@ import { Center, Text, Button, useColorMode, HStack, Switch } from 'native-base'
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/auth_navigation';
 import { useAuth } from '../navigation/auth_provider';
+import React from 'react';
 
 type LandingScreenNavigationProp = StackNavigationProp<
     RootStackParamList,

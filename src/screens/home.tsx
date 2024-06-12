@@ -120,13 +120,15 @@ const HomeScreen = ({ navigation }) => {
     }
 
     return (
-        <Box variant="pageContainer">
+        <Box variant="headerContainer"> 
             {posts && posts.length == 0 ? <Text>No posts to show, add some friends!</Text> :
                 <FlatList
                     data={posts}
                     // onEndReached={fetchPosts}
                     // onEndReachedThreshold={0.5}
+                    paddingTop={5}
                     renderItem={({ item }) => <Box width="100%">
+                        <Box paddingY={2}>
                         <Box flex={1} pb="2" px="4">
                             <HStack space={2} flex={1} justifyContent="flex-start" alignItems="center">
                                 <Avatar
@@ -236,7 +238,9 @@ const HomeScreen = ({ navigation }) => {
                                 </VStack>
                             </HStack>
                         </Box>
-                    </Box>}
+                    </Box>
+                    </Box>
+                    }
                     keyExtractor={item => item.post.id}
                 />}
         </Box>

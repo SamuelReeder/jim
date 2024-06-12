@@ -1,16 +1,46 @@
-import React, { useState } from 'react';
-import { Box, VStack, HStack, Button, Modal, Link, Input, Divider, IconButton, Text, Switch, FormControl, ScrollView, Pressable, Image } from 'native-base';
+import React, { useEffect, useState } from 'react';
+import { Box, VStack, HStack, Modal, Link, Divider, Text, ScrollView, Pressable, Image } from 'native-base';
 import { useAuth } from '../navigation/auth_provider';
-import { NicePressable } from '../components';
+import { NicePressable, PageLoader } from '../components';
 import { MaterialIcons, AntDesign } from '@expo/vector-icons';
+import { setPrivate } from '../api';
+import { Switch } from 'react-native';
+import { User } from '../components';
 
 
 
-const SettingsScreen = ({ navigation }) => {
-    const { account, logout } = useAuth();
-    const [showModal0, setShowModal0] = useState(false);
-    const [showModal1, setShowModal1] = useState(false);
+const SettingsScreen = ({ navigation } : {navigation: any}) => {
+    const { account, setAccount, logout } = useAuth();
+    const [showModal0, setShowModal0] = useState<boolean>(false);
+    const [showModal1, setShowModal1] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [isPrivate, setIsPrivate] = useState<boolean | null>(null);
 
+    useEffect(() => {
+        if (account) {
+            setIsPrivate(account.private);
+            setIsLoading(false);
+        }
+    }, [account]);
+
+    useEffect(() => {
+        const updatePrivate = async () => {
+            if (!isLoading && account?.uid && isPrivate !== null) {
+                await setPrivate(account.uid, isPrivate);
+                setAccount((account: User) => {
+                    return { ...account, private: isPrivate };
+                });
+            }
+        };
+        
+        updatePrivate();
+    }, [isPrivate]);
+
+    if (isLoading || isPrivate == null) {
+        return <PageLoader></PageLoader>
+    }
+
+    const toggleSwitch = () => setIsPrivate(previousState => !previousState)
 
     return (
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -37,7 +67,7 @@ const SettingsScreen = ({ navigation }) => {
                 <Text color="gray.500" fontSize="sm" px={5}>Account</Text>
                 <HStack px={5} alignItems='center' justifyContent='space-between' py={2} width="100%">
                     <Text>Private Account</Text>
-                    <Switch />
+                    <Switch value={isPrivate} onValueChange={toggleSwitch}/>
                 </HStack>
                 <Pressable onPress={() => setShowModal0(true)}>
                     <HStack px={5} alignItems='center' justifyContent='space-between' py={2} width="100%">

@@ -1,14 +1,42 @@
 import { useAuth } from '../navigation/auth_provider';
 import { AntDesign, MaterialCommunityIcons, Ionicons, FontAwesome6 } from '@expo/vector-icons';
 import { Box, Text, VStack, Button, Pressable, HStack, Avatar } from "native-base";
-import { followUser } from "../api";
+import { followUser, fetchFollowingStatus, unfollowUser, unsendFollowRequest } from "../api";
 import { Tags, User } from "./types";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styles from '../styles/styles';
+import { set } from 'date-fns';
+
 
 const ProfileHeader = ({ navigation, account, tags, selectedTags, setSelectedTags, isOtherUser }: { navigation: any, account: User, tags: Tags[], selectedTags: Tags[], setSelectedTags: React.Dispatch<React.SetStateAction<Tags[]>>, isOtherUser: boolean }) => {
     const { user } = useAuth();
     const iconSize: number = 42;
+    const [status, setStatus] = useState<string>("Follow");
+
+    const fetchStatus = () => {
+        if (account.uid && user?.uid) {
+            fetchFollowingStatus(account.uid, user?.uid).then((state) => {
+                switch (state) {
+                    case "following":
+                        setStatus("Unfollow");
+                        break;
+                    case "none":
+                        setStatus("Follow");
+                        break;
+                    default:
+                        setStatus("Pending");
+                        break;
+                }
+            });
+        }
+    }
+
+    useEffect(() => {
+        if (isOtherUser) {
+            fetchStatus();
+        }
+    }, [account, user, isOtherUser]);
+
     return (
         <Box variant="headerContainer" px="4" pt="5">
             <Avatar
@@ -23,21 +51,46 @@ const ProfileHeader = ({ navigation, account, tags, selectedTags, setSelectedTag
             <Text color="gray.500" fontSize="sm">
                 @{account.username}
             </Text>
+
             {isOtherUser && (
-                <Button
-                    onPress={() => {
-                        if (user?.uid && account.uid) {
-                            followUser(account.uid, user?.uid);
-                        }
-                    }}
-                    variant="outline"
-                    mt={3}
-                    width="100%"
-                    justifyContent="center"
-                    borderColor="primary.500"
-                    colorScheme="primary"
-                    _text={{ color: "primary.500" }}
-                >Follow</Button>
+                <HStack>
+                    <Button
+                        onPress={() => {
+                            if (user?.uid && account.uid) {
+                                if (status === "Unfollow") {
+                                    unfollowUser(account.uid, user?.uid);
+                                } else if (status === "Follow") {
+                                    followUser(account.uid, user?.uid);
+                                } else {
+                                    unsendFollowRequest(account.uid, user?.uid);
+                                }
+                                fetchStatus();
+                            }
+                        }}
+                        variant="outline"
+                        borderRadius={12}
+                        mt={3}
+                        width="40%"
+                        justifyContent="center"
+                        borderColor={status === "Follow" ? "white" : "black"}
+                        backgroundColor={status === "Follow" ? "black" : "white"}
+                        colorScheme={status === "Follow" ? "white" : "black"}
+                        _text={{ color: status === "Follow" ? "white" : "black", fontSize: 'md' }}
+                    >{status}</Button>
+                    <Button
+                        onPress={() => {
+                            navigation.navigate('Chat', { account: account });
+                        }}
+                        variant="outline"
+                        borderRadius={12}
+                        mt={3}
+                        justifyContent="center"
+                        borderColor="black"
+                        backgroundColor="black"
+                        colorScheme="black"
+                        _text={{ color: "white", fontSize: 'md' }}
+                    ><MaterialCommunityIcons name="chat" size={24} color="white" /></Button>
+                </HStack>
             )}
             <HStack width="100%" mt={3} px="5" justifyContent="space-around" space="4" alignItems="center">
                 <Pressable width="20%" onPress={() => {
@@ -156,7 +209,7 @@ const ProfileHeader = ({ navigation, account, tags, selectedTags, setSelectedTag
                             variant="tag"
                             // style={selectedTags.includes(tag) ? styles.selectedTag : styles.unselectedTag}
                             backgroundColor={selectedTags.includes(tag) ? 'dark.100' : 'dark.300'}
-                            startIcon={<AntDesign name="tagso" size={24} color="white"/>}
+                            startIcon={<AntDesign name="tagso" size={24} color="white" />}
                             onPress={() => {
                                 if (selectedTags.includes(tag)) {
                                     const newTags = selectedTags.filter((t: Tags) => t !== tag);
