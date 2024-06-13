@@ -41,7 +41,6 @@ export const updateStat = async (userId: string, stat: Stat) => {
             [`stats.${stat.metric}`]: stat.value
         });
 
-        console.log("Stat updated successfully");
     } catch (error) {
         console.error("Error updating stat: ", error);
     }
@@ -50,7 +49,6 @@ export const updateStat = async (userId: string, stat: Stat) => {
 export const saveChoice = async (userId, choice) => {
     try {
 
-        console.log(choice);
         // Update user's choice
         const ref = firestore().collection('users').doc(userId);
         await ref.update({
@@ -64,7 +62,6 @@ export const saveChoice = async (userId, choice) => {
             [choice.toLowerCase()]: firestore.FieldValue.increment(1)
         });
 
-        console.log("Choice saved successfully");
     } catch (error) {
         console.error("Error saving choice:", error);
     }
@@ -278,7 +275,6 @@ export const followUser = async (userId: string, followerId: string) => {
         const senderPendingRequestsRef = senderRef.collection('pending_requests').doc(userId);
 
         // Send follow request if user is private
-        console.log("private")
         batch.set(recieverFollowRequestRef, { followerId, timestamp: firestore.FieldValue.serverTimestamp() });
         batch.set(senderPendingRequestsRef, { userId, timestamp: firestore.FieldValue.serverTimestamp() }); // add to pending requests of the sender
     } else {
@@ -286,7 +282,6 @@ export const followUser = async (userId: string, followerId: string) => {
         const senderFollowingRef = senderRef.collection('following').doc(userId);
 
         // Follow user directly if user is public
-        console.log("public")
         batch.set(recieverFollowerRef, { followerId, timestamp: firestore.FieldValue.serverTimestamp() });
         batch.set(senderFollowingRef, { userId, timestamp: firestore.FieldValue.serverTimestamp() }); // add to following of the follower
     }
@@ -530,7 +525,6 @@ export const updateStreaks = async (userId: string) => {
                 lastPostDate: firestore.Timestamp.fromDate(today)  // Update the last post date
             });
 
-            console.log('User streaks field successfully updated!');
             return true;
 
         } else {
@@ -601,51 +595,6 @@ export const removeFriend = async (userId: string, friendId: string) => {
     }
 }
 
-
-// LIKES
-
-export const likePost = async (postId: string, userId: string) => {
-    const db = firestore();
-    const postRef = db.collection('posts').doc(postId);
-    const userRef = db.collection('users').doc(userId).collection('likedPosts').doc(postId);
-
-    // Get the post document to find out which like document to write to
-    const postSnapshot = await postRef.get();
-    const post = postSnapshot.data();
-    const currentLikeDocId = post?.currentLikeDocId;
-    const likesRef = postRef.collection('likes').doc(currentLikeDocId.toString());
-
-    console.log(currentLikeDocId)
-    // Attempt to add the like to the current like document
-    try {
-        await likesRef.update({
-            [userId]: firestore.FieldValue.serverTimestamp(),
-        });
-    } catch (error) {
-        // If the update fails because the document is full or doesn't exist,
-        // create a new like document and update the post document to point to it
-        const newLikeDocId = currentLikeDocId + 1;
-        const newLikesRef = postRef.collection('likes').doc(newLikeDocId.toString());
-
-        await newLikesRef.set({
-            [userId]: firestore.FieldValue.serverTimestamp(),
-        });
-
-        await postRef.update({ currentLikeDocId: newLikeDocId });
-    }
-
-    // Increment the likesCount in the post
-    await postRef.update({
-        likesCount: firestore.FieldValue.increment(1),
-    });
-
-    // Add to the user's liked posts
-    await userRef.set({ timestamp: firestore.FieldValue.serverTimestamp() });
-};
-
-
-
-
 export const hasUserLikedPost = async (postId: string, userId: string) => {
     const db = firestore();
     const likeRef = await db.collection('users').doc(userId).collection('likedPosts').doc(postId).get();
@@ -665,6 +614,20 @@ export const getLikesForPost = async (postId: string) => {
     return likesSnapshot.data()?.likes;
 }
 
+export const likePost = async (postId: string, userId: string) => {
+    const db = firestore();
+    const postRef = db.collection('posts').doc(postId);
+    const userRef = db.collection('users').doc(userId).collection('likedPosts').doc(postId);
+
+    // Add to the user's liked posts
+    await userRef.set({ timestamp: firestore.FieldValue.serverTimestamp() });
+
+    // Increment the likesCount in the post
+    await postRef.update({
+        likesCount: firestore.FieldValue.increment(1),
+    });
+};
+
 export const unlikePost = async (postId: string, userId: string) => {
     const db = firestore();
     const postRef = db.collection('posts').doc(postId);
@@ -677,11 +640,10 @@ export const unlikePost = async (postId: string, userId: string) => {
         // The document does not exist.
         return;
     }
-    const userLike = likesSnapshot.data()?.likes.find(like => like.userId === userId);
 
     // Remove from the likes array in the likes document
     await likesRef.update({
-        likes: firestore.FieldValue.arrayRemove(userLike)
+        likes: firestore.FieldValue.arrayRemove(userId)
     });
 
     // Decrement the likesCount in the post

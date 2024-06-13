@@ -24,39 +24,57 @@ const HomeScreen = ({ navigation }) => {
     const [hasMoreItems, setHasMoreItems] = useState(true);
     const { user, logout } = useAuth();
     const [likedPosts, setLikedPosts] = useState<Record<string, boolean>>({});
+    const [likesCount, setLikesCount] = useState<Record<string, number>>({});
+
+    // const handleLikePress = (postId) => {
+    //     setLikedPosts(prevLikedPosts => ({
+    //         ...prevLikedPosts,
+    //         [postId]: !prevLikedPosts[postId]
+    //     }));
+    // };
 
     useEffect(() => {
         if (user && user.uid) {
             const fetchLikedPosts = async () => {
-                const likedPosts = {};
-
+                const newLikedPosts: Record<string, boolean> = {};
+                const newLikesCount: Record<string, number> = {};
+    
                 for (let i of posts) {
-
-                    likedPosts[i.post.id] = await hasUserLikedPost(i.post.id, user.uid);
+                    newLikedPosts[i.post.id] = await hasUserLikedPost(i.post.id, user.uid);
+                    newLikesCount[i.post.id] = i.post.likesCount;
                 }
-
-                setLikedPosts(likedPosts);
+    
+                setLikedPosts(newLikedPosts);
+                setLikesCount(newLikesCount);
             };
-
+    
             fetchLikedPosts();
         }
     }, [posts, user]);
 
-    const handleLikePress = async (postId) => {
-        if (user && user.uid) {
-            if (likedPosts[postId]) {
-                await unlikePost(postId, user.uid);
-                setLikedPosts({
-                    ...likedPosts,
-                    [postId]: false,
-                });
-            } else {
-                await likePost(postId, user.uid);
-                setLikedPosts({
-                    ...likedPosts,
-                    [postId]: true,
-                });
+    const handleLikePress = async (postId: string) => {
+        if (user && user.uid && postId) {
+            try {
+                if (likedPosts[postId]) {
+                    await unlikePost(postId, user.uid);
+                    setLikedPosts({
+                        ...likedPosts,
+                        [postId]: false,
+                    });
+                    setLikesCount({...likesCount, [postId]: (likesCount[postId] - 1)});
+                } else {
+                    await likePost(postId, user.uid);
+                    setLikedPosts({
+                        ...likedPosts,
+                        [postId]: true,
+                    });
+                    setLikesCount({...likesCount, [postId]: (likesCount[postId] + 1)});
+                }
+            } catch (error) {
+                console.error("Error liking/unliking post: ", error);
             }
+        } else {
+            console.error("postId or user.uid is undefined");
         }
     };
 
@@ -87,7 +105,6 @@ const HomeScreen = ({ navigation }) => {
             setHasMoreItems(false);
         } else {
             setPosts([...posts, ...uniqueNewPostsWithAuthors]);
-            console.log(posts);
         }
         setLoading(false);
     };
@@ -207,7 +224,7 @@ const HomeScreen = ({ navigation }) => {
                                     <Pressable onPress={() => handleLikePress(item.post.id)}>
                                         <HStack alignItems="center" space={1}>
                                             <AntDesign name={likedPosts[item.post.id] ? "heart" : "hearto"} size={22} color={likedPosts[item.post.id] ? "rgb(171, 43, 48)" : "black"} />
-                                            <Text color="white" fontSize="sm">{item.post.likesCount}</Text>
+                                            <Text color="white" fontSize="sm">{likesCount[item.post.id]}</Text>
                                         </HStack>
                                     </Pressable>
                                 </Box>
