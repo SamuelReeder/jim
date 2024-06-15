@@ -5,7 +5,7 @@ import { useState, useEffect, useContext, createContext } from "react";
 import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
 import { useAuth } from '../navigation/auth_provider';
-import { Post, Media } from '../components/types';
+import { Post, Media, Tags } from '../components/types';
 import * as ImagePicker from 'expo-image-picker';
 import { ResizeMode, Video } from 'expo-av';
 import styles from '../styles/styles';
@@ -13,12 +13,13 @@ import { FlatList, Dimensions, StyleSheet, TouchableOpacity, View } from 'react-
 import { AntDesign } from '@expo/vector-icons';
 import { createStackNavigator } from "@react-navigation/stack";
 import Animated, {
-        useSharedValue,
-        withTiming,
-        useAnimatedStyle,
-        Easing,
+    useSharedValue,
+    withTiming,
+    useAnimatedStyle,
+    Easing,
 } from 'react-native-reanimated';
-
+import React from "react";
+import { TAG_COLORS } from "../components";
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -29,18 +30,18 @@ const PostContext = createContext<{
     setCurrentIndex: React.Dispatch<React.SetStateAction<number>>,
     description: string,
     setDescription: React.Dispatch<React.SetStateAction<string>>,
-    tags: string[],
-    setTags: React.Dispatch<React.SetStateAction<string[]>>,
+    tags: Tags[],
+    setTags: React.Dispatch<React.SetStateAction<Tags[]>>,
 } | undefined>(undefined);
 
 
 const PostStack = createStackNavigator();
 
-const CreatePostProvider = ({ navigation }) => {
+const CreatePostProvider = ({ navigation }: { navigation: any }) => {
     const [media, setMedia] = useState<ImagePicker.ImagePickerAsset[] | null>(null);
     const [currentIndex, setCurrentIndex] = useState<number>(0);
     const [description, setDescription] = useState<string>('');
-    const [tags, setTags] = useState<string[]>([]);
+    const [tags, setTags] = useState<Tags[]>([]);
 
     const context = { media, setMedia, currentIndex, setCurrentIndex, description, setDescription, tags, setTags };
 
@@ -148,12 +149,6 @@ const CreatePostScreen = ({ navigation }) => {
             {/* <KeyboardAvoidingView behavior="height"> */}
             <Box width="100%" flex={1} p="3" justifyContent="space-between">
 
-                {/* <Input marginX={6} variant="underlined" style={styles.landing_input} py={3} placeholder="Provide an optional description" maxLength={280}
-                    onChangeText={(value) =>
-                        console.log(value)
-                    } /> */}
-
-
                 {media !== null && media.length != 0 ? (
                     <HStack>
                         {media.map((element, index) => (
@@ -209,52 +204,94 @@ const CreatePostScreen = ({ navigation }) => {
     );
 };
 
-const FinalizePostScreen = ({ navigation }) => {
+const ProgressBar = ({ progress }: { progress: number }) => {
+    const widthAnim = useRef(new Animated.Value(0)).current;
+
+    useEffect(() => {
+        Animated.timing(widthAnim, {
+            toValue: progress,
+            duration: 500,
+            useNativeDriver: false,
+        }).start();
+    }, [progress]);
+
+    const widthInterpolated = widthAnim.interpolate({
+        inputRange: [0, 100],
+        outputRange: ['0%', '100%'],
+    });
+
+    return (
+        <View style={{ height: 20, width: '100%', backgroundColor: '#eee', borderRadius: 10 }}>
+            <Animated.View style={{ height: '100%', width: widthInterpolated, backgroundColor: 'blue', borderRadius: 10 }} />
+        </View>
+    );
+};
+
+const FinalizePostScreen = ({ navigation }: { navigation: any }) => {
     const context = useContext(PostContext);
     if (!context) {
         throw new Error("useAuth must be used within a AuthProvider");
     }
 
-    const tagList = ["PR", "Progress"];
+    const tagList = Object.values(Tags);
+
+
     const { media, currentIndex, description, setDescription, tags, setTags } = context;
-    const [uploading, setUploading] = useState(false);
+    const [uploading, setUploading] = useState<boolean>(false);
     const { user, account } = useAuth();
+    const [progressState, setProgressState] = useState<number>(0);
+    const progress = useSharedValue(10);
+
+
+
 
     const submitPost = async () => {
+        console.log('Starting submitPost function...');
+
         if (media === null || user === null || media == null || media.length == 0) {
+            console.log('No image has been selected.');
             alert('No image has been selected.');
             return;
         }
-        
+
+        console.log('Setting uploading to true...');
         setUploading(true);
 
+        console.log('Creating post reference...');
         const postRef = firestore().collection('posts').doc();
 
         let mediaArr = [];
         for (let i = 0; i < media.length; i++) {
+            console.log(`Processing media item ${i + 1} of ${media.length}...`);
+
+            console.log('Fetching media item...');
             const response = await fetch(media[i].uri);
             const blob = await response.blob();
 
+            console.log('Creating storage reference...');
             const ref = storage().ref(`images/${Date.now()}`);
-            
 
+            console.log('Uploading blob to storage...');
             await ref.put(blob);
 
             console.log('Image uploaded to the bucket!')
 
+            console.log('Getting download URL...');
             const imageUrl = await ref.getDownloadURL();
 
+            console.log('Pushing media item to array...');
             mediaArr.push({
                 type: media[i].type,
                 url: imageUrl,
                 resolution: [media[i].width, media[i].height],
-                aspectRatio: [media[i].width / media[i].height, 1], 
-                // thumbnail: imageUrl, // You can generate a separate thumbnail if needed. For now, using the same imageUrl
-                duration: media[i].duration ? media[i].duration : 0, 
+                aspectRatio: [media[i].width / media[i].height, 1],
+                duration: media[i].duration ? media[i].duration : 0,
                 size: blob.size,
             } as Media);
         }
 
+        console.log('Creating post object...');
+        console.log('description:', description);
         const post: Post = {
             id: postRef.id,
             userId: user.uid,
@@ -264,42 +301,69 @@ const FinalizePostScreen = ({ navigation }) => {
             likesCount: 0,
             timestamp: firestore.FieldValue.serverTimestamp(),
             pinned: false,
-            tags: tags.length == 0 ? ["misc"] : tags,
+            tags: tags.length == 0 ? [Tags.Miscellaneous] : tags,
             media: mediaArr,
         };
 
-        console.log(post);
+        console.log('Post object:', post);
 
+        console.log('Setting post in Firestore...');
         await postRef.set(post);
 
+        console.log('Creating likes reference...');
         const likesRef = postRef.collection('likes').doc('likeDoc');
+        console.log('Setting likes in Firestore...');
         await likesRef.set({ likes: [] });
 
+        console.log('Setting uploading to false...');
         setUploading(false);
 
-        // if (post.tags.includes("Progress")) {
-        //     account.set
-        // }
-        // setMedia(null);
-
+        console.log('Navigating to Profile...');
         navigation.navigate("Profile");
+
+        console.log('Finished submitPost function.');
     }
 
     const randomWidth = useSharedValue(10);
 
-  const config = {
-    duration: 500,
-    easing: Easing.bezier(0.5, 0.01, 0, 1),
-  };
-
-  const anim = useAnimatedStyle(() => {
-    return {
-      width: withTiming(randomWidth.value, config),
+    const config = {
+        duration: 500,
+        easing: Easing.bezier(0.5, 0.01, 0, 1),
     };
-  });
+
+    useEffect(() => {
+        const updateProgress = () => {
+            if (progressState <= 100) progress.value = withTiming(progressState);
+            console.log(progress);
+        };
+    
+        updateProgress();
+    }, [progressState]);
+
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            // setProgressState(progressState => {
+            //     if (progressState >= 100) {
+            //         return 0;
+            //     } else {
+            //         console.log('Progress:', progressState + 2);
+            //         return progressState + 2;
+            //     }
+            // });
+            if (progress.value >= 320) {
+                clearInterval(intervalId);
+            }
+            progress.value++;
+            console.log('Progress:', progress.value)
+        }, 10);
+    
+        return () => {
+            clearInterval(intervalId);
+        };
+    }, []);
 
     return (
-        <Box variant="createPostContainer" justifyContent="space-between" px="4" py="2">
+        <Box variant="createPostContainer" justifyContent="space-between" px="4" py="5">
             <Box variant="createPostContainer">
                 {media !== null && media.length != 0 ? (
                     <HStack py="4">
@@ -334,15 +398,15 @@ const FinalizePostScreen = ({ navigation }) => {
                 )
                 }
                 <HStack justifyContent="flex-start" width="100%" mb={3}>
-                    {tagList.map((tag: string) => (
+                    {tagList.map((tag: Tags) => (
                         <Button
                             key={tag}
                             variant="tag"
                             margin="0.5"
                             // TODO: CHANGE COLOUR BASED ON SELECTION
-                            backgroundColor={tags.includes(tag) ? "red.400" : "red.200"}
+                            backgroundColor={tags.includes(tag) ? TAG_COLORS.tagSelected : TAG_COLORS.tagUnselected}
                             color="white"
-                            startIcon={<AntDesign name="tagso" size={24} color="black" />}
+                            startIcon={<AntDesign name="tagso" size={24} color="white" />}
                             onPress={() => {
                                 if (tags.includes(tag)) {
                                     setTags(tags.filter((t: string) => t !== tag));
@@ -358,19 +422,26 @@ const FinalizePostScreen = ({ navigation }) => {
                         setDescription(value)
                     } />
             </Box>
-            <Button style={styles.landing_button} p="5" marginY="5" onPress={submitPost}>
-                <Box justifyContent="center" alignItems="center">
-                    <Text
-                        style={{
-                            color: '#FFFFFF',
-                            // fontSize: 20,
-                        }}>
-                        SUBMIT
-                    </Text>
-                    {/* npm i react-native-progress */}
+            {true ?
+                (<Box style={styles.landing_button} padding="5" marginY="0" height={70}>
+                    <Box justifyContent="center" alignItems="center" height="20" width="100%">
+                        <Animated.View style={{ backgroundColor: 'white', height: 5, width: progress, borderRadius: 100}} />
+                    </Box>
                 </Box>
-
-            </Button>
+                ) :
+                (<Button style={styles.landing_button} p="5" my="0" onPress={submitPost} height={70}>
+                    <Box justifyContent="center" alignItems="center">
+                        <Text
+                            style={{
+                                color: '#FFFFFF',
+                                lineHeight: 20,
+                                fontSize: 18
+                            }}>
+                            SUBMIT
+                        </Text>
+                    </Box>
+                </Button>)
+            }
         </Box>
     );
 };

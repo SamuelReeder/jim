@@ -2,13 +2,11 @@ import React, { FC, useEffect, useState } from 'react';
 import { Box, ScrollView, Text, Image, VStack, Button, HStack, Avatar } from "native-base";
 import { Post, User } from "../components";
 import { NavigationProp, RouteProp } from '@react-navigation/native';
-import { Dimensions, StyleSheet } from "react-native";
+import { Dimensions } from "react-native";
 import { Video, ResizeMode } from 'expo-av';
 import { AppStackParamList, PageLoader } from '../components';
 import { fetchUser } from '../api';
 import ErrorMessage from "../components/error";
-import { FieldValue } from '@firebase/firestore-types';
-import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import { AntDesign } from '@expo/vector-icons';
 import Swiper from 'react-native-swiper';
 

@@ -1,12 +1,12 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AntDesign, Ionicons, MaterialCommunityIcons, MaterialIcons  } from '@expo/vector-icons';
-import { Image, Button, Icon, HStack } from 'native-base';
+import { Image, Button, Icon, HStack, View } from 'native-base';
 import { useAuth } from './auth_provider';
 import * as Screens from '../screens';
 import { createStackNavigator } from '@react-navigation/stack';
 import { AppStackParamList, AppTabsParamList } from '../components';
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity, SafeAreaView } from 'react-native';
 
 
 const Tab = createBottomTabNavigator<AppTabsParamList>();
@@ -24,13 +24,19 @@ const TabNavigator = () => {
                 tabBarShowLabel: false,
                 tabBarStyle: {
                     borderTopWidth: 0,
-                    paddingBottom: 10,
+                    paddingBottom: 25,
                     paddingTop: 10,
-                    height: 50,
+                    height: 70,
                 },
                 headerTitleStyle: {
                     fontFamily: 'Poppins_400Regular',
                     fontSize: 18,
+                },
+                headerStyle: {
+                    height:110,
+                    elevation: 0, // remove shadow on Android
+                    shadowOpacity: 0, // remove shadow on iOS
+                    borderBottomWidth: 0, // remove bottom border
                 },
                 tabBarActiveTintColor: 'black',
             }}
@@ -43,9 +49,6 @@ const TabNavigator = () => {
                     tabBarLabel: 'Feed',
                     headerShown: true,
                     headerTitleAlign: 'center',
-                    headerStyle: {
-                        height:100,
-                    },
                     headerTitle: () => (
                         <Image 
                             source={require('../../assets/logo.png')} 
@@ -105,13 +108,6 @@ const TabNavigator = () => {
                     headerShown: true,
                     tabBarLabel: 'Profile',
                     headerTitle: `@${account?.username}`,
-                    headerStyle: {
-                        height:100,
-                        elevation: 0, // remove shadow on Android
-                        shadowOpacity: 0, // remove shadow on iOS
-                        borderBottomWidth: 0, // remove bottom border
-                        // marginTop: 10,
-                    },
                     tabBarIcon: ({ color, size }) => (
                         <Image
                             source={{ uri: account?.photoURL }}
@@ -171,20 +167,23 @@ const AppStack = () => {
                 {
                     headerTitleStyle: {
                         fontFamily: 'Poppins_400Regular',
-                        fontSize: 18,
+                        fontSize: 20,
                     },
                     headerStyle: {
-                        height:100,
-                        elevation: 0, // remove shadow on Android
-                        shadowOpacity: 0, // remove shadow on iOS
-                        borderBottomWidth: 0, // remove bottom border
-                        // marginTop: 10,
-                    },
-                    // headerBackImage: () => <Ionicons name="arrow-back" size={22} c   olor="black" />, // custom back button
-    
-    
-                    headerTitleAlign: 'center', // align the title to the center
+                        height:110,
+                        elevation: 0, 
+                        shadowOpacity: 0, 
+                        borderBottomWidth: 0, 
+                    },    
+                    headerTintColor: 'black',
+                    headerTitleAlign: 'center',
                     headerBackTitleVisible: false,
+                    headerBackImage: ({ tintColor }) => (
+                        <View style={{ paddingLeft: 15 }}>
+                            <Ionicons name="arrow-back" size={24} color={tintColor} />
+
+                        </View>
+                    ),
                 }
             }
         >

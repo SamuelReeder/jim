@@ -3,7 +3,6 @@ import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 // some possible tags that I could provide:
 // - Progress
 // - Personal Record
-
 // for progress pics specifically, will calculate how often they post a progress pic and track it
 //
 
@@ -41,7 +40,7 @@ export type Post = {
     likesCount: number;
     timestamp: FirebaseFirestoreTypes.FieldValue;
     pinned: boolean;
-    tags: string[];
+    tags: Tags[];
     media: Media[];
 };
 

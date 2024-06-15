@@ -137,7 +137,7 @@ const HomeScreen = ({ navigation }: {navigation: any}) => {
     }
 
     return (
-        <Box variant="headerContainer" paddingBottom={2}> 
+        <Box variant="headerContainer"> 
             {posts && posts.length == 0 ? <Text>No posts to show, add some friends!</Text> :
                 <FlatList
                     data={posts}

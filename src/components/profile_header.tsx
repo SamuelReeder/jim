@@ -6,6 +6,7 @@ import { Tags, User } from "./types";
 import React, { useEffect, useState } from "react";
 import styles from '../styles/styles';
 import { set } from 'date-fns';
+import { TAG_COLORS } from '../components';
 
 
 const ProfileHeader = ({ navigation, account, tags, selectedTags, setSelectedTags, isOtherUser }: { navigation: any, account: User, tags: Tags[], selectedTags: Tags[], setSelectedTags: React.Dispatch<React.SetStateAction<Tags[]>>, isOtherUser: boolean }) => {
@@ -208,7 +209,7 @@ const ProfileHeader = ({ navigation, account, tags, selectedTags, setSelectedTag
                             key={tag}
                             variant="tag"
                             // style={selectedTags.includes(tag) ? styles.selectedTag : styles.unselectedTag}
-                            backgroundColor={selectedTags.includes(tag) ? 'dark.100' : 'dark.300'}
+                            backgroundColor={tags.includes(tag) ? TAG_COLORS.tagSelected : TAG_COLORS.tagUnselected}
                             startIcon={<AntDesign name="tagso" size={24} color="white" />}
                             onPress={() => {
                                 if (selectedTags.includes(tag)) {
