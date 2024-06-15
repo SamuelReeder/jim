@@ -18,7 +18,7 @@ type PostAndAuthor = {
 const screenWidth = Dimensions.get('window').width;
 
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = ({ navigation }: {navigation: any}) => {
     const [posts, setPosts] = useState<PostAndAuthor[]>([]);
     const [loading, setLoading] = useState(true);
     const [hasMoreItems, setHasMoreItems] = useState(true);
@@ -137,7 +137,7 @@ const HomeScreen = ({ navigation }) => {
     }
 
     return (
-        <Box variant="headerContainer"> 
+        <Box variant="headerContainer" paddingBottom={2}> 
             {posts && posts.length == 0 ? <Text>No posts to show, add some friends!</Text> :
                 <FlatList
                     data={posts}

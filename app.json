@@ -16,7 +16,8 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.sreeder.jim"
+      "bundleIdentifier": "com.sreeder.jim",
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
       "adaptiveIcon": {
@@ -35,23 +36,26 @@
       }
     },
     "plugins": [
-      "@react-native-google-signin/google-signin",
+      "@react-native-google-signin/google-signin", // No changes needed
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth",
       [
-        "expo-image-picker",
+        "expo-image-picker",  
         {
           "photosPermission": "The app accesses your photos to let you share them with your friends."
         }
       ],
-      [
-        "expo-media-library",
+      "expo-media-library",  // Removed the extra square brackets here
+      [ 
+        "expo-build-properties", // Added square brackets to make this a valid plugin entry
         {
-          "photosPermission": "Allow $(PRODUCT_NAME) to access your photos.",
-          "savePhotosPermission": "Allow $(PRODUCT_NAME) to save photos.",
-          "isAccessMediaLocationEnabled": true
+          "ios": {
+            "useFrameworks": "static" 
+          }
         }
-      ],
-      "expo-build-properties",
+      ], 
       "expo-font"
+      
     ]
   }
 }
