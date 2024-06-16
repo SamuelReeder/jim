@@ -1,8 +1,8 @@
 import React, { FC, useEffect, useState } from 'react';
-import { Box, ScrollView, Text, Image, VStack, Button, HStack, Avatar } from "native-base";
-import { Post, User } from "../components";
+import { Box, ScrollView, Text, Image, VStack, Button, HStack, Avatar, Spinner } from "native-base";
+import { Post, TAG_COLORS, User } from "../components";
 import { NavigationProp, RouteProp } from '@react-navigation/native';
-import { Dimensions } from "react-native";
+import { Dimensions, View } from "react-native";
 import { Video, ResizeMode } from 'expo-av';
 import { AppStackParamList, PageLoader } from '../components';
 import { fetchUser } from '../api';
@@ -21,6 +21,8 @@ const PostScreen = ({ route, navigation }: PostPageProps) => {
   const { post } = route.params;
   const [poster, setPoster] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isLoadingPerPost, setIsLoadingPerPost] = useState<Record<string, boolean>>({});
+
 
   console.log(post.media)
 
@@ -37,23 +39,30 @@ const PostScreen = ({ route, navigation }: PostPageProps) => {
 
   useEffect(() => {
     fetchUserData();
-    navigation.setOptions({
-      headerRight: () => (
-        <HStack justifyContent="flex-end" marginRight={2}>
-          {post.tags.map((tag: string) => (
-            <Button
-              key={tag}
-              variant="tag"
-              color="white"
-              size={'sm'}
-              startIcon={<AntDesign name="tagso" size={20} color="black" />}
-            >
-              {tag}
-            </Button>
-          ))}
-        </HStack>
-      ),
+    // navigation.setOptions({
+    //   headerRight: () => (
+    //     <HStack justifyContent="flex-end" marginRight={2}>
+    //       {post.tags.map((tag: string) => (
+    //         <Button
+    //           key={tag}
+    //           variant="tag"
+    //           color="white"
+    //           size={'sm'}
+    //           startIcon={<AntDesign name="tagso" size={20} color="black" />}
+    //         >
+    //           {tag}
+    //         </Button>
+    //       ))}
+    //     </HStack>
+    //   ),
+    // });
+    post.media.forEach((media, index) => {
+      setIsLoadingPerPost((prev) => {
+        return { ...prev, [media.url]: false };
+      });
     });
+
+
   }, [route.params.post]);
 
   if (loading) {
@@ -64,63 +73,82 @@ const PostScreen = ({ route, navigation }: PostPageProps) => {
     <Box variant="headerContainer">
       <ScrollView>
         <Box width="100%">
-
-          <Swiper showsButtons={post.media.length > 1} width={screenWidth} height={(post.media[0].aspectRatio[1] / post.media[0].aspectRatio[0]) * screenWidth}>
+          {/* showsButtons={post.media.length > 1} width={screenWidth} height={(post.media[0].aspectRatio[1] / post.media[0].aspectRatio[0]) * screenWidth}  */}
+          <Swiper activeDotColor='black' width={screenWidth} height={(post.media[0].aspectRatio[1] / post.media[0].aspectRatio[0]) * screenWidth}>
             {post.media.map((media: any, index) => (
               <Box key={index} width="100%" height="100%">
-                {media.type == 'image' ? (
-                  <Image
-                    alt="Post Image"
-                    source={{ uri: media.url }}
-                    resizeMode="contain"
-                    style={{ width: screenWidth, height: (media.aspectRatio[1] / media.aspectRatio[0]) * screenWidth }} // Set height to screenWidth as well to maintain aspect ratio. Adjust as needed.
-                  />
-                ) : (
-                  <Video
-                    source={{ uri: media.url }}
-                    style={{ width: screenWidth, height: (media.aspectRatio[1] / media.aspectRatio[0]) * screenWidth  }}
-                    resizeMode={ResizeMode.COVER}
-                    isLooping
-                    shouldPlay
-                  />
+                {isLoadingPerPost[media.url] && (
+                  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <Spinner size="sm" />
+                  </View>
                 )}
+                <Box style={isLoadingPerPost[media.url] ? { display: "none" } : {}}>
+                  {media.type == 'image' ? (
+                    <Image
+                      alt="Post Image"
+                      source={{ uri: media.url }}
+                      resizeMode="contain"
+                      style={{ width: screenWidth, height: (media.aspectRatio[1] / media.aspectRatio[0]) * screenWidth }}
+                      onLoadStart={() => setIsLoadingPerPost((prev) => {
+                        return { ...prev, [media.url]: true };
+                      })}
+                      onLoad={() => setIsLoadingPerPost((prev) => {
+                        return { ...prev, [media.url]: false };
+                      })}
+                    />
+                  ) : (
+                    <Video
+                      source={{ uri: media.url }}
+                      style={{ width: screenWidth, height: (media.aspectRatio[1] / media.aspectRatio[0]) * screenWidth }}
+                      resizeMode={ResizeMode.COVER}
+                      isLooping
+                      shouldPlay
+                      onLoadStart={() => setIsLoadingPerPost((prev) => {
+                        return { ...prev, [media.url]: true };
+                      })}
+                      onLoad={() => setIsLoadingPerPost((prev) => {
+                        return { ...prev, [media.url]: false };
+                      })}
+
+                    />
+                  )}
+                </Box>
               </Box>
             ))}
-              {/* {route.params.post.media[0].type == 'image' ? (
-                <Image
-                  alt="Post Image"
-                  source={{ uri: post.media[0].url }}
-                  resizeMode="contain"
-                  style={{ width: screenWidth, height: (post.media[0].aspectRatio[1] / post.media[0].aspectRatio[0]) * screenWidth }} // Set height to screenWidth as well to maintain aspect ratio. Adjust as needed.
-                />
-              ) : (
-                <Video
-                  source={{ uri: route.params.post.media[0].url }}
-                  style={{ width: screenWidth, height: screenWidth }}
-                  resizeMode={ResizeMode.COVER}
-                  isLooping
-                  shouldPlay
-                />
-              )} */}
           </Swiper>
-          <Box flex={1} p="3">
+          <Box flex={1} p="3" alignItems="start">
+
             <HStack space={2} flex={1}>
               <Avatar
                 size="sm"
-                mb={0.5}
+                my={1}
                 source={{ uri: poster?.photoURL }}
                 _text={{ fontSize: 'md', fontWeight: 'bold', color: 'white' }}
               />
-              <VStack flex={1}>
+              <VStack flex={1} alignItems="flex-start">
                 <Text>
-                  <Text style={{ fontFamily: 'Poppins_700Bold' }}>{poster?.displayName} </Text>
-                  This is testing because i need to see how it acts with a longer description you know how it is
-                  <Text color="gray.500">  {post.timestamp.toDate().toLocaleDateString()} {post.timestamp.toDate().toLocaleTimeString()}
+                  <Text style={{ fontFamily: 'Poppins_700Bold', fontSize: 15 }}>{poster?.displayName}  </Text>
+                  {post.description}{"\n"}
+                  <Text color="gray.500">{post.timestamp.toDate().toLocaleDateString()} {post.timestamp.toDate().toLocaleTimeString()}
                   </Text>
                 </Text>
+                <HStack paddingY={2}>
+                  {post.tags.map((tag: string) => (
+                    <Button
+                      key={tag}
+                      variant="tag"
+                      backgroundColor={TAG_COLORS.tagSelected}
+                      color="white"
+                      padding={2}
+                      startIcon={<AntDesign name="tagso" size={20} color="white" />}>
+                      <Text color="white">{tag}</Text>
+                    </Button>
+                  ))}
+                </HStack>
               </VStack>
 
             </HStack>
+
           </Box>
         </Box>
       </ScrollView>

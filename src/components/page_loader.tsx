@@ -1,5 +1,6 @@
 import { Box, Spinner } from 'native-base';
 import PageContainer from './page_container';
+import React from 'react';
 
 const PageLoader = () => {
     return (

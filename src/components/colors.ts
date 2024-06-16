@@ -1,4 +1,4 @@
 export const TAG_COLORS = {
-    tagSelected: "red.400",
-    tagUnselected: "red.200",
+    tagSelected: "dark.100",
+    tagUnselected: "dark.300",
 };

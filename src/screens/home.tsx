@@ -2,7 +2,7 @@ import { Box, Button, Image, Text, FlatList, HStack, VStack, Avatar, Pressable }
 // import { FlatList } from "react-native-gesture-handler";
 import { getRecentPostsFromFollowing, fetchUser, hasUserLikedPost, likePost, unlikePost } from "../api";
 import { useAuth } from "../navigation/auth_provider";
-import { Post, User, PageLoader } from "../components";
+import { Post, User, PageLoader, TAG_COLORS } from "../components";
 import { useEffect, useState } from "react";
 import { AntDesign } from '@expo/vector-icons';
 import Swiper from 'react-native-swiper';
@@ -205,20 +205,19 @@ const HomeScreen = ({ navigation }: {navigation: any}) => {
                                         key={tag}
                                         variant="tag"
                                         // TODO: CHANGE COLOUR BASED ON SELECTION
-                                        backgroundColor="rgba(179, 79, 83, 0.8)"
+                                        backgroundColor={TAG_COLORS.tagSelected}
                                         color="white"
                                         padding={2}
-                                        startIcon={<AntDesign name="tagso" size={20} color="black" />}>
-                                        {tag}
+                                        startIcon={<AntDesign name="tagso" size={20} color="white" />}>
+                                        <Text color="white">{tag}</Text>
                                     </Button>
                                 ))}
                                 <Box
 
-                                    p="1.5"                // Padding for some space
-                                    borderColor="white"  // Border color
-                                    // borderWidth={2}      // Border width
-                                    borderRadius={20}  // Rounded border to match the heart shape
-                                    bgColor="rgba(0,0,0,0.4)" // Optional: Background color for better visibility
+                                    p="1.5"            
+                                    borderColor="white"
+                                    borderRadius={20}  
+                                    bgColor={TAG_COLORS.tagSelected} 
                                     justifyContent="center"
                                 >
                                     <Pressable onPress={() => handleLikePress(item.post.id)}>
@@ -233,19 +232,7 @@ const HomeScreen = ({ navigation }: {navigation: any}) => {
                         </Box>
                         <Box flex={1} p="3">
                             <HStack space={2} flex={1}>
-                                {/* <Avatar
-                                size="sm"
-                                mb={0.5}
-                                source={{ uri: item.author?.photoURL }}
-                                _text={{ fontSize: 'md', fontWeight: 'bold', color: 'white' }}
-                            /> */}
                                 <VStack flex={1}>
-                                    {/* <HStack space={2} alignItems="flex-start">
-                                    <Pressable onPress={() => handleLikePress(item.post.id)}>
-                                        <AntDesign name={likedPosts[item.post.id] ? "heart" : "hearto"} size={24} color={likedPosts[item.post.id] ? "red" : "black"} />
-                                    </Pressable>
-                                    <Text>{item.post.likesCount}</Text>
-                                </HStack> */}
                                     <Text>
                                         <Text style={{ fontFamily: 'Poppins_700Bold' }}>{item.author?.displayName} </Text>
                                         {item.post.description}
