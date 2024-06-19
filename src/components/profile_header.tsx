@@ -2,10 +2,8 @@ import { useAuth } from '../navigation/auth_provider';
 import { AntDesign, MaterialCommunityIcons, Ionicons, FontAwesome6 } from '@expo/vector-icons';
 import { Box, Text, VStack, Button, Pressable, HStack, Avatar } from "native-base";
 import { followUser, fetchFollowingStatus, unfollowUser, unsendFollowRequest } from "../api";
-import { Tags, User } from "./types";
+import { Priority, State, Tags, User } from "./types";
 import React, { useEffect, useState } from "react";
-import styles from '../styles/styles';
-import { set } from 'date-fns';
 import { TAG_COLORS } from '../components';
 
 
@@ -35,9 +33,30 @@ const ProfileHeader = ({ navigation, account, tags, selectedTags, setSelectedTag
     useEffect(() => {
         if (isOtherUser) {
             fetchStatus();
+            console.log("statsss", account.stats)
+
         }
     }, [account, user, isOtherUser]);
 
+    const PriorityIcons: { [key in Priority]: JSX.Element } = {
+        Aesthetics: <Ionicons name="body" size={iconSize} color="black" />,
+        Powerlifting: <MaterialCommunityIcons name="weight-lifter" size={iconSize} color="black" />,
+        Strongman: <MaterialCommunityIcons name="size-xxxl" size={iconSize} color="black" />,
+        Bodybuilding: <MaterialCommunityIcons name="size-xxs" size={iconSize} color="black" />,
+        Crossfit: <MaterialCommunityIcons name="weight-lifter" size={iconSize} color="black" />,
+        Endurance: <MaterialCommunityIcons name="run-fast" size={iconSize} color="black" />,
+        Fitness: <MaterialCommunityIcons name="weight-lifter" size={iconSize} color="black" />,
+        Health: <MaterialCommunityIcons name="weight-lifter" size={iconSize} color="black" />,
+    };
+
+    const StateIcons = {
+        Cutting: <MaterialCommunityIcons name="content-cut" size={iconSize} color="black" />,
+        Bulking: <FontAwesome6 name="weight-scale" size={iconSize} color="black" />,
+        Maintenance: <MaterialCommunityIcons name="speedometer-medium" size={iconSize} color="black" />,
+        // Add the rest of the mappings here...
+    };
+
+    console.log("stats", account.stats);
     return (
         <Box variant="headerContainer" px="4" pt="5">
             <Avatar
@@ -137,7 +156,7 @@ const ProfileHeader = ({ navigation, account, tags, selectedTags, setSelectedTag
                     </Box>
                 </Pressable>
             </HStack>
-            {account.stats && Object.keys(account.stats).length > 0 && (
+            {account.stats && account.stats.length > 0 && (
                 <VStack width="100%" mt={3}>
                     <HStack width="100%" justifyContent="space-between" alignItems="center" mt={4}>
                         <Text fontWeight="bold" fontSize="lg" mb={2}>
@@ -153,48 +172,21 @@ const ProfileHeader = ({ navigation, account, tags, selectedTags, setSelectedTag
                         width="100%"
                     >
                         <HStack space={4} alignItems="center" justifyContent="space-between">
-                            {Object.entries(account.stats).slice(0, 3).map(([name, value]) => (
-                                <VStack alignItems="center" width="50%" key={name} space={1} >
-                                    {name === 'Priority' ? (
-                                        <>
-                                            <Text color="primary.800" fontWeight="bold" mb={1} fontSize="md">
-                                                {name}
-                                            </Text>
-                                            {value === 'Aesthetics' ? (
-                                                <Ionicons name="body" size={iconSize} color="black" />
-                                            ) : value === 'Powerlifting' ? (
-                                                <MaterialCommunityIcons name="weight-lifter" size={iconSize} color="black" />
-                                            ) : value === 'Strongman' ? (
-                                                <MaterialCommunityIcons name="size-xxxl" size={iconSize} color="black" />
-                                            ) : (
-                                                <MaterialCommunityIcons name="size-xxs" size={iconSize} color="black" />
-                                            )
-                                            }
-                                        </>
-                                    ) : name === 'State' ? (
-                                        <>
-                                            <Text color="primary.800" fontWeight="bold" mb={1} fontSize="md">
-                                                {name}
-                                            </Text>
-                                            {value === 'Cutting' ? (
-                                                <MaterialCommunityIcons name="content-cut" size={iconSize} color="black" />
-                                            ) : value === 'Bulking' ? (
-                                                <FontAwesome6 name="weight-scale" size={iconSize} color="black" />
-                                            ) : (
-                                                <MaterialCommunityIcons name="speedometer-medium" size={iconSize} color="black" />
-                                            )
-                                            }
-                                        </>
-                                    ) : (
-                                        <Text color="primary.800" fontWeight="bold" mb={1}>
-                                            {name}
+                            {account.stats && account.stats.map((stat, index) => {
+                                const metric = Object.keys(stat)[0];
+                                const value = stat[metric];
+                                return (
+                                    <VStack alignItems="center" width="50%" key={index} space={1} >
+                                        <Text color="primary.800" fontWeight="bold" mb={1} fontSize="md">
+                                            {metric}
                                         </Text>
-                                    )}
-                                    <Text color="gray.500" fontSize="sm">
-                                        {value}
-                                    </Text>
-                                </VStack>
-                            ))}
+                                        {metric === 'Priority' ? PriorityIcons[value as Priority] : StateIcons[value as State]}
+                                        <Text color="gray.500" fontSize="sm">
+                                            {value}
+                                        </Text>
+                                    </VStack>
+                                );
+                            })}
                         </HStack>
                     </Box>
                 </VStack>

@@ -1,60 +1,39 @@
 import firestore from "@react-native-firebase/firestore";
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
-import { Post, User } from "../components";
+import { Post, Priority, StatMetric, State, User } from "../components";
 import { firebase } from "@react-native-firebase/firestore";
 import { addDays, differenceInDays, isToday, isYesterday } from 'date-fns';
 import { Stat } from "../components";
 
-// metrics
-export const updateStat = async (userId: string, stat: Stat) => {
-    // Validate the metric to ensure it's one of the allowed stats
-    if (stat.value == null) {
-        return;
-    }
 
-    const validMetrics = [
-        "Calories",
-        "Bench press",
-        "Squats",
-        "Deadlift",
-        "Pull ups",
-        "Push ups",
-        "Bicep curls",
-        "Shoulder press",
-        "Lateral raises",
-        "Front raises",
-        "Sit ups"
-    ];
-
-    if (!validMetrics.includes(stat.metric)) {
-        console.error("Invalid metric provided");
-        return;
-    }
-
+export const saveStateChoice = async (userId: string, choice: State) => {
     try {
         // Get a reference to the user's document
         const userDocRef = firestore().collection('users').doc(userId);
 
-        // Update the specific metric in the stats field
-        await userDocRef.update({
-            [`stats.${stat.metric}`]: stat.value
-        });
+        // Fetch the current stats array
+        const userDoc = await userDocRef.get();
+        const userData = userDoc.data();
+        const currentStats: Stat[] = userData?.stats || [];
 
-    } catch (error) {
-        console.error("Error updating stat: ", error);
-    }
-};
+        // Find the index of the stat with the State metric
+        const stateIndex = currentStats.findIndex(s => s.metric === StatMetric.State);
 
-export const saveChoice = async (userId, choice) => {
-    try {
+        if (stateIndex > -1) {
+            // Update the existing State
+            currentStats[stateIndex].value = choice;
+        } else {
+            // Add the new State stat
+            currentStats.push({
+                metric: StatMetric.State,
+                value: choice,
+                timestamp: firestore.FieldValue.serverTimestamp(),
+            });
+        }
 
-        // Update user's choice
-        const ref = firestore().collection('users').doc(userId);
-        await ref.update({
-            ['stats.State']: choice
-        });
-        
+        // Update the document with the modified stats array
+        await userDocRef.update({ stats: currentStats });
 
         // Increment the count for the chosen option in statistics
         const statsRef = firestore().collection('statistics').doc('states');
@@ -67,6 +46,83 @@ export const saveChoice = async (userId, choice) => {
     }
 }
 
+export const savePriorityChoice = async (userId: string, choice: Priority) => {
+    try {
+        // Get a reference to the user's document
+        const userDocRef = firestore().collection('users').doc(userId);
+
+        // Fetch the current stats array
+        const userDoc = await userDocRef.get();
+        const userData = userDoc.data();
+        const currentStats: Stat[] = userData?.stats || [];
+
+        // Find the index of the stat with the Priority metric
+        const priorityIndex = currentStats.findIndex(s => s.metric === StatMetric.Priority);
+
+        if (priorityIndex > -1) {
+            // Update the existing Priority
+            currentStats[priorityIndex].value = choice;
+        } else {
+            // Add the new Priority stat
+            currentStats.push({
+                metric: StatMetric.Priority,
+                value: choice,
+                timestamp: firestore.FieldValue.serverTimestamp(),
+            });
+        }
+
+        // Update the document with the modified stats array
+        await userDocRef.update({ stats: currentStats });
+
+        // Increment the count for the chosen option in statistics
+        const statsRef = firestore().collection('statistics').doc('priorities');
+        await statsRef.update({
+            [choice.toLowerCase()]: firestore.FieldValue.increment(1)
+        });
+
+    } catch (error) {
+        console.error("Error saving choice:", error);
+    }
+}
+
+
+export const updateStat = async (userId: string, stat: Stat) => {
+    if (stat.value == null) {
+        return;
+    }
+    if (!Object.values(StatMetric).includes(stat.metric)) {
+        console.error("Invalid metric provided");
+        return;
+    }
+
+    try {
+        // Get a reference to the user's document
+        const userDocRef = firestore().collection('users').doc(userId);
+
+        // Fetch the current stats array
+        const userDoc = await userDocRef.get();
+        const userData = userDoc.data();
+        const currentStats: Stat[] = userData?.stats || [];
+
+        // Find the index of the stat with the same metric
+        const statIndex = currentStats.findIndex(s => s.metric === stat.metric);
+
+        if (statIndex > -1) {
+            // Update the existing stat
+            currentStats[statIndex] = stat;
+        } else {
+            // Add the new stat
+            currentStats.push(stat);
+        }
+
+        // Update the document with the modified stats array
+        await userDocRef.update({ stats: currentStats });
+
+    } catch (error) {
+        console.error("Error updating stat: ", error);
+    }
+};
+
 
 export const fetchStatistics = async () => {
     const snapshot = await firestore().collection('statistics').doc('choices').get();
@@ -75,16 +131,16 @@ export const fetchStatistics = async () => {
     if (data == null) {
         return;
     }
-  
+
     const total = data.cutting + data.maintaining + data.bulking;
-  
+
     return {
-      cutting: (data.cutting / total) * 100,
-      maintaining: (data.maintaining / total) * 100,
-      bulking: (data.bulking / total) * 100
+        cutting: (data.cutting / total) * 100,
+        maintaining: (data.maintaining / total) * 100,
+        bulking: (data.bulking / total) * 100
     };
-  }
-  
+}
+
 
 export const fetchStats = async (uid: string) => {
     const snapshot = await firestore().collection('users').doc(uid).get();
@@ -93,7 +149,7 @@ export const fetchStats = async (uid: string) => {
     if (data == null || data.stats == null) {
         return;
     }
-    
+
     return data.stats;
 }
 
@@ -122,10 +178,9 @@ export const gen = (length: number) => {
 
 
 export const createFirestoreUser = async (username: string, user: any) => {
-    const userRef = firestore().collection('users').doc(user?.uid);
+    const userDoc = firestore().collection('users').doc(user?.uid);
 
-    // Set the user details in the 'users' collection
-    await userRef.set({
+    await userDoc.set({
         uid: user?.uid,
         username: username,
         displayName: user?.displayName,
@@ -139,39 +194,36 @@ export const createFirestoreUser = async (username: string, user: any) => {
             weekly: 0,
             monthly: 0,
         },
-        stats: {
-            State: "NA",
-Bench_press: 0,
-Squats: 0,
-Deadlift: 0,
-Pull_ups: 0,
-Push_ups: 0,
-Bicep_curls: 0,
-Shoulder_press: 0,
-Lateral_raises: 0,
-Front_raises: 0,
-Sit_ups: 0
-            
-            
-        }
+        stats: []
     } as User);
 
-    // Initialize the 'requests' array in the 'friend_requests' collection for the user
-    await firestore().collection('friend_requests').doc(user?.uid).set({
+    await userDoc.collection('friend_requests').doc().set({
         requests: [],
     }, { merge: true });
 
-    // await firestore().collection('pending_requests').doc(user?.uid).set({
-    //     requests: [],
-    // }, { merge: true });
+    await userDoc.collection('pending_requests').doc().set({
+        requests: [],
+    }, { merge: true });
 
-    // Initialize the 'friends' array in the 'friends' collection for the user
-    await firestore().collection('friends').doc(user?.uid).set({
+    await userDoc.collection('followers').doc().set({
+        followers: [],
+    }, { merge: true });
+
+    await userDoc.collection('following').doc().set({
+        following: [],
+    }, { merge: true });
+
+    await userDoc.collection('friends').doc().set({
         friends: [],
     }, { merge: true });
 
-    // TODO:
-    // Following maybe
+    await userDoc.collection('blocked').doc().set({
+        blocked: [],
+    }, { merge: true });
+
+    await userDoc.collection('likedPosts').doc().set({
+        blocked: [],
+    }, { merge: true });
 }
 
 export const updateUserProfile = async (uid: string, username: string, displayName: string, bio: string, photoURL: string) => {
@@ -187,6 +239,30 @@ export const updateUserProfile = async (uid: string, username: string, displayNa
         console.log('User profile updated successfully');
     } catch (error) {
         console.error('Error updating user profile: ', error);
+    }
+};
+
+export const deleteUser = async (uid: string) => {
+    const db = firestore();
+
+    const batch = db.batch();
+
+    try {
+        const userDocRef = db.collection('users').doc(uid);
+        batch.delete(userDocRef);
+
+        const userPostsSnapshot = await db.collection('posts').where('userId', '==', uid).get();
+
+        // TODO: delete likes and comments
+        userPostsSnapshot.forEach((doc) => {
+            batch.delete(doc.ref);
+        });
+
+        await batch.commit();
+
+        console.log('User and their posts deleted successfully');
+    } catch (error) {
+        console.error('Error deleting user and their posts: ', error);
     }
 };
 
@@ -604,34 +680,46 @@ export const hasUserLikedPost = async (postId: string, userId: string) => {
 
 export const getLikesForPost = async (postId: string) => {
     const db = firestore();
-    const likesSnapshot = await db.collection('posts').doc(postId).collection('likes').doc('likeDoc').get();
+    const likesSnapshot = await db.collection('posts').doc(postId).collection('likes').get();
 
-    if (!likesSnapshot.exists) {
-        // The document does not exist.
+    if (likesSnapshot.empty) {
+        // The collection is empty.
         return [];
     }
 
-    return likesSnapshot.data()?.likes;
+    // Map each document to its data
+    const likes = likesSnapshot.docs.map(doc => doc.data());
+    return likes;
 }
 
 export const likePost = async (postId: string, userId: string) => {
     const db = firestore();
     const postRef = db.collection('posts').doc(postId);
     const userRef = db.collection('users').doc(userId).collection('likedPosts').doc(postId);
+    const likesRef = db.collection('posts').doc(postId).collection('likes').doc(userId);
+
+    // Start a batch
+    const batch = db.batch();
 
     // Add to the user's liked posts
-    await userRef.set({ timestamp: firestore.FieldValue.serverTimestamp() });
+    batch.set(userRef, { timestamp: firestore.FieldValue.serverTimestamp() });
 
     // Increment the likesCount in the post
-    await postRef.update({
+    batch.update(postRef, {
         likesCount: firestore.FieldValue.increment(1),
     });
-};
+
+    // Add to the post's likes
+    batch.set(likesRef, { timestamp: firestore.FieldValue.serverTimestamp() });
+
+    // Commit the batch
+    await batch.commit();
+}
 
 export const unlikePost = async (postId: string, userId: string) => {
     const db = firestore();
     const postRef = db.collection('posts').doc(postId);
-    const likesRef = db.collection('posts').doc(postId).collection('likes').doc('likeDoc');
+    const likesRef = db.collection('posts').doc(postId).collection('likes').doc(userId);
     const userRef = db.collection('users').doc(userId).collection('likedPosts').doc(postId);
 
     const likesSnapshot = await likesRef.get();
@@ -641,10 +729,8 @@ export const unlikePost = async (postId: string, userId: string) => {
         return;
     }
 
-    // Remove from the likes array in the likes document
-    await likesRef.update({
-        likes: firestore.FieldValue.arrayRemove(userId)
-    });
+    // Delete the like document
+    await likesRef.delete();
 
     // Decrement the likesCount in the post
     await postRef.update({

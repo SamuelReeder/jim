@@ -76,25 +76,65 @@ export type User = {
         weekly: number;
         monthly: number;
     }
-    stats?: {
-        "State": string | null; // whether bulking ("bulk") or cutting ("cut")
-        "Calories"?: number | null;
-        "Bench press"?: number | null;
-        "Squats"?: number | null;
-        "Deadlift"?: number | null;
-        "Pull ups"?: number | null;
-        "Push ups"?: number | null;
-        "Bicep curls"?: number | null;
-        "Shoulder press"?: number | null;
-        "Lateral raises"?: number | null;
-        "Front raises"?: number | null;
-        "Sit ups"?: number | null;
-    } | null;
+    stats: Stat[] | null;
 }
 
-export type Stat = {
-    metric: string;
-    value: number | null;
+export enum StatMetric {
+    Priority = "Priority",
+    State = "State",
+    Calories = "Calories",
+    BenchPress = "Bench press",
+    Squats = "Squats",
+    Deadlift = "Deadlift",
+    PullUps = "Pull ups",
+    PushUps = "Push ups",
+    BicepCurls = "Bicep curls",
+    ShoulderPress = "Shoulder press",
+    LateralRaises = "Lateral raises",
+    FrontRaises = "Front raises",
+    SitUps = "Sit ups",
+}
+
+export enum Priority {
+    Aesthetics = "Aesthetics",
+    Powerlifting = "Powerlifting",
+    Strongman = "Strongman",
+    Bodybuilding = "Bodybuilding",
+    Crossfit = "Crossfit",
+    Endurance = "Endurance",
+    Fitness = "Fitness",
+    Health = "Health",
+}
+
+export enum State {
+    Cutting = "Cutting",
+    Bulking = "Bulking",
+    Maintenance = "Maintenance",
+}
+
+export type StatMetricValues = {
+    [StatMetric.Priority]: Priority,
+    [StatMetric.State]: State,
+    [StatMetric.Calories]: number,
+    [StatMetric.BenchPress]: number,
+    [StatMetric.Squats]: number,
+    [StatMetric.Deadlift]: number,
+    [StatMetric.PullUps]: number,
+    [StatMetric.PushUps]: number,
+    [StatMetric.BicepCurls]: number,
+    [StatMetric.ShoulderPress]: number,
+    [StatMetric.LateralRaises]: number,
+    [StatMetric.FrontRaises]: number,
+    [StatMetric.SitUps]: number,
+};
+
+// Define a helper type that maps a metric to its value
+type MetricValue<M extends StatMetric> = M extends keyof StatMetricValues ? StatMetricValues[M] : never;
+
+export type Stat<M extends StatMetric = StatMetric> = {
+    metric: M;
+    value: MetricValue<M>;
+    timestamp: FirebaseFirestoreTypes.FieldValue;
 }
 
 export type Comment = {

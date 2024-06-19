@@ -3,6 +3,7 @@ import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import { User } from '../components';
+import { deleteUser } from '../api';
 
 
 export const AuthContext = createContext<{
@@ -12,6 +13,7 @@ export const AuthContext = createContext<{
     setAccount: React.Dispatch<React.SetStateAction<any>>;
     googleLogin: () => Promise<void>;
     logout: () => Promise<void>;
+    deleteAccount: () => Promise<void>;
 } | undefined>(undefined);
 
 
@@ -31,6 +33,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     GoogleSignin.configure({
         webClientId: '944395723231-vlsnl3sebdddeomjt2joql2c3c19qjte.apps.googleusercontent.com',
     });
+
+    const deleteAccount = async () => {
+        if (user) {
+            try {
+                await user.delete();
+                await deleteUser(user.uid);
+                setUser(null);
+                setAccount(null);
+                console.log('User account deleted!');
+            } catch (error) {
+                console.error('Error deleting user account: ', error);
+            }
+        }
+    };
 
     return (
         <AuthContext.Provider
@@ -71,6 +87,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                         console.error(error);
                     }
                 },
+                deleteAccount,
             }}>
             {children}
         </AuthContext.Provider>
