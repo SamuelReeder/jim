@@ -1,6 +1,6 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { AntDesign, Ionicons, MaterialCommunityIcons, MaterialIcons  } from '@expo/vector-icons';
+import { AntDesign, Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { Image, Button, Icon, HStack, View } from 'native-base';
 import { useAuth } from './auth_provider';
 import * as Screens from '../screens';
@@ -33,7 +33,7 @@ const TabNavigator = () => {
                     fontSize: 18,
                 },
                 headerStyle: {
-                    height:110,
+                    height: 110,
                     elevation: 0, // remove shadow on Android
                     shadowOpacity: 0, // remove shadow on iOS
                     borderBottomWidth: 0, // remove bottom border
@@ -50,32 +50,29 @@ const TabNavigator = () => {
                     headerShown: true,
                     headerTitleAlign: 'center',
                     headerTitle: () => (
-                        <Image 
-                            source={require('../../assets/logo.png')} 
-                            style={{ width: 57, height: 40}} 
+                        <Image
+                            source={require('../../assets/logo.png')}
+                            style={{ width: 57, height: 40 }}
                             alt="Logo"
                         />
                     ),
                     headerLeft: () => (
-                        <TouchableOpacity onPress={() => {
-                            // Handle the press event here
-                            console.log('Left icon pressed!');
-                        }}>
-                            <MaterialIcons name="local-fire-department" size={24} color="orange" style={{ marginLeft: 20 }}/>
+                        <TouchableOpacity onPress={()=> {}}>
+                            <MaterialIcons name="local-fire-department" size={24} color={(account?.streaks.daily != 0 || account?.streaks.monthly != 0 || account?.streaks.weekly != 0) ? "orange" : "grey" } user style={{ marginLeft: 20 }} />
                         </TouchableOpacity>
                     ),
-                
+
                     // Set the pressable icon on the right side of the header
                     headerRight: () => (
                         <TouchableOpacity onPress={() => {
                             // Handle the press event here
                             console.log('Icon pressed!');
                         }}>
-                            <MaterialIcons name="notifications-none" size={24} color="black" style={{ marginRight: 20 }}/>
+                            <MaterialIcons name="notifications-none" size={24} color="black" style={{ marginRight: 20 }} />
 
                         </TouchableOpacity>
                     ),
-                
+
                     tabBarIcon: ({ color, size }) => (
                         <AntDesign name="home" size={size} color={color} />
                     ),
@@ -170,11 +167,11 @@ const AppStack = () => {
                         fontSize: 20,
                     },
                     headerStyle: {
-                        height:110,
-                        elevation: 0, 
-                        shadowOpacity: 0, 
-                        borderBottomWidth: 0, 
-                    },    
+                        height: 110,
+                        elevation: 0,
+                        shadowOpacity: 0,
+                        borderBottomWidth: 0,
+                    },
                     headerTintColor: 'black',
                     headerTitleAlign: 'center',
                     headerBackTitleVisible: false,
@@ -189,10 +186,10 @@ const AppStack = () => {
         >
             <Stack.Screen name="Tabs" component={TabNavigator} options={{ headerShown: false }} />
             <Stack.Screen name="Post" component={Screens.PostScreen} />
-            <Stack.Screen name="UserProfile" options={{headerTitle: "Profile"}} component={Screens.UserProfileScreen} />
-            <Stack.Screen name="EditProfile" options={{title: "Edit profile"}} component={Screens.EditProfileScreen} />
+            <Stack.Screen name="UserProfile" options={{ headerTitle: "Profile" }} component={Screens.UserProfileScreen} />
+            <Stack.Screen name="EditProfile" options={{ title: "Edit profile" }} component={Screens.EditProfileScreen} />
             <Stack.Screen name="Friends" component={Screens.FriendsStack} />
-            <Stack.Screen name="CreatePostStack" options={{title: "Post"}} component={Screens.CreatePostScreen} />
+            <Stack.Screen name="CreatePostStack" options={{ title: "Post" }} component={Screens.CreatePostScreen} />
             <Stack.Screen name="Stat" component={Screens.StatScreen} />
             <Stack.Screen name="Settings" component={Screens.SettingsScreen} />
         </Stack.Navigator>
