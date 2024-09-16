@@ -28,7 +28,6 @@ export const saveStateChoice = async (userId: string, choice: State) => {
             currentStats.push({
                 metric: StatMetric.State,
                 value: choice,
-                timestamp: firestore.FieldValue.serverTimestamp(),
             });
         }
 
@@ -48,6 +47,8 @@ export const saveStateChoice = async (userId: string, choice: State) => {
 
 export const savePriorityChoice = async (userId: string, choice: Priority) => {
     try {
+        console.log(choice);
+
         // Get a reference to the user's document
         const userDocRef = firestore().collection('users').doc(userId);
 
@@ -67,7 +68,6 @@ export const savePriorityChoice = async (userId: string, choice: Priority) => {
             currentStats.push({
                 metric: StatMetric.Priority,
                 value: choice,
-                timestamp: firestore.FieldValue.serverTimestamp(),
             });
         }
 

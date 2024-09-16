@@ -26,7 +26,7 @@ const PostScreen = ({ route, navigation }: PostPageProps) => {
   const [poster, setPoster] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [isLoadingPerPost, setIsLoadingPerPost] = useState<Record<string, boolean>>({});
-  const [likedPost, setLikedPost] = useState<boolean>(user ? post.likes.includes(user.uid) : false);
+  const [likedPost, setLikedPost] = useState<boolean>(user ? post.likes?.includes(user.uid) : false);
   const [likesCount, setLikesCount] = useState<number>(post.likesCount);
 
   const fetchUserData = async () => {

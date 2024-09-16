@@ -53,7 +53,6 @@ const ProfileHeader = ({ navigation, account, tags, selectedTags, setSelectedTag
         Cutting: <MaterialCommunityIcons name="content-cut" size={iconSize} color="black" />,
         Bulking: <FontAwesome6 name="weight-scale" size={iconSize} color="black" />,
         Maintenance: <MaterialCommunityIcons name="speedometer-medium" size={iconSize} color="black" />,
-        // Add the rest of the mappings here...
     };
 
     console.log("stats", account.stats);
@@ -173,16 +172,16 @@ const ProfileHeader = ({ navigation, account, tags, selectedTags, setSelectedTag
                     >
                         <HStack space={4} alignItems="center" justifyContent="space-between">
                             {account.stats && account.stats.map((stat, index) => {
-                                const metric = Object.keys(stat)[0];
-                                const value = stat[metric];
+                                const metric = stat.metric;
+                                const value = stat.value;
                                 return (
                                     <VStack alignItems="center" width="50%" key={index} space={1} >
                                         <Text color="primary.800" fontWeight="bold" mb={1} fontSize="md">
-                                            {metric}
+                                            {value}
                                         </Text>
                                         {metric === 'Priority' ? PriorityIcons[value as Priority] : StateIcons[value as State]}
                                         <Text color="gray.500" fontSize="sm">
-                                            {value}
+                                            {metric}
                                         </Text>
                                     </VStack>
                                 );

@@ -7,6 +7,7 @@ import { Platform } from "react-native";
 import { useState } from 'react';
 import firestore from '@react-native-firebase/firestore';
 import { createFirestoreUser, fetchUser } from '../api';
+import React from 'react';
 
 
 type UserDetailsScreenNavigationProp = StackNavigationProp<

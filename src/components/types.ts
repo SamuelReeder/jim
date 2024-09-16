@@ -134,7 +134,7 @@ type MetricValue<M extends StatMetric> = M extends keyof StatMetricValues ? Stat
 export type Stat<M extends StatMetric = StatMetric> = {
     metric: M;
     value: MetricValue<M>;
-    timestamp: FirebaseFirestoreTypes.FieldValue;
+    timestamp?: FirebaseFirestoreTypes.FieldValue;
 }
 
 export type Comment = {

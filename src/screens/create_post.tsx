@@ -20,6 +20,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import React from "react";
 import { TAG_COLORS } from "../components";
+import { updateStreaks } from "../api";
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -322,6 +323,8 @@ const FinalizePostScreen = ({ navigation }: { navigation: any }) => {
         navigation.navigate("Profile");
 
         console.log('Finished submitPost function.');
+
+        await updateStreaks(user.uid);
     }
 
     const randomWidth = useSharedValue(10);
