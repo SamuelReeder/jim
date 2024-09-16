@@ -4,10 +4,7 @@ _This platform is currently in development beta and limited to Android via apk._
 
 Welcome to jim, the social media platform for fitness enthusiasts! jim is designed for gym-goers to share their workout stats, progress, and motivational media with a like-minded community. 
 
-<video width="600" controls>
-  <source src="example.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+[See the app!](./example.mp4)
 
 ## Features
 
