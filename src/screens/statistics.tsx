@@ -252,7 +252,7 @@ const StatisticsScreen = ({ navigation }) => {
                 </Box>
             </Pressable>
 
-            <FlatList
+            {/* <FlatList
                 data={data2}
                 renderItem={({ item, index }: { item: Stat, index: number }) =>
                     <Pressable width="100%" onPress={() => {
@@ -275,7 +275,7 @@ const StatisticsScreen = ({ navigation }) => {
                     </Pressable>}
                 keyExtractor={item => item.metric.toString()}
                 numColumns={2}
-            />
+            /> */}
             <Modal isOpen={showModal0} onClose={() => setShowModal0(false)}>
                 <Modal.Content>
                     <Modal.CloseButton borderRadius="full" />

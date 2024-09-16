@@ -58,7 +58,8 @@ const TabNavigator = () => {
                     ),
                     headerLeft: () => (
                         <TouchableOpacity onPress={()=> {}}>
-                            <MaterialIcons name="local-fire-department" size={24} color={(account?.streaks.daily != 0 || account?.streaks.monthly != 0 || account?.streaks.weekly != 0) ? "orange" : "grey" } user style={{ marginLeft: 20 }} />
+                            {/* <MaterialIcons name="local-fire-department" size={24} color={(account?.streaks.daily != 0 || account?.streaks.monthly != 0 || account?.streaks.weekly != 0) ? "orange" : "grey" } user style={{ marginLeft: 20 }} /> */}
+                            <MaterialIcons name="local-fire-department" size={24} color={(true) ? "orange" : "grey" } user style={{ marginLeft: 20 }} /> 
                         </TouchableOpacity>
                     ),
 
